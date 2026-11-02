@@ -14,9 +14,11 @@
 <body>
   <div class="reading-progress" aria-hidden="true"><span id="reading-progress"></span></div>
   <header class="site-header" id="top">
+    <div class="header-inner wrapper">
     <a class="brand" href="#top" aria-label="맨 위로 이동"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" width="40" height="40" fill="none"><path d="M3 14V3h11M26 3h11v11M37 26v11H26M14 37H3V26" stroke="currentColor" stroke-width="2.5"/><path d="M11 24L18 17L23 22L31 11" stroke="currentColor" stroke-width="2.5"/></svg></span><small>FRAME / FEEL<br>VISUAL STORIES</small></a>
     <nav class="top-nav" aria-label="메인 메뉴"><a href="#projects">WORKS <span>02</span></a><a href="#process">PROCESS</a><a href="#about">ABOUT</a></nav>
     <button class="header-screening" type="button" data-open="memory">WATCH FILMS <span aria-hidden="true">↗</span></button>
+    </div>
   </header>
 
   <main>
@@ -48,6 +50,7 @@
 
     <section class="project project-memory" id="memory" aria-labelledby="memory-title">
       <div class="wrapper">
+        <div class="screen-a">
         <div class="project-heading reveal">
           <div><div class="project-kicker"><span class="circle-dot"></span> FILM 01 / EMOTIONAL BRAND FILM</div><h2 id="memory-title">반찬통의 <em>왕복.</em></h2></div>
           <div class="project-aside"><span>1999 → 2007 → 2026</span><p>엄마가 채워 주던 통을,<br>이번엔 아들이 채워서 돌려준다.</p></div>
@@ -68,6 +71,8 @@
             <div class="quicklook-progress"><span></span></div>
           </div>
         </div>
+        </div>
+        <div class="screen-b">
         <div class="project-foot reveal">
           <div class="project-synopsis"><span class="mono-label">DIRECTOR'S NOTE</span><p>도트에서 3D로, 다시 실사로. 기술의 변화가 아니라 <strong>받는 사람에서 건네는 사람으로 변하는 마음</strong>을 담았습니다.</p></div>
           <div class="project-links"><button data-open="memory" type="button">VIEW FILM <span>↗</span></button><button data-open-notes="memory" type="button">PRODUCTION NOTES <span>↗</span></button></div>
@@ -76,6 +81,7 @@
           <button class="era-item is-selected" data-era="0" type="button"><span>01 / 1999</span><img src="assets/memory-pixel.webp" alt="1999 도트 이미지"><small>기억의 시작 / DOT</small></button>
           <button class="era-item" data-era="1" type="button"><span>02 / 2007</span><img src="assets/memory-3d.webp" alt="2007 3D 이미지"><small>익숙한 일상 / 3D</small></button>
           <button class="era-item" data-era="2" type="button"><span>03 / 2026</span><img src="assets/memory-reality.webp" alt="2026 실사 이미지"><small>마음을 건네다 / REAL</small></button>
+        </div>
         </div>
       </div>
     </section>
@@ -90,6 +96,7 @@
 
     <section class="project project-tumgo" id="tumgo" aria-labelledby="tumgo-title">
       <div class="wrapper">
+        <div class="screen-a">
         <div class="project-heading reveal">
           <div><div class="project-kicker"><span class="circle-dot"></span> FILM 02 / FUTURE SERVICE COMMERCIAL</div><h2 id="tumgo-title">틈<span class="green-accent">GO</span><span class="small-mark">®</span></h2></div>
           <div class="project-aside"><span>A SMALL GAP IN THE DAY</span><p>문 앞에 두세요.<br>나머지는 틈GO가.</p></div>
@@ -111,6 +118,8 @@
             <div class="quicklook-progress"><span></span></div>
           </div>
         </div>
+        </div>
+        <div class="screen-b">
         <div class="project-foot reveal">
           <div class="project-synopsis"><span class="mono-label">DIRECTOR'S NOTE</span><p>늦은 퇴근길에 우연히 마주친 로봇 한 대. <strong>생활 속 작은 번거로움을 없애는 미래</strong>를 실사형 AI 영상으로 구체화했습니다.</p></div>
           <div class="project-links"><button data-open="tumgo" type="button">VIEW FILM <span>↗</span></button><button data-open-notes="tumgo" type="button">PRODUCTION NOTES <span>↗</span></button></div>
@@ -119,6 +128,7 @@
           <button type="button" data-jump="tumgo:2"><img src="assets/tumgo-cover.webp" alt="계단의 첫 만남"><span>01 / ENCOUNTER ↗</span></button>
           <button type="button" data-jump="tumgo:11"><img src="assets/tumgo-life.webp" alt="세탁기 앞 일상"><span>02 / EVERYDAY ↗</span></button>
           <button type="button" data-jump="tumgo:19"><img src="assets/tumgo-hallway.webp" alt="로봇의 비대면 수거"><span>03 / PICKUP ↗</span></button>
+        </div>
         </div>
       </div>
     </section>
@@ -134,13 +144,17 @@
       <button class="archive-link reveal" type="button" data-open-notes="memory">작품별 컷 아카이브 보기 <span>↗</span></button>
     </section>
 
+    <div class="last-screen">
     <section class="about wrapper" id="about">
       <div class="about-tag">[ 03 — THE PERSON BEHIND THE SCENES ]</div>
       <div><h2>기술보다 오래 남는 건<br><em>한 장면의 감정.</em></h2><p>정재환 · AI 영상 기획과 시각 연출<br>기획부터 생성, 편집과 검수까지. AI를 단순한 생성 도구가 아닌 새로운 제작 방식으로 활용합니다.</p></div>
     </section>
+
+  <footer class="footer"><div class="footer-inner wrapper"><div><strong>MOVING STORIES <span>© 2026</span></strong><p>이 사이트의 작품은 AI 기반 개인 교육·포트폴리오 작업입니다.<br>「반찬통의 왕복」은 LOCK&LOCK의 공식 광고가 아닙니다. 틈GO는 가상의 서비스입니다.</p></div><div><a href="#top">BACK TO TOP ↑</a><button type="button" id="open-evaluator">EVALUATION / PROJECT DATA ↗</button></div></div></footer>
+  </div>
   </main>
 
-  <footer class="footer"><div><strong>MOVING STORIES <span>© 2026</span></strong><p>이 사이트의 작품은 AI 기반 개인 교육·포트폴리오 작업입니다.<br>「반찬통의 왕복」은 LOCK&LOCK의 공식 광고가 아닙니다. 틈GO는 가상의 서비스입니다.</p></div><div><a href="#top">BACK TO TOP ↑</a><button type="button" id="open-evaluator">EVALUATION / PROJECT DATA ↗</button></div></footer>
+  <div class="layout-guide" id="layout-guide" hidden aria-hidden="true"><span class="g-out"></span><span class="g-in"></span><em>1920 × 950 · 콘텐츠 1440 (안쪽 1280) · G 키로 끄기</em></div>
 
   <dialog class="screening" id="screening-dialog" aria-labelledby="modal-title">
     <div class="modal-layout">

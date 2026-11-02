@@ -5,14 +5,14 @@
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
   const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const projectData = {
-    memory: {name:'반찬통의 왕복', number:'FILM 01 / THE RETURN',cuts: MEMORY_CUTS, duration:83.0, color:'#96a7c6', note:'1999 도트 → 2007 3D → 2026 실사. 시대가 바뀌는 시점에 같은 반찬통의 위치와 동작을 연결하고, 잠금 소리도 칩튠에서 실제 음향으로 성장하도록 설계했습니다.'},
+    memory: {name:'반찬통의 왕복', number:'FILM 01 / THE RETURN',cuts: MEMORY_CUTS, duration:82.8, color:'#96a7c6', note:'1999 도트 → 2007 3D → 2026 실사. 시대가 바뀌는 시점에 같은 반찬통의 위치와 동작을 연결하고, 잠금 소리도 칩튠에서 실제 음향으로 성장하도록 설계했습니다.'},
     tumgo: {name:'틈GO (TUMGO)', number:'FILM 02 / TUMGO',cuts:TUMGO_CUTS,duration:62.04,color:'#a8e7b8',note:'서울의 야간 계단, 101호 현관, 4족 서비스 로봇. 캐릭터와 공간을 반복 검증하며 기계적 보행, QR 스캔, 가방 적재를 장면별로 구성했습니다.'}
   };
   let currentFilm='memory', currentCut=0;
   // Public film URLs are configured in video-config.js (never put a Blob token here).
   const configured=window.PORTFOLIO_VIDEO_URLS||{};
   const publishedVideoSources={memory:configured.memory||'',tumgo:configured.tumgo||''};
-  const videoState={memory:{url:publishedVideoSources.memory||null,name:'Published master'},tumgo:{url:publishedVideoSources.tumgo||null,name:'Published master'}};
+  const videoState={memory:{url:publishedVideoSources.memory||null,name:'최종 영상'},tumgo:{url:publishedVideoSources.tumgo||null,name:'최종 영상'}};
   const dialog=$('#screening-dialog'),video=$('#screen-video');
   const fmt=t=>{const m=Math.floor(t/60),s=Math.floor(t%60),d=Math.floor((t%1)*10);return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${d}`};
   const escapeHTML = s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -181,7 +181,15 @@
       $('#player-status').textContent=`${state.name} · ${fmt(video.duration)}`+(diff>0.8?` · ⚠ 기획서와 ${diff.toFixed(1)}초 차이`: ' · 컷 타임라인 비교 가능');
       const seekTime=p.cuts[currentCut]?.start||0;if(seekTime<video.duration)video.currentTime=seekTime;
     };
-    video.onerror=()=>{$('#player-status').textContent='영상을 재생할 수 없습니다. MP4 코덱을 확인하세요.'};
+    video.onerror=()=>{
+      const code=video.error&&video.error.code;
+      const why={1:'재생이 중단되었습니다',2:'네트워크 오류로 영상을 받지 못했습니다',3:'영상을 해독하지 못했습니다(코덱 확인)',4:'영상 주소를 찾지 못했거나 형식을 지원하지 않습니다(URL 오타·404 확인)'}[code]||'영상을 재생할 수 없습니다';
+      $('#player-status').textContent=`⚠ ${why} · 오류 코드 ${code??'-'}`;
+      console.warn('[portfolio video]',currentFilm,state.url,video.error);
+      video.hidden=true;$('#previs-area').hidden=false;
+    };
+    video.onwaiting=()=>{$('#player-status').textContent=`${state.name} · 불러오는 중…`};
+    video.onplaying=()=>{$('#player-status').textContent=`${state.name} · 재생 중`};
   }
   function openFilm(key,tab='watch',cut=0){
     closePeek();
@@ -215,5 +223,9 @@
     const idx=cuts.findIndex((c,i)=>t>=c.start&&t<(i===cuts.length-1?Infinity:c.end));
     if(idx!==-1&&idx!==currentCut)selectCut(idx,false);
   });
+  /* G key: toggle the 1920×950 / 1440 layout guide for review */
+  const guide=$('#layout-guide');
+  addEventListener('keydown',e=>{if((e.key==='g'||e.key==='G')&&!e.target.closest('input,textarea')&&!dialog.open){guide.hidden=!guide.hidden}});
+  if(location.hash==='#guide')guide.hidden=false;
   addEventListener('beforeunload',()=>Object.values(videoState).forEach(s=>{if(s.url&&s.url.startsWith('blob:'))URL.revokeObjectURL(s.url)}));
 })();

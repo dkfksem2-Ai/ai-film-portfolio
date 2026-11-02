@@ -87,3 +87,124 @@ body { background:var(--paper); }
 @media(max-width:760px){html{scroll-padding-top:68px}.section-intro,.section-intro .intro-inner{min-height:90svh}.section-intro .intro-inner{grid-template-columns:1fr;align-content:center;gap:22px;padding-top:145px;padding-bottom:148px}.section-intro .section-number{align-self:start;margin-bottom:14px}.section-intro h2{font-size:clamp(54px,11vw,87px);line-height:1.23}.section-intro p{grid-column:1;justify-self:start;font-size:13px}.intro-ghost{font-size:22vw}.intro-bottom{bottom:62px}.interlude,.interlude-inner{min-height:73svh}.interlude-inner{padding-top:135px;padding-bottom:135px}.interlude-quote{font-size:clamp(35px,7.1vw,64px)}.interlude-small{font-size:8px;margin-bottom:48px}.interlude-index{margin-top:50px}}
 @media(max-width:420px){.section-intro h2{font-size:clamp(49px,11.3vw,62px)}.quicklook-hud{font-size:9px}.interlude-quote{font-size:33px}.section-intro .section-number{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;filter:none}.interlude-quote{transform:none;opacity:1}.motion-stage .poster-frame{transform:none}.intro-bottom span{animation:none}}
+
+/* ===== V5: 1920 × 950 screen grid =====
+   한 화면 = 1920 × 950 (헤더 85 + 화면 865). 모든 콘텐츠는 가운데 1440 안에, 핵심 글은 안쪽 1280 안에 둔다.
+   1440보다 좁은 화면에서는 좌우 여백을 유지한 채 1280까지 자연스럽게 줄어든다. */
+:root{--content:1440px;--inner:1280px;--pad:clamp(22px,5vw,78px);--header:85px;--screen:max(700px,calc(100svh - var(--header)))}
+.wrapper{max-width:calc(var(--content) + var(--pad)*2);padding-left:var(--pad);padding-right:var(--pad);margin-left:auto;margin-right:auto}
+html{scroll-padding-top:var(--header)}
+
+/* header & footer: 배경은 화면 끝까지, 내용은 1440 안 */
+.site-header{padding:0;display:block}
+.header-inner{height:var(--header);display:flex;align-items:center;justify-content:space-between;gap:24px}
+.footer{padding:0;display:block}
+.footer-inner{display:flex;justify-content:space-between;gap:30px;padding-top:46px;padding-bottom:56px}
+.footer-inner>div:last-child{display:flex;align-items:flex-end;flex-direction:column;justify-content:flex-end;gap:20px}
+
+/* screen 1: hero = 865 */
+.hero{min-height:0;height:var(--screen);padding-top:clamp(40px,6.5svh,80px);padding-bottom:96px;align-items:start}
+.hero h1{margin:40px 0 24px}
+.hero-en{margin-bottom:26px}
+.explore-link{margin-top:36px}
+.hero-art{transform:none;min-height:0;height:min(600px,calc(var(--screen) - 190px))}
+.sheet-one{right:2%;width:79%}
+.sheet-two{left:-4%}
+.hero-stamp{right:16px}
+.hero-side{right:0;top:0}
+.hero-bottom{left:var(--pad);right:var(--pad);bottom:32px}
+@media(min-width:1500px){.hero{min-height:0}}
+
+/* screen 2: works intro = 865 */
+.section-intro,.section-intro .intro-inner{min-height:var(--screen)}
+.section-intro .intro-inner{padding-top:0;padding-bottom:0}
+.intro-bottom{left:var(--pad);right:var(--pad);bottom:56px}
+.intro-ghost{left:0}
+
+/* screens 3–4 / 6–7: each film = two screens */
+.project,.project-tumgo{padding-top:0;padding-bottom:0}
+.screen-a{height:var(--screen);display:flex;flex-direction:column;padding-top:56px;padding-bottom:48px}
+.screen-a .project-heading{margin-bottom:32px;flex:none}
+.screen-a .feature-art{flex:1 1 auto;height:auto;min-height:420px}
+.project-heading h2{font-size:clamp(50px,5vw,96px)}
+.project-tumgo .project-heading h2{font-size:clamp(72px,7.4vw,140px)}
+.screen-b{min-height:var(--screen);display:flex;flex-direction:column;justify-content:center;padding-top:40px;padding-bottom:64px}
+.screen-b .project-foot{margin-top:0;margin-bottom:64px}
+.era-row,.tumgo-filmstrip{gap:24px}
+
+/* screen 5: interlude = 865 */
+.interlude,.interlude-inner{min-height:var(--screen)}
+.interlude-inner{padding-top:0;padding-bottom:0}
+
+/* screen 8: process = 865 */
+.process{min-height:var(--screen);padding-top:96px;padding-bottom:72px;display:flex;flex-direction:column;justify-content:center}
+.process h2{margin:-16px 0 48px}
+.process-list>div{padding:22px 0}
+
+/* screen 9: about + footer = 865 */
+.last-screen{min-height:var(--screen);display:flex;flex-direction:column}
+.last-screen .about{flex:1;align-content:center;width:100%;padding-top:72px;padding-bottom:72px}
+
+/* 핵심 글은 안쪽 1280 안에 (1440 가운데 기준 좌우 80) */
+.process-heading,.process-list{max-width:var(--inner);width:100%;margin-left:auto;margin-right:auto}
+.process .archive-link{margin-right:max(0px,calc((100% - var(--inner))/2))}
+
+/* layout guide: G 키 */
+.layout-guide{position:fixed;inset:0;z-index:300;pointer-events:none}
+.layout-guide[hidden]{display:none}
+.layout-guide span{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);border-left:1px solid rgba(230,40,90,.75);border-right:1px solid rgba(230,40,90,.75)}
+.layout-guide .g-out{width:min(var(--content),calc(100vw - var(--pad)*2));background:rgba(230,40,90,.04)}
+.layout-guide .g-in{width:min(var(--inner),calc(100vw - var(--pad)*2 - 160px));border-style:dashed;border-color:rgba(40,120,230,.7)}
+.layout-guide em{position:absolute;right:max(16px,env(safe-area-inset-right,0px));bottom:16px;font:700 11px/1 var(--sans);font-style:normal;letter-spacing:.08em;background:#e6285a;color:#fff;padding:7px 10px;border-radius:3px}
+
+/* 태블릿·모바일: 화면 고정 높이를 풀고 흐름대로 */
+@media(max-width:1100px){.screen-a{height:auto}.screen-a .feature-art{flex:none;height:clamp(390px,55vw,620px)}}
+@media(max-width:760px){
+  :root{--header:68px}
+  .hero,.section-intro,.section-intro .intro-inner,.interlude,.interlude-inner,.process,.last-screen,.screen-b{height:auto;min-height:0}
+  .hero{padding-top:52px;padding-bottom:68px;align-items:stretch}
+  .hero-art{height:390px}
+  .section-intro .intro-inner{padding-top:120px;padding-bottom:140px}
+  .interlude-inner{padding-top:120px;padding-bottom:120px}
+  .screen-a{padding-top:70px;padding-bottom:30px}
+  .screen-a .feature-art{height:clamp(330px,62vw,520px);min-height:0}
+  .screen-b{padding-top:20px;padding-bottom:80px}
+  .footer-inner{flex-direction:column}.footer-inner>div:last-child{align-items:flex-start}
+}
+@media(max-width:420px){.hero-art{height:335px}}
+
+/* ===== V5.1: hover "nod" — 마우스를 올리면 아이콘·글자가 한 번 '까딱' 하고 제자리로 =====
+   한 번만 재생(반복 없음), 0.6~0.7s, 살짝 넘쳤다가 돌아오는 감속. 모션 줄이기 설정이면 꺼짐. */
+:root{--nod:cubic-bezier(.34,1.56,.64,1)}
+@keyframes nod-tilt{0%{transform:rotate(0)}30%{transform:rotate(-12deg)}62%{transform:rotate(5deg)}100%{transform:rotate(0)}}
+@keyframes nod-up{0%{transform:translateY(0)}35%{transform:translateY(-3px)}70%{transform:translateY(1px)}100%{transform:translateY(0)}}
+@keyframes nod-diag{0%{transform:translate(0,0)}35%{transform:translate(3px,-3px)}70%{transform:translate(-1px,1px)}100%{transform:translate(0,0)}}
+@keyframes nod-down{0%{transform:translate(0,0)}35%{transform:translate(3px,3px)}70%{transform:translate(-1px,-1px)}100%{transform:translate(0,0)}}
+@keyframes nod-stamp{0%{transform:rotate(13deg)}30%{transform:rotate(3deg)}62%{transform:rotate(17deg)}100%{transform:rotate(13deg)}}
+
+/* 로고: 마크가 까딱, 글자는 살짝 들렸다 내려옴 (V4의 90° 회전 대체) */
+.brand:hover .brand-mark svg{transform:none;animation:nod-tilt .7s var(--f9-ease) both}
+.brand small{display:inline-block}
+.brand:hover small{animation:nod-up .6s var(--f9-ease) .04s both}
+
+/* SCROLL TO EXPLORE: 원은 그대로, 안의 화살표만 아래로 까딱 (V4의 -30° 회전 대체) */
+.explore-link:hover .round-arrow{transform:none;background:transparent;color:inherit}
+.round-arrow{transition:background .5s var(--f9-ease),color .5s var(--f9-ease),border-color .5s var(--f9-ease)}
+.explore-link:hover .round-arrow{border-color:#596f92;color:#596f92;animation:nod-down .65s var(--f9-ease) both}
+.explore-link{transition:letter-spacing .6s var(--f9-ease)}
+.explore-link:hover{letter-spacing:.16em}
+
+/* 01—02 IN MOTION 도장: 기본 기울기(13°) 기준으로 흔들렸다 제자리 */
+.hero-stamp:hover{transform:rotate(13deg);animation:nod-stamp .8s var(--f9-ease) both}
+
+/* 메뉴·버튼·링크의 글자와 화살표 */
+.top-nav a,.footer a,.footer button{display:inline-block}
+.top-nav a:hover,.footer a:hover,.footer button:hover{animation:nod-up .55s var(--f9-ease) both}
+.header-screening span,.project-links button span,.archive-link span,.notes-right button,.preview-indicator{display:inline-block}
+.header-screening:hover span,.project-links button:hover span,.archive-link:hover span{animation:nod-diag .6s var(--f9-ease) both}
+.motion-stage:hover .preview-indicator{animation:nod-up .6s var(--f9-ease) both}
+.play-disc:hover span{animation:nod-tilt .65s var(--f9-ease) both}
+.quicklook-close:hover{transform:none;animation:nod-tilt .6s var(--f9-ease) both}
+
+@media(hover:none){.brand:hover .brand-mark svg,.brand:hover small,.explore-link:hover .round-arrow,.hero-stamp:hover{animation:none}}
+@media(prefers-reduced-motion:reduce){.brand:hover .brand-mark svg,.brand:hover small,.explore-link:hover .round-arrow,.hero-stamp:hover,.top-nav a:hover,.footer a:hover,.footer button:hover,.header-screening:hover span,.project-links button:hover span,.archive-link:hover span,.motion-stage:hover .preview-indicator,.play-disc:hover span,.quicklook-close:hover{animation:none}}
