@@ -235,12 +235,16 @@
     renderInfo();renderChapters();renderCuts();updateChapters(0);
     $('#sc-cuts').open=(tab==='making'||tab==='cuts');
     connectMediaIfNeeded();
-    if(!dialog.open)dialog.showModal();
-    dialog.querySelector('.sc').scrollTop=0;
-    if(tab==='making'||tab==='cuts')setTimeout(()=>$('#sc-cuts').scrollIntoView({block:'start'}),60);
+    const sc=dialog.querySelector('.sc'),wasOpen=dialog.open;
+    if(!wasOpen){dialog.classList.remove('is-in');dialog.showModal()}
+    // 컷 아카이브: 시트가 올라오기 전에 아카이브 위치로 맞춰 두어, 올라올 때 바로 아카이브가 보이게 한다
+    const toCuts=()=>{const t=$('#sc-cuts');sc.scrollTop=(tab==='making'||tab==='cuts')?Math.max(0,t.offsetTop-80):0};
+    toCuts();requestAnimationFrame(()=>{toCuts();requestAnimationFrame(()=>dialog.classList.add('is-in'))});
     const c=projectData[key].cuts[cut];if(cut&&c&&filmInfo[key].chapters)seekTo(c.start);
   }
-  function closeFilm(){video.pause();dialog.close()}
+  let closing=0;
+  function closeFilm(){if(!dialog.open)return;video.pause();dialog.classList.remove('is-in');clearTimeout(closing);closing=setTimeout(()=>{if(!dialog.classList.contains('is-in'))dialog.close()},700)}
+  dialog.addEventListener('cancel',e=>{e.preventDefault();closeFilm()});
   $('#close-modal').addEventListener('click',closeFilm);
   dialog.addEventListener('click',e=>{if(e.target===dialog)closeFilm()});
   dialog.addEventListener('close',()=>video.pause());
@@ -295,7 +299,7 @@
       const y=scrollY+innerHeight*.45;let idx=0;
       secs.forEach((x,i)=>{const t=i===0?0:x.el.getBoundingClientRect().top+scrollY;if(y>=t)idx=i});
       rail.classList.toggle('is-shown',scrollY>innerHeight*.3);
-      if(idx!==cur){cur=idx;label.textContent=`${String(idx+1).padStart(2,'0')} — ${secs[idx].label}`;$$('li',ticks).forEach((l,i)=>l.classList.toggle('is-on',i===idx))}
+      if(idx!==cur){cur=idx;document.documentElement.style.setProperty('--sec-p',(idx/(secs.length-1)).toFixed(4));label.textContent=`${String(idx+1).padStart(2,'0')} — ${secs[idx].label}`;$$('li',ticks).forEach((l,i)=>l.classList.toggle('is-on',i===idx))}
     };
     addEventListener('scroll',update,{passive:true});addEventListener('resize',update);update();
   }
@@ -379,4 +383,11 @@
       const par=st.offsetParent||document.body,cx=par.clientWidth/2;st.style.setProperty('--intro-shift',`${Math.round(cx-(l+r)/2)}px`);
       const id=st.querySelector('.intro-id'),l1=st.querySelector('h2 .ln>span');if(id&&l1){id.style.marginLeft='0px';id.style.marginLeft=`${Math.round(l1.getBoundingClientRect().left-id.getBoundingClientRect().left)}px`}});};
   addEventListener('resize',()=>setTimeout(fit,30));document.fonts&&document.fonts.ready.then(()=>setTimeout(fit,60));setTimeout(fit,300);setTimeout(fit,2700);
+})();
+
+/* V6.3 인터미션 타이포: 영문은 단어, 한글은 글자 단위로 쪼개서 순서대로 */
+(()=>{const sec=document.querySelector('.interlude');if(!sec)return;
+  let i=0;sec.querySelectorAll('.iq-line').forEach(l=>{const words=l.textContent.trim().split(/\s+/);l.textContent='';words.forEach((w,k)=>{const o=document.createElement('span');o.className='w';const n=document.createElement('i');n.textContent=w;n.style.setProperty('--i',i++);o.append(n);l.append(o);if(k<words.length-1)l.append(' ')})});
+  let j=0;sec.querySelectorAll('.ik-line').forEach(l=>{const t=[...l.textContent];l.textContent='';t.forEach(c=>{const s=document.createElement('span');s.className='ch';s.textContent=c;s.style.setProperty('--i',j++);l.append(s)})});
+  new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)sec.classList.add('il-play')}),{threshold:.35}).observe(sec);
 })();

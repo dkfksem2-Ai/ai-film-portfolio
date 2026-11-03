@@ -640,3 +640,51 @@ html{scroll-behavior:auto}
 .section-intro .intro-id{align-self:flex-start;justify-content:flex-start;width:max-content}
 @media(max-width:1100px){.section-intro .intro-statement{transform:none}}
 .section-intro .intro-id{justify-self:start}
+
+/* V6.3 — 로고 점 = 현재 구간 · 인터미션 타이포 · 컷 아카이브 링크 · 상영관 시트 */
+/* 1. 로고 아래 점: 오른쪽 구간 표시와 같이 움직인다 (--sec-p: 0~1) */
+.brand-mark .bm-head{transform:translateX(calc(-8px + var(--sec-p,0) * 36px));transition:transform .9s var(--spring)}
+.brand-mark .bm-done{stroke-dasharray:40;stroke-dashoffset:calc(38px - var(--sec-p,0) * 36px);transition:stroke-dashoffset .9s var(--spring)}
+.brand:hover .brand-mark .bm-head{transform:translateX(calc(-8px + var(--sec-p,0) * 36px)) scale(1.25);transform-box:fill-box;transform-origin:center}
+.brand:hover .brand-mark .bm-done{stroke-dashoffset:calc(38px - var(--sec-p,0) * 36px)}
+
+/* 2. 인터미션: 영문 단어 · 한글 글자 단위 등장 + 배경 타이포 */
+.interlude-inner{position:relative;isolation:isolate}
+.interlude-ghost{position:absolute;z-index:-1;left:50%;top:50%;transform:translate(-50%,-54%);white-space:nowrap;font-size:clamp(120px,15vw,280px);font-weight:700;line-height:1;letter-spacing:.02em;color:transparent;-webkit-text-stroke:1.2px rgba(83,111,134,.16);pointer-events:none}
+.interlude-quote .iq-line{display:block}
+.interlude-quote .w{display:inline-block;overflow:hidden;vertical-align:top;padding:0 .02em .12em;margin-bottom:-.12em}
+.interlude-quote .w>i{display:inline-block;font-style:inherit}
+.interlude-ko{margin:clamp(28px,3.2vw,46px) 0 0;font-family:var(--serif);font-size:clamp(20px,1.75vw,30px);line-height:1.75;letter-spacing:-.02em;color:#3c5664;word-break:keep-all}
+.interlude-ko .ik-line{display:block}
+.interlude-ko .ik-line:last-child{color:#1d3544}
+.interlude-ko .ch{display:inline-block;white-space:pre}
+.js .interlude-ghost{opacity:0;letter-spacing:.2em;transition:opacity 1.8s var(--f9-ease),letter-spacing 2.4s var(--f9-ease)}
+.js .interlude-quote .w>i{transform:translateY(105%);transition:transform 1.15s var(--f9-ease);transition-delay:calc(var(--i) * 70ms)}
+.js .interlude-ko .ch{opacity:0;transform:translateY(.45em);transition:opacity .9s var(--f9-ease),transform 1s var(--spring);transition-delay:calc(900ms + var(--i) * 38ms)}
+.js .interlude-small,.js .interlude-index{opacity:0;transition:opacity 1s var(--f9-ease) .2s}
+.js .interlude.il-play .interlude-ghost{opacity:1;letter-spacing:.02em}
+.js .interlude.il-play .interlude-quote .w>i{transform:none}
+.js .interlude.il-play .interlude-ko .ch{opacity:1;transform:none}
+.js .interlude.il-play .interlude-small,.js .interlude.il-play .interlude-index{opacity:1}
+.interlude-index{margin-top:clamp(36px,4.5vw,64px)}
+
+/* 3. 작품별 컷 아카이브 보기 */
+.process .archive-link{position:relative;display:inline-flex;align-items:center;justify-content:space-between;gap:28px;min-width:330px;padding:0 0 14px;border-bottom:0;font-size:17px;letter-spacing:-.02em;color:var(--ink)}
+.process .archive-link b{font-weight:700}
+.process .archive-link span{font-size:18px;font-weight:700;line-height:1}
+.process .archive-link::before,.process .archive-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:currentColor}
+.process .archive-link::before{opacity:.25}
+.process .archive-link::after{transform:scaleX(.28);transform-origin:0 50%;transition:transform .9s var(--f9-ease)}
+.process .archive-link:hover{padding-left:0;color:#496d89}
+.process .archive-link:hover::after{transform:scaleX(1)}
+
+/* 4. 상영관: 페이지 위에 시트가 올라와 깔리는 방식 */
+.screening{top:auto;bottom:0;height:calc(100dvh - 22px);max-height:none;border-radius:15px 15px 0 0;box-shadow:0 -24px 80px rgba(0,0,0,.35);transform:translateY(102%);transition:transform .85s cubic-bezier(.2,.9,.25,1)}
+.screening.is-in{transform:none}
+.screening::backdrop{background:rgba(9,14,16,0);backdrop-filter:blur(0);transition:background .6s var(--f9-ease),backdrop-filter .6s var(--f9-ease)}
+.screening.is-in::backdrop{background:rgba(9,14,16,.55);backdrop-filter:blur(3px)}
+.screening .sc{border-radius:15px 15px 0 0}
+.screening .sc-bar{border-radius:15px 15px 0 0}
+.screening::before{content:"";position:absolute;z-index:9;left:50%;top:8px;width:44px;height:4px;margin-left:-22px;border-radius:4px;background:#3a4448;pointer-events:none}
+.interlude-quote .w{padding:0 .16em .14em .04em;margin:0 -.12em -.14em -.04em}
+.interlude-ghost{font-size:clamp(110px,11.5vw,220px);-webkit-text-stroke:1.1px rgba(83,111,134,.14)}
