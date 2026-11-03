@@ -3,7 +3,9 @@
   'use strict';
   const $ = (s, root=document) => root.querySelector(s);
   const $$ = (s, root=document) => [...root.querySelectorAll(s)];
-  const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 이 사이트의 모션은 작품 표현의 일부라 OS의 '애니메이션 효과 끄기' 설정과 상관없이 재생한다.
+  const prefersReducedMotion = false;
+  document.documentElement.classList.add('js');
   const projectData = {
     memory: {name:'반찬통의 왕복', number:'FILM 01 / THE RETURN',cuts: MEMORY_CUTS, duration:82.8, color:'#96a7c6', note:'1999 도트 → 2007 3D → 2026 실사. 시대가 바뀌는 시점에 같은 반찬통의 위치와 동작을 연결하고, 잠금 소리도 칩튠에서 실제 음향으로 성장하도록 설계했습니다.'},
     tumgo: {name:'틈GO (TUMGO)', number:'FILM 02 / TUMGO',cuts:TUMGO_CUTS,duration:62.04,color:'#a8e7b8',note:'서울의 야간 계단, 101호 현관, 4족 서비스 로봇. 캐릭터와 공간을 반복 검증하며 기계적 보행, QR 스캔, 가방 적재를 장면별로 구성했습니다.'}
@@ -21,7 +23,7 @@
      Crossfades use a real F9-like ease-in-out curve in CSS, never hard timed cuts. */
   const captions={
     memory:['1999 · FIRST MEMORY','2007 · THE MEMORY GROWS','2026 · THE RETURN HOME'],
-    tumgo:['THE FIRST ENCOUNTER','AUTONOMOUS PICKUP','EVERYDAY INTERRUPTED']
+    tumgo:['THE FIRST ENCOUNTER','EVERYDAY INTERRUPTED','AUTONOMOUS PICKUP']
   };
   const stages={};
   function setStage(key,n){
@@ -30,6 +32,7 @@
     if(stage.index===index)return;
     stage.slides.forEach((el,i)=>el.classList.toggle('is-active',i===index));stage.index=index;
     const cap=$(`#${key}-stage-caption`);if(cap)cap.textContent=captions[key][index];
+    $$('.stage-zone',stage.el).forEach((z,i)=>z.classList.toggle('is-on',i===index));
     if(key==='memory')$$('[data-era]').forEach(b=>b.classList.toggle('is-selected',Number(b.dataset.era)===index));
   }
   $$('.motion-stage').forEach(stage=>{
@@ -45,6 +48,26 @@
       stage.style.setProperty('--image-shift-x',`${(u-.5)*1.8}%`);
       stage.style.setProperty('--image-shift-y',`${((e.clientY-r.top)/r.height-.5)*1.3}%`);
     },{passive:true});
+  });
+  /* 호버 프리뷰: 커서가 올라간 구간의 3초 영상을 gif처럼 반복 재생 */
+  $$('.motion-stage').forEach(stage=>{
+    const vids=$$('.zone-video',stage);if(!vids.length||matchMedia('(hover:none)').matches)return;
+    let live=-1;
+    const play=i=>{
+      if(i===live)return;live=i;
+      vids.forEach((v,n)=>{
+        if(n===i){v.currentTime=0;const p=v.play();if(p)p.catch(()=>{});v.classList.add('is-live')}
+        else{v.classList.remove('is-live');setTimeout(()=>{if(!v.classList.contains('is-live'))v.pause()},500)}
+      });
+    };
+    const stop=()=>{live=-1;vids.forEach(v=>{v.classList.remove('is-live');setTimeout(()=>{if(!v.classList.contains('is-live'))v.pause()},500)})};
+    stage.addEventListener('pointerenter',()=>vids.forEach(v=>{if(v.preload!=='auto'){v.preload='auto';v.load()}}));
+    stage.addEventListener('pointermove',e=>{
+      const key=stage.dataset.motion;if(!$(`[data-quicklook="${key}"]`).hidden){stop();return}
+      const r=stage.getBoundingClientRect();play(Math.min(2,Math.floor((e.clientX-r.left)/r.width*3)));
+    },{passive:true});
+    stage.addEventListener('pointerleave',stop);
+    $$('[data-peek]',stage).forEach(b=>b.addEventListener('click',stop));
   });
   $$('[data-era]').forEach(btn=>btn.addEventListener('click',()=>setStage('memory',Number(btn.dataset.era))));
 
@@ -107,7 +130,7 @@
       // Mouse exploration overrides this while the visitor is directly interacting.
       const visibleProgress=clamp((innerHeight-(top-adjusted))/(innerHeight+stage.offsetHeight),0,.999);
       const key=stage.dataset.motion;
-      if(!stage.classList.contains('is-moving')&&$(`[data-quicklook="${key}"]`).hidden){
+      if(!stage.classList.contains('is-moving')&&!stages[key].pinned&&$(`[data-quicklook="${key}"]`).hidden){
         setStage(key,Math.floor(visibleProgress*3));
       }
     });
@@ -125,107 +148,235 @@
   addEventListener('resize',scheduleScroll,{passive:true});
   scheduleScroll();
 
-  function setTab(name){
-    $$('.modal-tabs [data-tab]').forEach(b=>{const active=b.dataset.tab===name;b.classList.toggle('selected',active);b.setAttribute('aria-selected',String(active))});
-    $$('.tab-panel').forEach(p=>p.hidden=p.dataset.panel!==name);
-    if(name==='cuts')renderArchive();
-    if(name==='making')renderNotes();
-  }
-  function renderNotes(){
-    $('#notes-film-title').textContent=projectData[currentFilm].name;
-    $('#notes-specific').textContent=projectData[currentFilm].note;
-  }
-  function selectCut(n,doSeek=true){
-    const p=projectData[currentFilm];if(n<0||n>=p.cuts.length)return;
-    currentCut=n;const c=p.cuts[n];
-    $('#active-cut-title').textContent=`${c.cut} — ${c.title}`;
-    $('#active-cut-desc').textContent=c.visual;
-    $('#active-cut-audio').textContent=`AUDIO / ${c.sfx||c.audio||'별도 효과음'}`;
-    $('#active-cut-time').textContent=`${fmt(c.start)} — ${fmt(c.end)}`;
-    $('#previs-title').textContent=c.title;
-    $('#previs-image').src=`assets/${c.art}.webp`;
-    $$('#cut-timeline button').forEach((b,i)=>b.classList.toggle('is-active',i===n));
-    $('#timeline-duration').textContent=`${fmt(c.start)} / ${fmt(p.duration)}`;
-    if(doSeek&&videoState[currentFilm].url){
-      if(video.readyState>=1){video.currentTime=Math.min(c.start,Math.max(0,video.duration-.05));}
-      else video.addEventListener('loadedmetadata',()=>{video.currentTime=Math.min(c.start,video.duration-.05)},{once:true});
+  /* ===== Screening room (V5.2): one film, one player, quiet details ===== */
+  const filmInfo={
+    memory:{
+      number:'FILM 01', next:'tumgo', nextLabel:'다음 작품 틈GO',
+      poster:'assets/memory-cover.webp',
+      logline:'엄마가 채워 보내던 반찬통이, 27년 만에 아들의 손으로 채워져 돌아온다.',
+      synopsis:'1999년의 도트, 2007년의 3D, 2026년의 실사. 시대마다 그림의 결이 바뀌는 동안 같은 반찬통이 엄마에게서 아들로, 다시 엄마에게로 건너간다.',
+      meta:[['형식','브랜드 필름 (락앤락 비공식, 교육용)'],['러닝타임','1분 23초'],['제작','2026, 기획·연출·편집 정재환'],['기획 보조','ChatGPT, Claude'],['이미지','GPT Image (컷별 시작·끝 프레임, 도트 원화)'],['영상','Seedance 2.5'],['소리','ElevenLabs v3 (대사·나레이션), Suno (음악), Mirelo, MMAudio·ComfyUI (효과음)'],['편집·합성','After Effects (도트 애니메이션, 전환, 타이포), Photoshop (도트 원화 정리), Premiere Pro (편집, 색, 믹스)']],
+      chapters:[['고지',0,3],['1999 기억',3,19.2],['전환',19.2,26.5],['2007 성장',26.5,47.6],['전환',47.6,50.4],['2026 현실',50.4,75.6],['엔딩',75.6,82.8]]
+    },
+    tumgo:{
+      number:'FILM 02', next:'memory', nextLabel:'다음 작품 반찬통의 왕복',
+      poster:'assets/tumgo-cover.webp',
+      logline:'문 앞에 두세요. 나머지는 틈GO가.',
+      synopsis:'늦은 퇴근길 계단에서 처음 마주친 배송 로봇. 밀린 빨래와 수선을 문 앞에서 맡기고 돌려받는, 가까운 미래의 생활 서비스를 실사형 AI 영상으로 그렸다.',
+      meta:[['형식','서비스 광고 (가상 서비스)'],['러닝타임','약 1분'],['제작','2026, 기획·연출·편집 정재환'],['주인공','김현우, 31세, 촬영 현장 스태프'],['기획 보조','ChatGPT, Claude'],['이미지','GPT Image, Nano Banana, Gemini (캐릭터·로봇·공간 기준 이미지)'],['영상','Google Flow (Veo 3.1), Kling (잡기·들기 같은 접촉 동작), Runway'],['소리','ElevenLabs (김현우 1인칭 나레이션), Suno (음악), 후반 효과음'],['편집·합성','After Effects (로봇 합성, UI·자막), Premiere Pro (편집, 색, 믹스)']],
+      chapters:null
     }
-    const b=$$(`#cut-timeline button`)[n];if(b&&doSeek)b.scrollIntoView({behavior:prefersReducedMotion?'instant':'smooth',inline:'center',block:'nearest'});
+  };
+  const chapEl=$('#sc-chapters');
+  const fmtShort=t=>`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`;
+  function seekTo(t){
+    if(!videoState[currentFilm].url||video.hidden)return;
+    const go=()=>{video.currentTime=Math.min(t,Math.max(0,(video.duration||t)-.05));};
+    video.readyState>=1?go():video.addEventListener('loadedmetadata',go,{once:true});
   }
-  function renderTimeline(){
-    const p=projectData[currentFilm];const strip=$('#cut-timeline');strip.replaceChildren();
-    p.cuts.forEach((c,i)=>{
-      const b=document.createElement('button');b.type='button';b.innerHTML=`<strong>${escapeHTML(c.cut)}</strong><small>${fmt(c.start)} · ${escapeHTML(c.title)}</small>`;
-      b.title=`${c.cut}: ${c.title}`;b.addEventListener('click',()=>selectCut(i));strip.append(b);
+  function renderChapters(){
+    const f=filmInfo[currentFilm];chapEl.replaceChildren();
+    const ch=f.chapters;chapEl.hidden=!ch;
+    if(!ch)return;
+    const total=ch[ch.length-1][2];
+    ch.forEach(([name,a,b])=>{
+      const btn=document.createElement('button');btn.type='button';btn.className='sc-chap';
+      btn.style.flexGrow=String(b-a);btn.dataset.start=a;btn.dataset.end=b;
+      btn.innerHTML=`<span class="sc-chap-name">${escapeHTML(name)}</span><span class="sc-chap-track"><span class="sc-chap-fill"></span></span><span class="sc-chap-time">${fmtShort(a)}</span>`;
+      btn.addEventListener('click',()=>{seekTo(a);video.play().catch(()=>{});});
+      chapEl.append(btn);
     });
-    selectCut(Math.min(currentCut,p.cuts.length-1),false);
+    chapEl.dataset.total=total;
   }
-  function renderArchive(){
-    const q=$('#cut-search').value.trim().toLocaleLowerCase();
-    const container=$('#cut-archive');container.replaceChildren();
-    projectData[currentFilm].cuts.forEach((c,i)=>{
-      const hay=[c.cut,c.title,c.visual,c.text,c.sfx,c.audio,c.seq,c.era].join(' ').toLowerCase();
-      if(q&&!hay.includes(q))return;
-      const b=document.createElement('button');b.type='button';b.className='archive-cut';
-      b.innerHTML=`<span>${escapeHTML(c.cut)} · ${fmt(c.start)} — ${fmt(c.end)}</span><h3>${escapeHTML(c.title)}</h3><p>${escapeHTML(c.visual)}</p><small>${escapeHTML(c.sfx||c.audio||'')}</small>`;
-      b.addEventListener('click',()=>{setTab('watch');selectCut(i)});container.append(b);
+  function updateChapters(t){
+    $$('.sc-chap',chapEl).forEach(b=>{
+      const a=+b.dataset.start,e=+b.dataset.end,p=Math.max(0,Math.min(1,(t-a)/(e-a)));
+      b.classList.toggle('is-now',t>=a&&t<e);
+      b.querySelector('.sc-chap-fill').style.transform=`scaleX(${p})`;
     });
   }
+  function renderCuts(){
+    const p=projectData[currentFilm],f=filmInfo[currentFilm],list=$('#sc-cut-list');list.replaceChildren();
+    const timed=!!f.chapters;
+    p.cuts.forEach(c=>{
+      const li=document.createElement('li');
+      li.innerHTML=`<button type="button"${timed?'':' disabled'}><span class="sc-cut-time">${timed?fmtShort(c.start):''}</span><span class="sc-cut-no">${escapeHTML(c.cut)}</span><span class="sc-cut-body"><strong>${escapeHTML(c.title)}</strong><small>${escapeHTML(c.visual)}</small></span></button>`;
+      if(timed)li.firstElementChild.addEventListener('click',()=>{seekTo(c.start);video.play().catch(()=>{});$('.sc-stage').scrollIntoView({behavior:prefersReducedMotion?'auto':'smooth',block:'start'});});
+      list.append(li);
+    });
+    $('#sc-cuts-count').textContent=`${p.cuts.length}컷`;
+    $('#sc-cut-note').textContent=timed?'컷을 누르면 그 장면부터 재생됩니다.':'이 목록은 60초 기획본 기준입니다. 지금 재생되는 영상은 약 2분 버전이라 컷 시간은 표시하지 않습니다.';
+  }
+  function renderInfo(){
+    const f=filmInfo[currentFilm];
+    $('#sc-number').textContent=f.number;$('#sc-title').textContent=projectData[currentFilm].name;
+    $('#sc-logline').textContent=f.logline;$('#sc-synopsis').textContent=f.synopsis;
+    $('#sc-next-label').textContent=f.nextLabel;$('#sc-poster-img').src=f.poster;
+    $('#sc-meta').innerHTML=f.meta.map(([k,v])=>`<div><dt>${escapeHTML(k)}</dt><dd>${escapeHTML(v)}</dd></div>`).join('');
+    dialog.dataset.film=currentFilm;
+  }
+  const statusEl=$('#player-status');
   function connectMediaIfNeeded(){
-    const state=videoState[currentFilm],p=projectData[currentFilm];
-    if(!state.url){video.pause();video.removeAttribute('src');video.load();video.hidden=true;$('#previs-area').hidden=false;$('#player-status').textContent='MP4 미연결 · 스틸 프리뷰';return}
-    video.pause();video.src=state.url;video.hidden=false;$('#previs-area').hidden=true;
-    video.load();$('#player-status').textContent=`영상 연결됨 · ${state.name} · 길이 확인 중`;
-    video.onloadedmetadata=()=>{
-      const diff=Math.abs(video.duration-p.duration);
-      $('#player-status').textContent=`${state.name} · ${fmt(video.duration)}`+(diff>0.8?` · ⚠ 기획서와 ${diff.toFixed(1)}초 차이`: ' · 컷 타임라인 비교 가능');
-      const seekTime=p.cuts[currentCut]?.start||0;if(seekTime<video.duration)video.currentTime=seekTime;
-    };
+    const state=videoState[currentFilm];
+    video.pause();
+    if(!state.url){video.removeAttribute('src');video.load();video.hidden=true;$('#sc-poster').hidden=false;statusEl.textContent='영상 준비 중입니다';return}
+    $('#sc-poster').hidden=false;statusEl.textContent='영상을 불러오는 중입니다';
+    video.src=state.url;video.load();
+    video.onloadeddata=()=>{video.hidden=false;$('#sc-poster').hidden=true;};
     video.onerror=()=>{
       const code=video.error&&video.error.code;
-      const why={1:'재생이 중단되었습니다',2:'네트워크 오류로 영상을 받지 못했습니다',3:'영상을 해독하지 못했습니다(코덱 확인)',4:'영상 주소를 찾지 못했거나 형식을 지원하지 않습니다(URL 오타·404 확인)'}[code]||'영상을 재생할 수 없습니다';
-      $('#player-status').textContent=`⚠ ${why} · 오류 코드 ${code??'-'}`;
+      const why={2:'네트워크 문제로 영상을 받지 못했습니다',3:'영상을 해독하지 못했습니다',4:'영상 주소를 찾지 못했습니다'}[code]||'영상을 재생할 수 없습니다';
       console.warn('[portfolio video]',currentFilm,state.url,video.error);
-      video.hidden=true;$('#previs-area').hidden=false;
+      video.hidden=true;$('#sc-poster').hidden=false;statusEl.textContent=`${why} (오류 ${code??'-'})`;
     };
-    video.onwaiting=()=>{$('#player-status').textContent=`${state.name} · 불러오는 중…`};
-    video.onplaying=()=>{$('#player-status').textContent=`${state.name} · 재생 중`};
   }
   function openFilm(key,tab='watch',cut=0){
-    closePeek();
-    currentFilm=key;currentCut=cut;
-    const p=projectData[currentFilm];
-    $('#modal-number').textContent=p.number;$('#modal-title').textContent=p.name;
-    $('#cut-search').value='';renderTimeline();renderNotes();setTab(tab);connectMediaIfNeeded();
+    closePeek();currentFilm=key;currentCut=cut;
+    renderInfo();renderChapters();renderCuts();updateChapters(0);
+    $('#sc-cuts').open=(tab==='making'||tab==='cuts');
+    connectMediaIfNeeded();
     if(!dialog.open)dialog.showModal();
+    dialog.querySelector('.sc').scrollTop=0;
+    if(tab==='making'||tab==='cuts')setTimeout(()=>$('#sc-cuts').scrollIntoView({block:'start'}),60);
+    const c=projectData[key].cuts[cut];if(cut&&c&&filmInfo[key].chapters)seekTo(c.start);
   }
-  function closeFilm(){if(!video.paused)video.pause();dialog.close()}
-  $$('#close-modal').forEach(b=>b.addEventListener('click',closeFilm));
+  function closeFilm(){video.pause();dialog.close()}
+  $('#close-modal').addEventListener('click',closeFilm);
   dialog.addEventListener('click',e=>{if(e.target===dialog)closeFilm()});
-  dialog.addEventListener('close',()=>{video.pause()});
-  $('#switch-film').addEventListener('click',()=>openFilm(currentFilm==='memory'?'tumgo':'memory','watch',0));
-  $$('.modal-tabs [data-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
-  $('#notes-open-cuts').addEventListener('click',()=>setTab('cuts'));
-  $('#cut-search').addEventListener('input',renderArchive);
+  dialog.addEventListener('close',()=>video.pause());
+  $('#switch-film').addEventListener('click',()=>openFilm(filmInfo[currentFilm].next));
   $$('[data-open]').forEach(b=>b.addEventListener('click',()=>openFilm(b.dataset.open)));
   $$('[data-open-notes]').forEach(b=>b.addEventListener('click',()=>openFilm(b.dataset.openNotes,'making')));
   $$('[data-jump]').forEach(b=>b.addEventListener('click',()=>{const [key,n]=b.dataset.jump.split(':');openFilm(key,'watch',Number(n))}));
   $('#open-evaluator').addEventListener('click',()=>openFilm('memory','making'));
-  const fileInput=$('#file-input');fileInput.addEventListener('change',()=>{
-    const file=fileInput.files?.[0];if(!file)return;
-    if(!file.type.startsWith('video/')&&!/\.(mp4|mov|webm)$/i.test(file.name)){alert('비디오 파일을 선택하세요.');return}
-    const state=videoState[currentFilm];if(state.url&&state.url.startsWith('blob:'))URL.revokeObjectURL(state.url);
-    state.url=URL.createObjectURL(file);state.name=file.name;connectMediaIfNeeded();
+  video.addEventListener('timeupdate',()=>updateChapters(video.currentTime));
+  /* Glide: SCROLL TO EXPLORE 클릭 시 AE Easy Ease처럼 천천히 출발해 천천히 멈추는 스크롤 */
+  const headerH=()=>($('.site-header')?.offsetHeight||85);
+  const easeIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  let glideId=0;
+  function glideTo(el){
+    const start=scrollY,end=(el.id==='top'||el.tagName==='HEADER')?0:Math.max(0,el.getBoundingClientRect().top+scrollY-headerH()),dist=end-start;
+    if(Math.abs(dist)<2)return;
+    const dur=Math.min(1700,Math.max(1000,700+Math.abs(dist)*.45)),t0=performance.now(),id=++glideId;
+    const stop=()=>{glideId++;removeEventListener('wheel',stop);removeEventListener('touchstart',stop)};
+    addEventListener('wheel',stop,{passive:true,once:true});addEventListener('touchstart',stop,{passive:true,once:true});
+    (function step(now){
+      if(id!==glideId)return;
+      const p=Math.min(1,(now-t0)/dur);scrollTo(0,start+dist*easeIO(p));
+      if(p<1)requestAnimationFrame(step);else stop();
+    })(t0);
+  }
+  $$('a[data-glide]').forEach(a=>a.addEventListener('click',e=>{const t=$(a.getAttribute('href'));if(!t)return;e.preventDefault();glideTo(t)}));
+  /* 작품 소개 화면: 들어올 때마다 모션그래픽 재생 */
+  const intro=$('.section-intro');
+  if(intro&&'IntersectionObserver' in window){
+    new IntersectionObserver(es=>es.forEach(e=>{
+      if(e.intersectionRatio>=.55)intro.classList.add('intro-play');
+      else if(e.intersectionRatio<.05)intro.classList.remove('intro-play');
+    }),{threshold:[0,.05,.55]}).observe(intro);
+  }else if(intro)intro.classList.add('intro-play');
+
+  /* ABOUT: 이메일 복사 */
+  const copyBtn=$('#copy-mail');
+  if(copyBtn)copyBtn.addEventListener('click',async()=>{
+    const mail=$('#about-mail').textContent.trim();
+    try{await navigator.clipboard.writeText(mail);copyBtn.textContent='복사됨';}
+    catch(e){const r=document.createRange();r.selectNodeContents($('#about-mail'));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);copyBtn.textContent='선택됨 · Ctrl+C';}
+    setTimeout(()=>copyBtn.textContent='주소 복사',1800);
   });
-  video.addEventListener('timeupdate',()=>{
-    const t=video.currentTime;const cuts=projectData[currentFilm].cuts;
-    $('#timeline-duration').textContent=`${fmt(t)} / ${fmt(video.duration||projectData[currentFilm].duration)}`;
-    const idx=cuts.findIndex((c,i)=>t>=c.start&&t<(i===cuts.length-1?Infinity:c.end));
-    if(idx!==-1&&idx!==currentCut)selectCut(idx,false);
+  /* 구간 표시: 스크롤 옆에 현재 위치 */
+  const rail=$('#sec-rail');
+  if(rail){
+    const secs=[['#projects','STORIES'],['#hero','SELECTED WORKS'],['#memory','FILM 01 반찬통의 왕복'],['#memory-notes','FILM 01 NOTE'],['#interlude','INTERMISSION'],['#tumgo','FILM 02 틈GO'],['#process','PROCESS'],['#about','ABOUT']].map(([sel,label])=>({el:$(sel),label})).filter(x=>x.el);
+    const ticks=$('#sr-ticks'),label=$('#sr-label');
+    secs.forEach((x,i)=>{const li=document.createElement('li');const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',x.label);b.addEventListener('click',()=>glideTo(x.el));li.append(b);ticks.append(li)});
+    let cur=-1;
+    const update=()=>{
+      const y=scrollY+innerHeight*.45;let idx=0;
+      secs.forEach((x,i)=>{const t=i===0?0:x.el.getBoundingClientRect().top+scrollY;if(y>=t)idx=i});
+      rail.classList.toggle('is-shown',scrollY>innerHeight*.3);
+      if(idx!==cur){cur=idx;label.textContent=`${String(idx+1).padStart(2,'0')} — ${secs[idx].label}`;$$('li',ticks).forEach((l,i)=>l.classList.toggle('is-on',i===idx))}
+    };
+    addEventListener('scroll',update,{passive:true});addEventListener('resize',update);update();
+  }
+
+  /* STORIES 위치: '이야기.' 오른쪽 끝에서 한 글자 간격 띄워 같은 줄 높이에 둔다 */
+  const ghost=$('.intro-ghost'),stmt=$('.intro-statement'),line2=$('.section-intro h2 .ln:nth-child(2)>span');
+  function placeGhost(){
+    if(!ghost||!stmt||!line2)return;
+    // offset 값은 등장 애니메이션(transform)의 영향을 받지 않는다
+    const gap=parseFloat(getComputedStyle(line2.closest('h2')).fontSize)*.22;
+    let x=line2.offsetLeft+line2.offsetWidth+gap,y=line2.offsetTop+(line2.offsetHeight-ghost.offsetHeight)/2;
+    for(let e=line2.offsetParent;e&&e!==stmt;e=e.offsetParent){x+=e.offsetLeft;y+=e.offsetTop}
+    ghost.style.setProperty('--ghost-x',`${x}px`);ghost.style.setProperty('--ghost-y',`${y}px`);
+  }
+  placeGhost();addEventListener('resize',placeGhost);document.fonts&&document.fonts.ready.then(placeGhost);
+
+  /* BEHIND THE FRAME: 드래그로 비교, 탭으로 장면 바꾸기 */
+  const pairs={memory:[
+    {b:'assets/making/m05-before.webp',a:'assets/making/m05-after.webp',l:'1999 도트',r:'2007 3D',start:50,cap:'같은 구도로 맞춘 도트 프레임과 3D 프레임. After Effects에서 도트를 픽셀 단위로 흩었다가 같은 자리의 3D로 모으고, 화면을 4:3에서 16:9로 넓혔습니다.'},
+    {b:'assets/making/m18-before.webp',a:'assets/making/m18-after.webp',l:'합성 전 배경',r:'AE 타이포 합성',start:6,cap:'Seedance로 만든 글자 없는 엔딩 배경 위에, After Effects로 카피 세 줄과 밑줄, 워드마크를 나레이션 박자에 맞춰 올렸습니다. 왼쪽은 페이드 인 중인 프레임이라 조금 어둡습니다.'}]};
+  $$('.mk-compare').forEach(box=>{
+    const stage=$('.mk-stage',box),before=$('.mk-before',box),list=pairs[box.dataset.film]||[];
+    let pos=50,drag=false;
+    const set=p=>{pos=Math.max(0,Math.min(100,p));box.style.setProperty('--mk',pos+'%')};
+    const fromX=x=>{const r=stage.getBoundingClientRect();set((x-r.left)/r.width*100)};
+    set(50);
+    stage.addEventListener('pointerdown',e=>{drag=true;stage.setPointerCapture(e.pointerId);box.classList.add('is-drag');fromX(e.clientX)});
+    stage.addEventListener('pointermove',e=>{if(drag)fromX(e.clientX)});
+    const end=()=>{drag=false;box.classList.remove('is-drag')};
+    stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);
+    stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){set(pos-5);e.preventDefault()}if(e.key==='ArrowRight'){set(pos+5);e.preventDefault()}});
+    $$('.mk-tabs button',box).forEach(btn=>btn.addEventListener('click',()=>{
+      const d=list[+btn.dataset.pair];if(!d)return;
+      $$('.mk-tabs button',box).forEach(x=>{const on=x===btn;x.classList.toggle('is-on',on);x.setAttribute('aria-selected',String(on))});
+      box.classList.add('is-swap');
+      setTimeout(()=>{$('.mk-after',box).src=d.a;$('img',before).src=d.b;$('.mk-tag-l',box).textContent=d.l;$('.mk-tag-r',box).textContent=d.r;$('.mk-cap',box).textContent=d.cap;set(d.start??50);box.classList.remove('is-swap')},280);
+    }));
   });
+  /* STORY MOMENTS: 마우스를 올리면 그 장면이 재생, 누르면 상영관에서 그 컷부터 */
+  $$('.mm').forEach(m=>{const v=$('video',m);if(!v)return;
+    m.addEventListener('pointerenter',()=>{if(v.preload!=='auto'){v.preload='auto';v.load()}v.currentTime=0;const p=v.play();if(p)p.catch(()=>{});m.classList.add('is-live')});
+    m.addEventListener('pointerleave',()=>{m.classList.remove('is-live');setTimeout(()=>{if(!m.classList.contains('is-live'))v.pause()},450)});
+  });
+
+  /* 2번째 화면: 들어올 때마다 글자 → 양옆 장면 순서로 등장, 장면을 누르면 그 작품·그 장면으로 이동 */
+  const hero2=$('.hero2');
+  if(hero2&&'IntersectionObserver' in window){
+    new IntersectionObserver(es=>es.forEach(e=>{
+      if(e.intersectionRatio>=.5)hero2.classList.add('hero-play');
+      else if(e.intersectionRatio<.05)hero2.classList.remove('hero-play');
+    }),{threshold:[0,.05,.5]}).observe(hero2);
+  }else if(hero2)hero2.classList.add('hero-play');
+  const unpin=()=>Object.values(stages).forEach(st=>st.pinned=false);
+  $$('.hs-scene').forEach(b=>b.addEventListener('click',()=>{
+    const [key,n]=b.dataset.go.split(':');const target=$('#'+key);if(!target)return;
+    unpin();stages[key].pinned=true;setStage(key,Number(n));glideTo(target);
+    setTimeout(()=>{const once=()=>{unpin();removeEventListener('wheel',once);removeEventListener('touchmove',once);removeEventListener('keydown',once)};addEventListener('wheel',once,{passive:true});addEventListener('touchmove',once,{passive:true});addEventListener('keydown',once)},1800);
+  }));
+
   /* G key: toggle the 1920×950 / 1440 layout guide for review */
   const guide=$('#layout-guide');
   addEventListener('keydown',e=>{if((e.key==='g'||e.key==='G')&&!e.target.closest('input,textarea')&&!dialog.open){guide.hidden=!guide.hidden}});
   if(location.hash==='#guide')guide.hidden=false;
   addEventListener('beforeunload',()=>Object.values(videoState).forEach(s=>{if(s.url&&s.url.startsWith('blob:'))URL.revokeObjectURL(s.url)}));
+})();
+
+/* V6.2 첫 화면 옅은 영상 배경: 두 티저를 번갈아 반복 */
+(()=>{const v=document.querySelector('.ib-video');if(!v)return;const list=v.dataset.list.split(',');let i=0;
+  const load=()=>{v.src=list[i];v.play().catch(()=>{})};
+  v.addEventListener('playing',()=>v.classList.add('is-on'));
+  v.addEventListener('timeupdate',()=>{if(v.duration&&v.duration-v.currentTime<1.2)v.classList.remove('is-on')});
+  v.addEventListener('ended',()=>{i=(i+1)%list.length;load()});
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){if(!v.src)load();else v.play().catch(()=>{})}else v.pause()}));
+  io.observe(v.closest('section'));
+})();
+/* V6.2 제목+STORIES 덩어리를 콘텐츠 띠 가운데로 */
+(()=>{const st=document.querySelector('.intro-statement'),gh=document.querySelector('.intro-ghost');if(!st||!gh)return;
+  const fit=()=>{if(innerWidth<=1100){st.style.removeProperty('--intro-shift');return}
+    st.style.setProperty('--intro-shift','0px');
+    requestAnimationFrame(()=>{let l=st.offsetLeft,r=l+st.offsetWidth;const gr=l+gh.offsetLeft+gh.offsetWidth;r=Math.max(r,gr);
+      const par=st.offsetParent||document.body,cx=par.clientWidth/2;st.style.setProperty('--intro-shift',`${Math.round(cx-(l+r)/2)}px`);
+      const id=st.querySelector('.intro-id'),l1=st.querySelector('h2 .ln>span');if(id&&l1){id.style.marginLeft='0px';id.style.marginLeft=`${Math.round(l1.getBoundingClientRect().left-id.getBoundingClientRect().left)}px`}});};
+  addEventListener('resize',()=>setTimeout(fit,30));document.fonts&&document.fonts.ready.then(()=>setTimeout(fit,60));setTimeout(fit,300);setTimeout(fit,2700);
 })();
