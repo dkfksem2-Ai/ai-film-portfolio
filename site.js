@@ -22,8 +22,8 @@
   /* Direct image exploration: pointer position selects 1999/2007/2026 or each TUMGO beat.
      Crossfades use a real F9-like ease-in-out curve in CSS, never hard timed cuts. */
   const captions={
-    memory:['1999 · FIRST MEMORY','2007 · THE MEMORY GROWS','2026 · THE RETURN HOME'],
-    tumgo:['THE FIRST ENCOUNTER','EVERYDAY INTERRUPTED','AUTONOMOUS PICKUP']
+    memory:['1999년, 소풍 가는 날','2007년, 교실의 점심','2026년, 돌려주는 반찬통'],
+    tumgo:['계단에서 처음 만난 로봇','밀린 빨래 앞의 현우','101호 문 앞 수거']
   };
   const stages={};
   function setStage(key,n){
@@ -151,7 +151,7 @@
   /* ===== Screening room (V5.2): one film, one player, quiet details ===== */
   const filmInfo={
     memory:{
-      number:'FILM 01', next:'tumgo', nextLabel:'다음 작품 틈GO',
+      number:'첫 번째 작품', next:'tumgo', nextLabel:'다음 작품 틈GO',
       poster:'assets/memory-cover.webp',
       logline:'엄마가 채워 보내던 반찬통이, 27년 만에 아들의 손으로 채워져 돌아온다.',
       synopsis:'1999년의 도트, 2007년의 3D, 2026년의 실사. 시대마다 그림의 결이 바뀌는 동안 같은 반찬통이 엄마에게서 아들로, 다시 엄마에게로 건너간다.',
@@ -159,7 +159,7 @@
       chapters:[['고지',0,3],['1999 기억',3,19.2],['전환',19.2,26.5],['2007 성장',26.5,47.6],['전환',47.6,50.4],['2026 현실',50.4,75.6],['엔딩',75.6,82.8]]
     },
     tumgo:{
-      number:'FILM 02', next:'memory', nextLabel:'다음 작품 반찬통의 왕복',
+      number:'두 번째 작품', next:'memory', nextLabel:'다음 작품 반찬통의 왕복',
       poster:'assets/tumgo-cover.webp',
       logline:'문 앞에 두세요. 나머지는 틈GO가.',
       synopsis:'늦은 퇴근길 계단에서 처음 마주친 배송 로봇. 밀린 빨래와 수선을 문 앞에서 맡기고 돌려받는, 가까운 미래의 생활 서비스를 실사형 AI 영상으로 그렸다.',
@@ -205,7 +205,7 @@
       list.append(li);
     });
     $('#sc-cuts-count').textContent=`${p.cuts.length}컷`;
-    $('#sc-cut-note').textContent=timed?'컷을 누르면 그 장면부터 재생됩니다.':'이 목록은 60초 기획본 기준입니다. 지금 재생되는 영상은 약 2분 버전이라 컷 시간은 표시하지 않습니다.';
+    $('#sc-cut-note').textContent=timed?'컷을 누르면 그 장면부터 재생됩니다.':'이 목록은 기획 단계의 컷 기준이라 컷 시간은 표시하지 않습니다.';
   }
   function renderInfo(){
     const f=filmInfo[currentFilm];
@@ -291,7 +291,7 @@
   /* 구간 표시: 스크롤 옆에 현재 위치 */
   const rail=$('#sec-rail');
   if(rail){
-    const secs=[['#projects','STORIES'],['#hero','SELECTED WORKS'],['#memory','FILM 01 반찬통의 왕복'],['#memory-notes','FILM 01 NOTE'],['#interlude','INTERMISSION'],['#tumgo','FILM 02 틈GO'],['#process','PROCESS'],['#about','ABOUT']].map(([sel,label])=>({el:$(sel),label})).filter(x=>x.el);
+    const secs=[['#projects','처음'],['#hero','두 작품'],['#memory','반찬통의 왕복'],['#memory-notes','반찬통의 왕복 제작 노트'],['#interlude','두 작품 사이'],['#tumgo','틈GO'],['#process','만드는 과정'],['#about','소개']].map(([sel,label])=>({el:$(sel),label})).filter(x=>x.el);
     const ticks=$('#sr-ticks'),label=$('#sr-label');
     secs.forEach((x,i)=>{const li=document.createElement('li');const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',x.label);b.addEventListener('click',()=>glideTo(x.el));li.append(b);ticks.append(li)});
     let cur=-1;
@@ -299,7 +299,7 @@
       const y=scrollY+innerHeight*.45;let idx=0;
       secs.forEach((x,i)=>{const t=i===0?0:x.el.getBoundingClientRect().top+scrollY;if(y>=t)idx=i});
       rail.classList.toggle('is-shown',scrollY>innerHeight*.3);
-      if(idx!==cur){cur=idx;document.documentElement.style.setProperty('--sec-p',(idx/(secs.length-1)).toFixed(4));label.textContent=`${String(idx+1).padStart(2,'0')} — ${secs[idx].label}`;$$('li',ticks).forEach((l,i)=>l.classList.toggle('is-on',i===idx))}
+      if(idx!==cur){cur=idx;document.documentElement.style.setProperty('--sec-p',(idx/(secs.length-1)).toFixed(4));label.textContent=secs[idx].label;$$('li',ticks).forEach((l,i)=>l.classList.toggle('is-on',i===idx))}
     };
     addEventListener('scroll',update,{passive:true});addEventListener('resize',update);update();
   }
@@ -388,6 +388,6 @@
 /* V6.3 인터미션 타이포: 영문은 단어, 한글은 글자 단위로 쪼개서 순서대로 */
 (()=>{const sec=document.querySelector('.interlude');if(!sec)return;
   let i=0;sec.querySelectorAll('.iq-line').forEach(l=>{const words=l.textContent.trim().split(/\s+/);l.textContent='';words.forEach((w,k)=>{const o=document.createElement('span');o.className='w';const n=document.createElement('i');n.textContent=w;n.style.setProperty('--i',i++);o.append(n);l.append(o);if(k<words.length-1)l.append(' ')})});
-  let j=0;sec.querySelectorAll('.ik-line').forEach(l=>{const t=[...l.textContent];l.textContent='';t.forEach(c=>{const s=document.createElement('span');s.className='ch';s.textContent=c;s.style.setProperty('--i',j++);l.append(s)})});
+  let j=0;sec.querySelectorAll('.ik-line').forEach(l=>{const words=l.textContent.split(' ');l.textContent='';words.forEach((w,k)=>{const wd=document.createElement('span');wd.className='wd';[...w].forEach(c=>{const s=document.createElement('span');s.className='ch';s.textContent=c;s.style.setProperty('--i',j++);wd.append(s)});l.append(wd);if(k<words.length-1){l.append(' ');j++}})});
   new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)sec.classList.add('il-play')}),{threshold:.35}).observe(sec);
 })();
