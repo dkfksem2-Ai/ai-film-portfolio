@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f2d98a">
+  <title>반찬통의 왕복: 1999년 봄 소풍</title>
+  <meta name="description" content="「반찬통의 왕복」의 1999년 소풍. 돗자리에 앉아 반찬통을 열고 쪽지를 읽거나 남깁니다.">
+  <style>
+    @font-face{font-family:"Galmuri11";src:url("assets/fonts/Galmuri11.woff2") format("woff2");font-weight:400;font-display:swap}
+    @font-face{font-family:"Galmuri11";src:url("assets/fonts/Galmuri11-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+    :root{
+      --butter:oklch(90% .085 88);--butter-3:oklch(95% .045 90);--paper:oklch(97% .007 86);
+      --ink:oklch(27% .05 40);--ink-2:oklch(36% .06 40);--muted:oklch(46% .06 50);
+      --tomato:oklch(57% .17 32);--tomato-ink:oklch(97% .02 90);--sky:oklch(86% .05 235);
+      --scrim:color-mix(in oklab,var(--ink) 62%,transparent);
+      --shadow:color-mix(in oklab,var(--ink) 22%,transparent);
+      --font-pixel:"Galmuri11","Pretendard Variable",Pretendard,"Malgun Gothic",monospace;
+      --ease:cubic-bezier(.16,1,.3,1);
+      --spring:linear(0,.006,.025 2.8%,.101 6.1%,.539 18.9%,.721 25.3%,.849 31.5%,.937 38.1%,.968 41.8%,.991 45.7%,1.006 50.1%,1.015 55%,1.017 63.9%,1.001 85.1%,1);
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;height:100%;overflow:hidden;background:var(--sky);color:var(--ink);font-family:var(--font-pixel);-webkit-font-smoothing:none;word-break:keep-all}
+    canvas#world{position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated;cursor:grab;touch-action:none}
+    canvas#world.is-drag{cursor:grabbing}
+    canvas#world.is-hot{cursor:pointer}
+    button,a,textarea{font-family:var(--font-pixel)}
+    button{cursor:pointer}
+    button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid var(--tomato);outline-offset:3px}
+    .px{box-shadow:0 0 0 3px var(--ink),6px 6px 0 3px var(--shadow)}
+    .hud{position:fixed;z-index:5;top:24px;left:32px;right:32px;display:flex;justify-content:space-between;gap:12px;pointer-events:none}
+    .hud>*{pointer-events:auto}
+    .hud .row{display:flex;gap:12px}
+    .chip{appearance:none;border:0;height:40px;padding:0 14px;display:inline-flex;align-items:center;background:var(--paper);color:var(--ink);text-decoration:none;font-size:14px;box-shadow:0 0 0 3px var(--ink)}
+    .chip:hover{background:var(--ink);color:var(--paper)}
+    .hint{position:fixed;z-index:5;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--paper);font-size:14px;padding:10px 16px;white-space:nowrap;transition:opacity .5s var(--ease)}
+    .hint.is-off{opacity:0;pointer-events:none}
+    .count{position:fixed;z-index:5;left:32px;bottom:28px;font-size:13px;background:var(--paper);padding:8px 12px;box-shadow:0 0 0 3px var(--ink)}
+    .count[hidden]{display:none}
+    /* gate */
+    .gate{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:color-mix(in oklab,var(--butter) 70%,transparent);transition:opacity .6s var(--ease)}
+    .gate.is-out{opacity:0;pointer-events:none}
+    .gate-card{display:grid;gap:22px;justify-items:start;max-width:600px;padding:40px 44px;background:var(--butter-3)}
+    .gate h1{margin:0;font-weight:700;font-size:56px;line-height:1.1;letter-spacing:0}
+    .gate p{margin:0;font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .btn{appearance:none;border:0;height:52px;padding:0 24px;font-size:17px;font-weight:700;background:var(--tomato);color:var(--tomato-ink);box-shadow:0 0 0 3px var(--ink),4px 4px 0 3px var(--ink);transition:transform .15s var(--ease),box-shadow .15s var(--ease)}
+    .btn:hover{transform:translate(-2px,-2px);box-shadow:0 0 0 3px var(--ink),6px 6px 0 3px var(--ink)}
+    .btn:active{transform:translate(3px,3px);box-shadow:0 0 0 3px var(--ink),1px 1px 0 3px var(--ink)}
+    .link{appearance:none;border:0;background:transparent;color:var(--ink);font-size:16px;text-decoration:underline;text-underline-offset:.3em;padding:0 6px;height:52px}
+    .link:hover{text-decoration-color:var(--tomato);text-decoration-thickness:3px}
+    .row{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+    .skip{position:fixed;z-index:6;right:32px;bottom:28px}
+    .skip[hidden]{display:none}
+    /* the note, held up in front of you */
+    .note{position:fixed;z-index:10;left:50%;top:50%;width:min(620px,calc(100% - 48px));padding:34px 38px 28px;background:var(--paper);display:grid;gap:18px;transform:translate(-50%,-50%) rotate(-1deg);transition:opacity .4s var(--ease),transform .8s var(--spring)}
+    .note[hidden]{display:grid;opacity:0;pointer-events:none;transform:translate(-50%,10%) rotate(3deg) scale(.6)}
+    .note::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:repeating-linear-gradient(90deg,var(--tomato) 0 10px,transparent 10px 20px)}
+    .note-tag{margin:0;font-size:13px;color:var(--muted)}
+    .note-from{margin:0;font-weight:700;font-size:24px}
+    .note-text{margin:0;font-size:28px;line-height:1.6;color:var(--ink);min-height:3.2em}
+    .note-meta{margin:0;font-size:13px;color:var(--muted)}
+    .note textarea{width:100%;min-height:120px;resize:none;border:0;background:var(--butter-3);color:var(--ink);font-size:22px;line-height:1.5;padding:12px 14px;box-shadow:inset 0 0 0 3px var(--ink-2)}
+    .note .small{margin:0;font-size:13px;color:var(--muted)}
+    .note [hidden]{display:none!important}
+    .theater{position:fixed;inset:0;z-index:15;display:grid;place-items:center;background:color-mix(in oklab,var(--ink) 78%,transparent);transition:opacity .6s var(--ease)}
+    .theater[hidden]{display:grid;opacity:0;pointer-events:none}
+    .theater-card{width:min(1100px,calc(100% - 64px));display:grid;gap:16px;padding:20px;background:var(--butter-3)}
+    .theater-head{display:flex;justify-content:space-between;align-items:center;gap:16px}
+    .theater-head h2{margin:0;font-size:24px}
+    .theater video{width:100%;aspect-ratio:16/9;background:var(--ink);display:block}
+    .theater-empty{aspect-ratio:16/9;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-size:16px;padding:24px;text-align:center}
+    .theater-empty[hidden]{display:none}
+    .ask{position:fixed;z-index:9;left:50%;bottom:90px;transform:translateX(-50%);display:grid;gap:14px;justify-items:start;padding:22px 26px;background:var(--paper);max-width:560px;transition:opacity .5s var(--ease)}
+    .ask[hidden]{display:grid;opacity:0;pointer-events:none}
+    .ask p{margin:0;font-size:17px;line-height:1.6}
+    .dissolve{position:fixed;inset:0;z-index:30;pointer-events:none;display:grid;grid-template-columns:repeat(24,1fr);grid-auto-rows:1fr}
+    .dissolve i{background:var(--ink);opacity:0;transform:scale(.2);transition:opacity .25s var(--ease),transform .35s var(--ease)}
+    .dissolve.is-on i{opacity:1;transform:none}
+    @media(max-width:700px){.gate h1{font-size:38px}.note-text{font-size:22px}.hud{left:12px;right:12px;top:12px}.hint{white-space:normal;width:calc(100% - 24px);bottom:12px}.count{display:none}}
+  </style>
+</head>
+<body>
+  <canvas id="world" aria-label="1999년 봄 소풍 장면. 드래그해서 둘러보고, 앞에 놓인 반찬통을 눌러 엽니다."></canvas>
+
+  <div class="hud">
+    <a class="chip" href="index.html#memory">← 포트폴리오로</a>
+    <div class="row"><button type="button" class="chip" id="sound-toggle" aria-pressed="true">소리 끄기</button><button type="button" class="chip" id="open-box">반찬통 열기</button></div>
+  </div>
+  <p class="hint is-off" id="hint">드래그해서 둘러보세요. 앞에 놓인 반찬통을 누르면 열립니다.</p>
+  <p class="count" id="count" hidden></p>
+  <button type="button" class="chip skip" id="skip" hidden>건너뛰기</button>
+
+  <section class="gate" id="gate" aria-labelledby="gate-title">
+    <div class="gate-card px">
+      <h1 id="gate-title">1999년 봄,<br>소풍 가는 날</h1>
+      <p id="gate-text">「반찬통의 왕복」의 첫 장면입니다. 아이가 돗자리에 앉으면, 그 아이의 눈으로 영상을 먼저 보고 반찬통을 엽니다. 쪽지를 읽고, 한 장 남기고 가세요.</p>
+      <div class="row"><button type="button" class="btn" id="enter">소풍 가기</button><a class="link" href="index.html#memory">작품만 보기</a></div>
+    </div>
+  </section>
+
+  <aside class="note px" id="note" hidden aria-live="polite">
+    <div id="note-read" style="display:grid;gap:18px">
+      <p class="note-tag" id="note-tag">작품 속 쪽지</p>
+      <p class="note-from" id="note-from">1999년, 엄마가</p>
+      <p class="note-text" id="note-text"></p>
+      <p class="note-meta" id="note-meta"></p>
+      <div class="row"><button type="button" class="btn" id="next-note">다음 쪽지</button><button type="button" class="link" id="write-note">쪽지 남기기</button><button type="button" class="link" id="close-box">뚜껑 닫기</button><a class="link" href="index.html#memory">포트폴리오로</a></div>
+    </div>
+    <form id="note-write" hidden style="display:grid;gap:16px">
+      <p class="note-from">쪽지 남기기</p>
+      <label class="small" for="note-input">반찬통에 넣을 한 줄, 80자까지.</label>
+      <textarea id="note-input" maxlength="80" required></textarea>
+      <p class="small" id="note-save-state"></p>
+      <div class="row"><button type="submit" class="btn">반찬통에 넣기</button><button type="button" class="link" id="cancel-write">돌아가기</button></div>
+    </form>
+    <div id="note-done" hidden style="display:grid;gap:16px">
+      <p class="note-tag">방금 넣은 쪽지</p>
+      <p class="note-text" id="done-text"></p>
+      <p class="small" id="done-state"></p>
+      <div class="row"><button type="button" class="btn" id="copy-link">링크 복사</button><button type="button" class="link" id="back-read">다른 쪽지 보기</button></div>
+    </div>
+  </aside>
+
+  <aside class="ask px" id="ask" hidden aria-live="polite">
+    <p><b>반찬통을 열기 전에,</b> 이 반찬통이 27년 동안 오간 이야기부터 보세요. 쪽지는 영상을 본 뒤에 열립니다.</p>
+    <div class="row"><button type="button" class="btn" id="watch">1분 23초 영상 보기</button></div>
+  </aside>
+
+  <section class="theater" id="theater" hidden aria-labelledby="theater-title">
+    <div class="theater-card px">
+      <div class="theater-head"><h2 id="theater-title">반찬통의 왕복</h2><button type="button" class="chip" id="theater-done">다 봤어요, 반찬통 열기</button></div>
+      <video id="film" controls playsinline preload="none" poster="assets/memory-cover.webp"></video>
+      <p class="theater-empty" id="film-empty" hidden>이 화면에서는 영상을 불러오지 못했습니다. 웹사이트 주소로 열면 여기서 바로 재생됩니다.</p>
+    </div>
+  </section>
+
+  <audio id="bgm" src="assets/audio/picnic-bgm.mp3" loop preload="auto"></audio>
+  <div class="dissolve" id="dissolve" aria-hidden="true"></div>
+
+  <script src="assets/notes-memory.js"></script>
+  <script src="video-config.js"></script>
+  <script src="notes-config.js"></script>
+  <script src="notes-db.js"></script>
+  <script src="assets/vendor/three.min.js"></script>
+  <script>
+  (()=>{'use strict';const THREE=window.THREE;
+  const $=s=>document.querySelector(s);
+  const canvas=$('#world');
+  const PIX=3;
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:false});renderer.setPixelRatio(1);
+  const scene=new THREE.Scene();const SKY=new THREE.Color('#bcd9ef');scene.background=SKY;scene.fog=new THREE.Fog(SKY,26,62);
+  const camera=new THREE.PerspectiveCamera(62,1,.05,200);
+  scene.add(new THREE.HemisphereLight('#fff6e0','#7aa35a',1.15));
+  const sun=new THREE.DirectionalLight('#fff1d2',1.1);sun.position.set(6,10,4);scene.add(sun);
+  const cube=new THREE.BoxGeometry(1,1,1),lam=new THREE.MeshLambertMaterial();
+  function blocks(list,parent=scene){const m=new THREE.InstancedMesh(cube,lam,list.length),o=new THREE.Object3D(),c=new THREE.Color();
+    list.forEach((b,i)=>{o.position.set(b[0],b[1],b[2]);o.scale.set(b[4]||1,b[5]||1,b[6]||1);o.updateMatrix();m.setMatrixAt(i,o.matrix);m.setColorAt(i,c.set(b[3]))});
+    m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;parent.add(m);return m}
+  const vox=(c,x,y,z,sx,sy,sz,parent)=>{const m=new THREE.Mesh(cube,new THREE.MeshLambertMaterial({color:c}));m.position.set(x,y,z);m.scale.set(sx,sy,sz);parent.add(m);return m};
+  const rnd=(a=>()=>((a=Math.imul(a^a>>>15,a|1)^(a+Math.imul(a^a>>>7,a|61)),((a^a>>>14)>>>0)/4294967296)))(1999);
+  const pick=arr=>arr[Math.floor(rnd()*arr.length)];
+  const pathX=z=>4+z*.35;
+  // ground, river, path
+  const ground=[];
+  for(let x=-30;x<=30;x++)for(let z=-30;z<=30;z++){
+    if(z<-16&&z>-21){ground.push([x,-.9,z,pick(['#6fb6e6','#7cc1ec','#64a9dc'])]);continue}
+    const d=Math.hypot(x,z),path=Math.abs(x-pathX(z))<1.2&&z>-16;
+    ground.push([x,-.5+(d>24?Math.floor(rnd()*2)*.5:0),z,path?pick(['#d9c08a','#e2cb98']):pick(['#86c25a','#7ab650','#92cc63','#80bb55'])]);
+  }
+  blocks(ground);
+  const bridge=[];for(let z=-21;z<=-16;z++)for(let dx=-1;dx<=1;dx++)bridge.push([Math.round(pathX(-16))+dx,-.35,z,'#a5703f',1,.3,1]);blocks(bridge);
+  const hills=[];for(let a=0;a<360;a+=3){const r=40+rnd()*6,h=2+Math.floor(rnd()*6),x=Math.cos(a*Math.PI/180)*r,z=Math.sin(a*Math.PI/180)*r;for(let y=0;y<h;y++)hills.push([Math.round(x),y,Math.round(z),y>h-2?'#8fb4a6':'#7aa596',3,1,3])}blocks(hills);
+  const mat=[];for(let x=-4;x<=3;x++)for(let z=-3;z<=4;z++)mat.push([x+.5,0,z+.5,(x+z)&1?'#f4efe4':'#d9534a',1,.08,1]);blocks(mat);
+  const trees=[];
+  function tree(tx,tz,h){for(let y=0;y<h;y++)trees.push([tx,y,tz,'#7a4e33']);for(let x=-2;x<=2;x++)for(let y=0;y<3;y++)for(let z=-2;z<=2;z++){if(Math.abs(x)+Math.abs(z)+y*.6>3.6||rnd()<.18)continue;trees.push([tx+x,h+y,tz+z,pick(['#f6b8c8','#f9c9d6','#f2a7bb','#fde0e8'])])}}
+  [[-8,-7,5],[7,-10,6],[-13,4,5],[12,2,5],[2,-14,6],[-5,12,5],[10,11,4],[-15,-12,6],[16,-15,5],[-3,-11,5]].forEach(t=>tree(...t));blocks(trees);
+  const clouds=new THREE.Group();scene.add(clouds);{const l=[];for(let k=0;k<9;k++){const cx=(rnd()-.5)*70,cz=(rnd()-.5)*70,cy=16+rnd()*5;for(let i=0;i<10;i++)l.push([cx+Math.floor(rnd()*6),cy+Math.floor(rnd()*2),cz+Math.floor(rnd()*3),'#ffffff',2,1,2])}blocks(l,clouds)}
+  blocks([[1.7,.25,-.5,'#4f8fcf',.22,.42,.22],[1.7,.5,-.5,'#f4efe4',.18,.08,.18],[-1.5,.14,-.3,'#d9534a',.2,.2,.2],[-1.5,.28,-.3,'#5a8a3a',.04,.08,.04],[-1.25,.14,-.1,'#e8c93f',.2,.2,.2],[2.4,.06,1.2,'#f6e7c8',1.1,.04,.8]]);
+
+  // ---- 락앤락 반찬통: 투명 몸통, 테두리 있는 뚜껑, 네 면의 잠금 날개 ----
+  const box=new THREE.Group();box.position.set(0,.08,-.15);box.scale.setScalar(1.35);scene.add(box);
+  const W=1.1,D=.75,H=.42;
+  const glass=new THREE.MeshLambertMaterial({color:'#e4f4ff',transparent:true,opacity:.38});
+  const bodyM=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),glass);bodyM.position.y=H/2;box.add(bodyM);
+  vox('#cfe6f5',0,.01,0,W+.02,.02,D+.02,box); // 바닥
+  vox('#f6cf45',-.38,.12,-.15,.15,.2,.3,box);[-.21,-.04,.13].forEach(x=>vox('#f2c03a',x,.12,-.15,.15,.2,.3,box)); // 계란말이
+  [-.38,-.21,-.04,.13].forEach(x=>vox(['#f6cf45','#eab73a'][Math.round(x*10)&1],x,.12,.18,.15,.2,.25,box));
+  vox('#3f8a3a',.36,.1,-.12,.28,.16,.32,box);vox('#c6382f',.36,.1,.2,.28,.16,.26,box);
+  const lid=new THREE.Group();lid.position.set(0,H,-D/2);box.add(lid); // 뒤 모서리 축
+  vox('#f4f8fb',0,.035,D/2,W+.06,.07,D+.06,lid);
+  vox('#9cc7e6',0,.075,D/2,W-.08,.015,D-.08,lid); // 뚜껑 가운데 패킹 색
+  // 날개: 각 면 가운데에 붙어서, 닫히면 아래로 내려와 몸통을 잡고 열리면 바깥으로 젖혀진다
+  const wingMat=new THREE.MeshLambertMaterial({color:'#3f7fc2'});
+  const wingSpecs=[{p:[0,0,D+.035],axis:'x',sign:1},{p:[0,0,-.035],axis:'x',sign:-1},{p:[W/2+.035,0,D/2],axis:'z',sign:-1},{p:[-W/2-.035,0,D/2],axis:'z',sign:1}];
+  const wings=wingSpecs.map(s=>{const g=new THREE.Group();g.position.set(...s.p);lid.add(g);
+    const plate=new THREE.Mesh(cube,wingMat);const along=s.axis==='x';plate.scale.set(along?.42:.035,.16,along?.035:.42);plate.position.y=-.08;g.add(plate);
+    const nub=new THREE.Mesh(cube,wingMat);nub.scale.set(along?.2:.05,.04,along?.05:.2);nub.position.set(along?0:-.02*s.sign,-.15,along?.02*s.sign:0);g.add(nub);
+    return {g,s,t:0,target:0}});
+  const hitBox=new THREE.Mesh(new THREE.BoxGeometry(W+.4,H+.5,D+.4),new THREE.MeshBasicMaterial({visible:false}));hitBox.position.y=H/2;box.add(hitBox);
+  // 쪽지 종이: 반찬통에서 떠올라 눈앞으로 온다
+  const paper=new THREE.Group();scene.add(paper);vox('#fbf7ec',0,0,0,.42,.3,.01,paper);vox('#d9534a',0,.13,.006,.42,.03,.005,paper);paper.visible=false;
+
+  // ---- 유년기 아이 (영상 #04의 초록 줄무늬 옷) ----
+  const kid=new THREE.Group();scene.add(kid);
+  const skin='#f1c9a5',hair='#5a3a26';
+  vox(skin,0,1.08,0,.42,.42,.42,kid);vox(hair,0,1.3,0,.46,.14,.46,kid);vox(hair,0,1.18,-.18,.46,.3,.12,kid);
+  vox('#2b2018',-.1,1.1,.215,.06,.08,.02,kid);vox('#2b2018',.1,1.1,.215,.06,.08,.02,kid);vox('#e98f86',0,.98,.215,.12,.03,.02,kid);
+  for(let i=0;i<4;i++)vox(i%2?'#f4efe4':'#4f9a4a',0,.62+i*.08,0,.46,.08,.28,kid);
+  const armL=new THREE.Group(),armR=new THREE.Group(),legL=new THREE.Group(),legR=new THREE.Group();
+  [[armL,-.3,.9],[armR,.3,.9],[legL,-.11,.56],[legR,.11,.56]].forEach(([g,x,y])=>{g.position.set(x,y,0);kid.add(g)});
+  [armL,armR].forEach(a=>{vox('#4f9a4a',0,-.08,0,.14,.18,.16,a);vox(skin,0,-.25,0,.12,.18,.14,a)});
+  [legL,legR].forEach(l=>{vox('#2f4f80',0,-.1,0,.16,.2,.18,l);vox(skin,0,-.32,0,.13,.24,.14,l);vox('#f4efe4',0,-.48,.03,.15,.08,.2,l)});
+  kid.scale.setScalar(1.1);
+
+  // 꽃잎
+  const N=420,pg=new THREE.BufferGeometry(),pp=new Float32Array(N*3),sp=new Float32Array(N);
+  for(let i=0;i<N;i++){pp[i*3]=(rnd()-.5)*30;pp[i*3+1]=rnd()*12;pp[i*3+2]=(rnd()-.5)*30;sp[i]=.3+rnd()*.7}
+  pg.setAttribute('position',new THREE.BufferAttribute(pp,3));scene.add(new THREE.Points(pg,new THREE.PointsMaterial({color:'#f7b6c8',size:.09})));
+
+  // ---- 카메라: 처음엔 아이를 따라가는 3인칭, 앉으면 아이 눈높이의 1인칭 ----
+  const SEAT=new THREE.Vector3(0,1.7,2.6);
+  let mode='idle',yaw=0,pitch=-.42,drag=null;
+  const route=[new THREE.Vector3(pathX(-15),0,-15),new THREE.Vector3(pathX(-8),0,-8),new THREE.Vector3(2.2,0,-1.5),new THREE.Vector3(1.4,0,2.2),new THREE.Vector3(0,0,2.75)];
+  const curve=new THREE.CatmullRomCurve3(route);
+  let introT=0;const INTRO=5.2;
+  camera.position.set(9,5,8);camera.lookAt(0,0,-4);
+  function placeKid(u){const p=curve.getPointAt(Math.min(1,u));const q=curve.getTangentAt(Math.min(.999,u));kid.position.copy(p);kid.rotation.y=Math.atan2(q.x,q.z)}
+  placeKid(0);
+  const tmp=new THREE.Vector3(),camFrom=new THREE.Vector3(),lookFrom=new THREE.Vector3();
+  function firstPerson(){mode='seated';kid.visible=false;camera.position.copy(SEAT);yaw=0;pitch=-.42;$('#skip').hidden=true;$('#hint').classList.remove('is-off');refreshCount();if(!askFilm()&&sharedNote)setTimeout(()=>openBox(sharedNote),600)}
+  const look=()=>{camera.rotation.order='YXZ';camera.rotation.set(pitch,yaw,0)};
+  canvas.addEventListener('pointerdown',e=>{if(mode!=='seated')return;drag={x:e.clientX,y:e.clientY,yaw,pitch,moved:false};canvas.setPointerCapture(e.pointerId);canvas.classList.add('is-drag')});
+  canvas.addEventListener('pointermove',e=>{if(mode!=='seated')return;
+    if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4)drag.moved=true;yaw=drag.yaw-dx*.005;pitch=Math.max(-1.2,Math.min(.6,drag.pitch-dy*.004));$('#hint').classList.add('is-off')}
+    else canvas.classList.toggle('is-hot',!!hit(e))});
+  canvas.addEventListener('pointerup',e=>{canvas.classList.remove('is-drag');if(drag&&!drag.moved&&hit(e))toggleBox();drag=null});
+  const ray=new THREE.Raycaster(),mv=new THREE.Vector2();
+  function hit(e){const r=canvas.getBoundingClientRect();mv.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(mv,camera);return ray.intersectObject(hitBox).length>0}
+  addEventListener('keydown',e=>{if(mode!=='seated'||e.target.closest('textarea'))return;if(e.key==='ArrowLeft')yaw+=.08;if(e.key==='ArrowRight')yaw-=.08;if(e.key==='ArrowUp')pitch=Math.min(.6,pitch+.06);if(e.key==='ArrowDown')pitch=Math.max(-1.2,pitch-.06)});
+
+  // ---- 소리: 파일 없이 만든다 ----
+  let ac=null,master=null,soundOn=true;
+  function startAudio(){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=.5;master.connect(ac.destination);
+    const len=ac.sampleRate*2,buf=ac.createBuffer(1,len,ac.sampleRate),d=buf.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+    const w=ac.createBufferSource();w.buffer=buf;w.loop=true;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=420;const g=ac.createGain();g.gain.value=.12;w.connect(lp).connect(g).connect(master);w.start();
+    (function bird(){if(!ac)return;const t=ac.currentTime,o=ac.createOscillator(),gg=ac.createGain(),f=2400+Math.random()*1800;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*1.4,t+.07);o.frequency.exponentialRampToValueAtTime(f*.9,t+.14);gg.gain.setValueAtTime(0,t);gg.gain.linearRampToValueAtTime(.06,t+.02);gg.gain.exponentialRampToValueAtTime(.0001,t+.18);o.connect(gg).connect(master);o.start(t);o.stop(t+.2);setTimeout(bird,Math.random()<.6?180+Math.random()*200:1200+Math.random()*2600)})()}
+  function blip(f=880,dt=0){if(!ac||!soundOn)return;const t=ac.currentTime+dt,o=ac.createOscillator(),g=ac.createGain();o.type='square';o.frequency.value=f;g.gain.setValueAtTime(.08,t);g.gain.exponentialRampToValueAtTime(.0001,t+.06);o.connect(g).connect(master);o.start(t);o.stop(t+.07)}
+  function step(){if(!ac||!soundOn)return;const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=140+Math.random()*30;g.gain.setValueAtTime(.05,t);g.gain.exponentialRampToValueAtTime(.0001,t+.05);o.connect(g).connect(master);o.start(t);o.stop(t+.06)}
+  $('#sound-toggle').addEventListener('click',e=>{soundOn=!soundOn;if(master)master.gain.value=soundOn?.5:0;bgm.muted=!soundOn;e.currentTarget.textContent=soundOn?'소리 끄기':'소리 켜기';e.currentTarget.setAttribute('aria-pressed',String(soundOn))});
+
+  // ---- 쪽지 ----
+  const DB=window.NotesDB,story=window.MEMORY_NOTES||[];
+  let visitors=[],deck=[],di=-1,sharedNote=null,lastId=null;
+  const josa=w=>{const c=w.charCodeAt(w.length-1)-0xAC00;return (c>=0&&c%28)?'이':'가'};
+  const fmtDate=s=>{const d=new Date(s);return `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`};
+  function buildDeck(){const s=story.map(n=>({kind:'story',...n}));const v=visitors.map(n=>({kind:'visitor',...n}));deck=[];
+    const ss=[...s].sort(()=>Math.random()-.5),vv=[...v].sort(()=>Math.random()-.5);
+    while(ss.length||vv.length){if(ss.length)deck.push(ss.pop());if(ss.length)deck.push(ss.pop());if(vv.length)deck.push(vv.pop())}di=-1}
+  function render(n){
+    if(n.kind==='story'){$('#note-tag').textContent='작품 속 쪽지';$('#note-from').textContent=`${n.y}년, ${n.from}${josa(n.from)}`;$('#note-text').textContent=n.text}
+    else{$('#note-tag').textContent=n.kind==='shared'?'받은 쪽지':'다녀간 사람의 쪽지';$('#note-from').textContent=n.created_at?fmtDate(n.created_at):'오늘';$('#note-text').textContent=n.body}
+    $('#note-meta').textContent=visitors.length?`작품 속 쪽지 ${story.length}장, 다녀간 사람의 쪽지 ${visitors.length}장`:`작품 속 쪽지 ${story.length}장`;
+  }
+  function next(){if(!deck.length)buildDeck();di=(di+1)%deck.length;render(deck[di])}
+  async function refreshCount(){if(!DB)return;const r=await DB.list('memory',60);visitors=r.rows||[];buildDeck();
+    const c=$('#count');if(r.shared){c.hidden=false;c.textContent=`이 반찬통에 다녀간 사람의 쪽지 ${visitors.length}${visitors.length>=60?'장 이상':'장'}`}}
+  const sp2=new URLSearchParams(location.search).get('note');
+  if(sp2&&DB)DB.one(sp2).then(n=>{if(n&&n.film==='memory'){sharedNote={kind:'shared',...n};$('#gate-text').textContent='누군가 이 소풍의 반찬통에 쪽지를 넣고 링크를 보냈습니다. 아이가 돗자리에 앉으면 그 쪽지부터 열립니다.'}});
+
+  // ---- 배경음: 돗자리로 가는 동안 페이드 인, 영상이 시작되면 페이드 아웃 ----
+  const bgm=$('#bgm');let bgmTarget=0,bgmVol=0;const BGM_MAX=.55;
+  function bgmTo(v){bgmTarget=v;if(v>0&&bgm.paused){bgm.volume=bgmVol;bgm.play().catch(()=>{})}}
+  // ---- 영상 먼저: 한 번 본 사람은 바로 쪽지로 ----
+  const SEEN='bancham-film-seen';let filmSeen=false;try{filmSeen=localStorage.getItem(SEEN)==='1'}catch(e){}
+  const film=$('#film');
+  function askFilm(){if(filmSeen)return false;$('#ask').hidden=false;$('#hint').classList.add('is-off');return true}
+  function playFilm(){$('#ask').hidden=true;$('#theater').hidden=false;bgmTo(0);if(ac&&master)master.gain.value=0;
+    const url=(window.PORTFOLIO_VIDEO_URLS||{}).memory;
+    if(url&&location.protocol!=='file:'){film.hidden=false;$('#film-empty').hidden=true;if(!film.src)film.src=url;film.play().catch(()=>{})}
+    else{film.hidden=true;$('#film-empty').hidden=false}}
+  function filmDone(){film.pause();filmSeen=true;try{localStorage.setItem(SEEN,'1')}catch(e){}$('#theater').hidden=true;bgmTo(BGM_MAX);if(ac&&master)master.gain.value=soundOn?.5:0;setTimeout(()=>openBox(sharedNote),500)}
+  $('#watch').addEventListener('click',playFilm);
+  $('#theater-done').addEventListener('click',filmDone);
+  film.addEventListener('ended',filmDone);
+  let open=false,lidT=0,paperT=0,stage=0;
+  function toggleBox(){open?closeBox(false):openBox()}
+  function openBox(first){if(open||mode!=='seated')return;if(askFilm())return;open=true;stage=1;$('#hint').classList.add('is-off');$('#open-box').textContent='반찬통 닫기';
+    wings.forEach((w,i)=>setTimeout(()=>{w.target=1;blip(880+i*110)},i*140));
+    setTimeout(()=>{stage=2;paper.visible=true;paperT=0},620);
+    setTimeout(()=>{if(first)render(first);else next();$('#note').hidden=false;showPane('read')},1250)}
+  function closeBox(go){if(!open)return;open=false;stage=0;$('#note').hidden=true;paper.visible=false;$('#open-box').textContent='반찬통 열기';
+    setTimeout(()=>wings.forEach((w,i)=>setTimeout(()=>{w.target=0;blip(1320-i*110)},i*140)),400);
+    if(go)setTimeout(toFilm,1300)}
+  function showPane(p){$('#note-read').hidden=p!=='read';$('#note-write').hidden=p!=='write';$('#note-done').hidden=p!=='done'}
+  $('#open-box').addEventListener('click',toggleBox);
+  $('#next-note').addEventListener('click',()=>{blip(990);next()});
+  $('#close-box').addEventListener('click',()=>closeBox(false));
+  $('#write-note').addEventListener('click',()=>{showPane('write');$('#note-save-state').textContent=DB&&DB.connected?'넣은 쪽지는 이 소풍에 오는 모든 사람에게 보입니다. 이름이나 연락처는 쓰지 마세요.':'지금은 저장소가 연결되지 않아 이 기기에만 남습니다.';$('#note-input').focus()});
+  $('#cancel-write').addEventListener('click',()=>showPane('read'));
+  $('#back-read').addEventListener('click',()=>{showPane('read');next()});
+  $('#note-write').addEventListener('submit',async e=>{e.preventDefault();const t=$('#note-input').value;
+    const r=DB?await DB.add('memory',t):{error:'no-db'};
+    if(r.error==='filtered'){$('#note-save-state').textContent='거친 표현이 있어 넣지 못했습니다. 문장을 바꿔 주세요.';return}
+    if(r.error){$('#note-save-state').textContent='쪽지를 넣지 못했습니다. 다시 시도해 주세요.';return}
+    $('#note-input').value='';$('#done-text').textContent=r.note.body;lastId=r.note.id||null;
+    $('#done-state').textContent=r.shared&&lastId?'모두에게 보이는 쪽지가 됐습니다. 링크를 보내면 받은 사람은 이 쪽지부터 엽니다.':'이 기기에만 저장됐습니다.';
+    $('#copy-link').hidden=!(r.shared&&lastId);showPane('done');blip(660);blip(990,.08);
+    if(r.shared){visitors.unshift(r.note);buildDeck();refreshCount()}});
+  $('#copy-link').addEventListener('click',async()=>{if(!lastId)return;const u=DB.shareUrl('picnic.html',lastId);try{await navigator.clipboard.writeText(u);$('#copy-link').textContent='복사됨'}catch(err){$('#done-state').textContent=u}setTimeout(()=>$('#copy-link').textContent='링크 복사',1800)});
+
+  const dis=$('#dissolve');for(let i=0;i<24*14;i++){const c=document.createElement('i');c.style.transitionDelay=`${Math.random()*600}ms`;dis.append(c)}
+  function toFilm(){dis.classList.add('is-on');setTimeout(()=>{location.href='index.html?play=memory#memory'},1100)}
+
+  $('#enter').addEventListener('click',()=>{$('#gate').classList.add('is-out');try{startAudio()}catch(e){}bgmTo(BGM_MAX);setTimeout(()=>$('#gate').hidden=true,600);mode='intro';introT=0;$('#skip').hidden=false});
+  $('#skip').addEventListener('click',()=>{if(mode==='intro'||mode==='settle')firstPerson()});
+
+  function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(Math.ceil(w/PIX),Math.ceil(h/PIX),false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+  addEventListener('resize',resize);resize();
+  const clock=new THREE.Clock();let lastStep=0;
+  (function loop(){
+    const dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;
+    if(Math.abs(bgmVol-bgmTarget)>.002){bgmVol+=(bgmTarget-bgmVol)*Math.min(1,dt*(bgmTarget>bgmVol?.9:2.2));bgm.volume=Math.max(0,Math.min(1,bgmVol));if(bgmTarget===0&&bgmVol<.01)bgm.pause()}
+    if(mode==='intro'){
+      introT+=dt;const u=Math.min(1,introT/INTRO),e=1-Math.pow(1-u,1.6);placeKid(e);
+      const swing=Math.sin(introT*14)*(u<1?.9:0);legL.rotation.x=swing;legR.rotation.x=-swing;armL.rotation.x=-swing*.8;armR.rotation.x=swing*.8;
+      kid.position.y=Math.abs(Math.sin(introT*14))*.06*(1-u);
+      if(introT-lastStep>.14&&u<1){step();lastStep=introT}
+      tmp.copy(kid.position).add(new THREE.Vector3(3.2,2.6,4.2));camera.position.lerp(tmp,Math.min(1,dt*2.2));camera.lookAt(kid.position.x,kid.position.y+.8,kid.position.z-1.2);
+      if(u>=1){mode='settle';introT=0;camFrom.copy(camera.position);kid.rotation.y=Math.PI;legL.rotation.x=legR.rotation.x=-1.4;kid.position.y=-.3;armL.rotation.x=armR.rotation.x=-.4}
+    }else if(mode==='settle'){
+      introT+=dt;const u=Math.min(1,introT/1.6),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+      camera.position.lerpVectors(camFrom,SEAT,e);
+      const q0=new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().lookAt(camFrom,new THREE.Vector3(0,.6,-.2),new THREE.Vector3(0,1,0)));
+      const q1=new THREE.Quaternion().setFromEuler(new THREE.Euler(-.42,0,0,'YXZ'));camera.quaternion.slerpQuaternions(q0,q1,e);
+      if(u>.55)kid.visible=false;
+      if(u>=1)firstPerson();
+    }else if(mode==='seated'){if(!drag&&!open)yaw+=Math.sin(t*.25)*.0004;look()}
+    wings.forEach(w=>{w.t+=(w.target-w.t)*Math.min(1,dt*10);const a=w.t*1.75*w.s.sign;if(w.s.axis==='x')w.g.rotation.x=-a;else w.g.rotation.z=-a});
+    const wOpen=wings.every(w=>w.t>.9);lidT+=((open&&wOpen?1:0)-lidT)*Math.min(1,dt*5);lid.rotation.x=-lidT*1.9;
+    if(paper.visible){paperT=Math.min(1,paperT+dt*1.4);const from=new THREE.Vector3(0,.5,-.15),to=new THREE.Vector3(0,-.05,-.6).applyQuaternion(camera.quaternion).add(camera.position);
+      paper.position.lerpVectors(from,to,1-Math.pow(1-paperT,3));paper.quaternion.copy(camera.quaternion);paper.rotateZ((1-paperT)*.6)}
+    for(let i=0;i<N;i++){pp[i*3+1]-=sp[i]*dt*.6;pp[i*3]+=Math.sin(t*.7+i)*dt*.2;if(pp[i*3+1]<0)pp[i*3+1]=12}
+    pg.attributes.position.needsUpdate=true;clouds.position.x=Math.sin(t*.02)*6;
+    renderer.render(scene,camera);requestAnimationFrame(loop)})();
+  })();
+  </script>
+</body>
+</html>

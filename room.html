@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#14202a">
+  <title>틈GO: 현우의 원룸</title>
+  <meta name="description" content="「틈GO」의 원룸. 키보드로 방을 돌아다니며 밀린 빨래를 모아 문 앞에 두면 틈GO가 수거합니다.">
+  <style>
+    @font-face{font-family:"Galmuri11";src:url("assets/fonts/Galmuri11.woff2") format("woff2");font-weight:400;font-display:swap}
+    @font-face{font-family:"Galmuri11";src:url("assets/fonts/Galmuri11-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+    :root{
+      --night:oklch(22% .03 235);--night-2:oklch(27% .032 235);--ink:oklch(95% .012 200);--ink-2:oklch(84% .02 200);--muted:oklch(66% .025 210);--rule:oklch(36% .03 235);
+      --mint:oklch(85% .13 165);--mint-ink:oklch(20% .03 235);--warm:oklch(82% .1 75);
+      --font-pixel:"Galmuri11","Pretendard Variable",Pretendard,"Malgun Gothic",monospace;--ease:cubic-bezier(.16,1,.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;height:100%;overflow:hidden;background:var(--night);color:var(--ink);font-family:var(--font-pixel);word-break:keep-all}
+    canvas#world{position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated}
+    button,a,textarea,input{font-family:var(--font-pixel)}
+    button{cursor:pointer}
+    button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
+    .px{box-shadow:0 0 0 3px var(--ink),6px 6px 0 3px color-mix(in oklab,var(--mint-ink) 60%,transparent)}
+    .hud{position:fixed;z-index:5;top:24px;left:32px;right:32px;display:flex;justify-content:space-between;gap:12px;pointer-events:none}
+    .hud>*{pointer-events:auto}
+    .chip{appearance:none;border:0;height:40px;padding:0 14px;display:inline-flex;align-items:center;background:var(--night-2);color:var(--ink);text-decoration:none;font-size:14px;box-shadow:0 0 0 3px var(--ink)}
+    .chip:hover{background:var(--ink);color:var(--night)}
+    .mission{position:fixed;z-index:5;left:32px;bottom:28px;background:var(--night-2);padding:14px 18px;display:grid;gap:8px;min-width:260px}
+    .mission[hidden]{display:none}
+    .mission h2{margin:0;font-size:15px}
+    .mission ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px;color:var(--ink-2)}
+    .mission li.is-done{color:var(--mint)}
+    .mission li.is-done::before{content:"■ "}
+    .mission li:not(.is-done)::before{content:"□ "}
+    .cross{position:fixed;z-index:4;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;pointer-events:none}
+    .cross::before,.cross::after{content:"";position:absolute;background:var(--ink)}
+    .cross::before{left:6px;top:0;width:2px;height:14px}.cross::after{top:6px;left:0;height:2px;width:14px}
+    .cross[hidden]{display:none}
+    .prompt{position:fixed;z-index:5;left:50%;top:calc(50% + 34px);transform:translateX(-50%);background:var(--mint);color:var(--mint-ink);font-size:15px;padding:8px 14px;white-space:nowrap}
+    .prompt[hidden]{display:none}
+    .esc-hint{position:fixed;z-index:5;right:32px;bottom:28px;margin:0;font-size:13px;color:var(--ink-2);background:color-mix(in oklab,var(--night) 80%,transparent);padding:8px 12px}
+    .esc-hint[hidden]{display:none}
+    .toast{position:fixed;z-index:6;left:50%;top:88px;transform:translateX(-50%);background:var(--ink);color:var(--night);font-size:15px;padding:10px 16px;transition:opacity .4s var(--ease)}
+    .toast.is-off{opacity:0}
+    .gate,.panel{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:color-mix(in oklab,var(--night) 70%,transparent)}
+    .gate[hidden],.panel[hidden]{display:none}
+    .card{display:grid;gap:20px;justify-items:start;max-width:620px;padding:40px 44px;background:var(--night-2)}
+    .card h1,.card h2{margin:0;font-weight:700;font-size:48px;line-height:1.15}
+    .card h2{font-size:34px}
+    .card p{margin:0;font-size:17px;line-height:1.7;color:var(--ink-2)}
+    .keys{display:flex;flex-wrap:wrap;gap:8px;font-size:14px;color:var(--ink-2)}
+    .keys kbd{font-family:var(--font-pixel);background:var(--night);padding:4px 8px;box-shadow:0 0 0 2px var(--ink);color:var(--ink)}
+    .btn{appearance:none;border:0;height:52px;padding:0 24px;font-size:17px;font-weight:700;background:var(--mint);color:var(--mint-ink);box-shadow:0 0 0 3px var(--ink),4px 4px 0 3px var(--ink);transition:transform .15s var(--ease),box-shadow .15s var(--ease)}
+    .btn:hover{transform:translate(-2px,-2px);box-shadow:0 0 0 3px var(--ink),6px 6px 0 3px var(--ink)}
+    .link{appearance:none;border:0;background:transparent;color:var(--ink);font-size:16px;text-decoration:underline;text-underline-offset:.3em;height:52px;padding:0 6px}
+    .row{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+    .receipt{width:100%;background:var(--ink);color:var(--night);padding:20px 22px;display:grid;gap:8px;font-size:15px}
+    .receipt b{font-size:26px}
+    .receipt-row{display:flex;justify-content:space-between;gap:12px}
+    .field{width:100%;height:52px;border:0;background:var(--night);color:var(--ink);font-size:18px;padding:0 14px;box-shadow:inset 0 0 0 3px var(--ink-2)}
+    .small{font-size:13px!important;color:var(--muted)!important}
+    .board{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px;color:var(--ink-2);max-height:120px;overflow:auto;width:100%}
+    .dissolve{position:fixed;inset:0;z-index:30;pointer-events:none;display:grid;grid-template-columns:repeat(24,1fr);grid-auto-rows:1fr}
+    .dissolve i{background:var(--mint-ink);opacity:0;transform:scale(.2);transition:opacity .25s var(--ease),transform .35s var(--ease)}
+    .dissolve.is-on i{opacity:1;transform:none}
+  </style>
+</head>
+<body>
+  <canvas id="world" aria-label="밤의 원룸. 키보드로 돌아다니며 빨래를 모아 문 앞의 틈GO 가방에 넣습니다."></canvas>
+  <div class="hud"><a class="chip" href="index.html#tumgo">← 포트폴리오로</a><button type="button" class="chip" id="sound-toggle" aria-pressed="true">소리 끄기</button></div>
+  <div class="cross" id="cross" hidden></div>
+  <p class="prompt" id="prompt" hidden></p>
+  <p class="toast is-off" id="toast"></p>
+  <p class="esc-hint" id="esc-hint" hidden>Esc를 누르면 마우스 커서가 돌아옵니다. 다시 걸으려면 화면을 클릭하세요.</p>
+  <aside class="mission px" id="mission" hidden aria-live="polite">
+    <h2>금요일 밤 12시 35분</h2>
+    <ul id="mission-list"></ul>
+  </aside>
+
+  <section class="gate" id="gate" aria-labelledby="gate-title">
+    <div class="card px">
+      <h1 id="gate-title">현우의 원룸,<br>금요일 밤.</h1>
+      <p>「틈GO」의 주인공 현우의 방입니다. 빨래가 산처럼 쌓였습니다. 방을 돌아다니며 세 가지를 주워 현관 앞 틈GO 가방에 넣으면, 로봇이 가져갑니다.</p>
+      <div class="keys"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 걷기</span><span>마우스 둘러보기</span><span><kbd>E</kbd> 또는 클릭 줍기</span><span><kbd>Esc</kbd> 마우스 커서로 돌아가기</span></div>
+      <div class="row"><button type="button" class="btn" id="enter">방에 들어가기</button><a class="link" href="index.html#tumgo">작품만 보기</a></div>
+    </div>
+  </section>
+
+  <section class="panel" id="done" hidden aria-labelledby="done-title">
+    <div class="card px">
+      <h2 id="done-title">수거 완료</h2>
+      <div class="receipt"><div class="receipt-row"><span>틈GO 송장</span><b id="code">TG-4Q7</b></div><div class="receipt-row"><span>품목</span><span id="receipt-items"></span></div><div class="receipt-row"><span>수거</span><span id="when"></span></div></div>
+      <p>당신이라면 무엇을 문 앞에 두고 싶나요? 한 줄 적으면, 다음에 이 방에 들어오는 사람이 그 물건을 줍게 됩니다.</p>
+      <form id="ask" class="row" style="width:100%"><input class="field" id="ask-input" maxlength="40" placeholder="예: 겨울 패딩, 운동화 세탁" aria-label="맡기고 싶은 것"><button class="btn" type="submit">붙이기</button></form>
+      <p class="small" id="ask-state"></p>
+      <ul class="board" id="board" aria-label="다른 사람이 맡긴 것"></ul>
+      <div class="row"><button type="button" class="btn" id="to-film">틈GO 영상 보기</button><button type="button" class="link" id="again">한 번 더 하기</button></div>
+    </div>
+  </section>
+  <div class="dissolve" id="dissolve" aria-hidden="true"></div>
+
+  <script src="notes-config.js"></script>
+  <script src="notes-db.js"></script>
+  <script src="assets/vendor/three.min.js"></script>
+  <script>
+  (()=>{'use strict';const THREE=window.THREE;
+  const $=s=>document.querySelector(s);
+  const canvas=$('#world'),PIX=3;
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:false});renderer.setPixelRatio(1);
+  const scene=new THREE.Scene();scene.background=new THREE.Color('#0c1620');scene.fog=new THREE.Fog('#0c1620',8,22);
+  const camera=new THREE.PerspectiveCamera(70,1,.05,60);camera.position.set(0,1.6,2.6);
+  scene.add(new THREE.HemisphereLight('#6d86a8','#2a1d14',.55));
+  const lamp=new THREE.PointLight('#ffc98a',14,9,1.6);lamp.position.set(-2.2,1.6,-2.2);scene.add(lamp);
+  const moon=new THREE.DirectionalLight('#8fb2e0',.5);moon.position.set(4,6,-6);scene.add(moon);
+  const cube=new THREE.BoxGeometry(1,1,1);
+  const solids=[]; // 부딪히는 가구 (x,z 상자)
+  function vox(c,x,y,z,sx,sy,sz,parent=scene,solid=false,emis){const m=new THREE.Mesh(cube,new THREE.MeshLambertMaterial({color:c,emissive:emis||'#000000'}));m.position.set(x,y,z);m.scale.set(sx,sy,sz);parent.add(m);if(solid)solids.push({x0:x-sx/2,x1:x+sx/2,z0:z-sz/2,z1:z+sz/2});return m}
+  // 방: 6 x 7, 문은 +z 벽 오른쪽
+  const RW=6,RD=7,RH=2.8;
+  for(let x=-RW/2+.25;x<RW/2;x+=.5)for(let z=-RD/2+.25;z<RD/2;z+=.5)vox(((x*2+z*2)|0)%2?'#8a6040':'#7d5638',x,-.05,z,.5,.1,.5);
+  vox('#d8d2c4',0,RH/2,-RD/2,RW,RH,.1);vox('#cfc8b8',-RW/2,RH/2,0,.1,RH,RD);vox('#d3ccbd',RW/2,RH/2,0,.1,RH,RD);
+  vox('#d8d2c4',-.4,RH/2,RD/2,RW-1.2,RH,.1);vox('#d8d2c4',2.6,2.4,RD/2,.8,.8,.1); // 앞벽 + 문 위
+  vox('#e9e4d8',0,RH,0,RW,.1,RD);
+  // 창문(밤의 도시)
+  vox('#1b2b44',.8,1.6,-RD/2+.06,2.2,1.2,.02,scene,false,'#0b1626');
+  [[.1,1.3],[.5,1.8],[1.3,1.45],[1.6,1.9],[.9,1.2],[1.8,1.25]].forEach(([x,y])=>vox('#ffd27a',x,y,-RD/2+.08,.12,.12,.01,scene,false,'#d9a740'));
+  vox('#e9e4d8',.8,1.6,-RD/2+.09,.06,1.2,.02);vox('#e9e4d8',.8,1.6,-RD/2+.09,2.2,.06,.02);
+  // 가구
+  vox('#ece6dc',2.1,.3,-2.4,1.6,.6,2.2,scene,true);vox('#9fb6c9',2.1,.65,-2.4,1.5,.1,2.1);vox('#f4f0e8',2.1,.75,-3.2,1.1,.12,.4); // 침대
+  vox('#6b4a32',-2.2,.75,-2.6,1.4,.06,.8,scene,true);[[-2.8,-2.9],[-1.6,-2.9],[-2.8,-2.3],[-1.6,-2.3]].forEach(([x,z])=>vox('#5a3d2a',x,.36,z,.06,.72,.06));
+  vox('#20242a',-2.2,1.1,-2.85,.9,.55,.05,scene,false,'#0c1e2a');vox('#2c3036',-2.6,.82,-2.5,.2,.04,.2); // 모니터, 스탠드
+  vox('#2c3036',-2.6,1.05,-2.5,.04,.45,.04);vox('#ffd9a0',-2.6,1.3,-2.45,.24,.12,.18,scene,false,'#ffb86b');
+  vox('#e8e8e6',-2.4,.45,2.4,.8,.9,.75,scene,true);vox('#30363d',-2.4,.5,2.02,.5,.5,.02);vox('#9aa4ad',-2.4,.5,2.01,.36,.36,.02); // 세탁기
+  vox('#c8b58f',-1.3,.25,2.6,.55,.5,.55,scene,true); // 빨래바구니
+  // 쌓인 빨래 더미
+  [['#3c5a8a',-.6,.12,-.6],['#b8b2a6',-.4,.2,-.3],['#6a7a5a',-.8,.18,-.2],['#d7d1c4',-.5,.3,-.5],['#59627a',-.2,.1,-.8]].forEach(([c,x,y,z])=>vox(c,x,y,z,.55,.2,.45));
+  // 주울 물건
+  // ---- 수거할 물건: 매번 무작위로 세 가지 + 다른 방문자가 맡긴 것 하나 ----
+  const C={
+    jeans:{name:'얼룩진 청바지',w:['청바지','바지','데님','진'],b:g=>{vox('#3f6aa8',0,0,0,.7,.06,.5,g);vox('#3f6aa8',-.15,0,.42,.22,.06,.45,g);vox('#3f6aa8',.15,0,.42,.22,.06,.45,g);vox('#7a5b2a',.05,.04,.05,.18,.01,.14,g)}},
+    shirt:{name:'흰 티셔츠',w:['티셔츠','셔츠','티','블라우스'],b:g=>{vox('#f4f3ee',0,0,0,.55,.05,.5,g);vox('#f4f3ee',-.38,0,-.1,.22,.05,.22,g);vox('#f4f3ee',.38,0,-.1,.22,.05,.22,g);vox('#c9a34a',.05,.03,.05,.12,.01,.1,g)}},
+    sock:{name:'양말 한 켤레',w:['양말','스타킹'],b:g=>{vox('#e04a4a',0,0,0,.12,.08,.3,g);vox('#e04a4a',.18,0,.05,.12,.08,.3,g)}},
+    rag:{name:'걸레',w:['걸레','행주'],b:g=>{vox('#8f9a9e',0,0,0,.45,.04,.4,g);vox('#7d878b',.1,.03,.05,.3,.03,.25,g)}},
+    towel:{name:'수건 세 장',w:['수건','타월'],b:g=>{['#7fb3d5','#f2f0ea','#e9b8c2'].forEach((c,i)=>vox(c,0,i*.08,0,.5,.07,.3,g));vox('#ffffff',0,.08,.16,.5,.02,.01,g)}},
+    blanket:{name:'두꺼운 이불',w:['이불','담요','차렵'],b:g=>{vox('#e9d9b8',0,.1,0,1.1,.2,.8,g);vox('#d7c39b',0,.22,0,.9,.06,.6,g);[-.3,0,.3].forEach(x=>vox('#cdb68b',x,.21,0,.04,.02,.8,g))}},
+    pillow:{name:'베개 커버',w:['베개','베갯잇','커버'],b:g=>{vox('#f6f4ee',0,.05,0,.6,.1,.4,g);vox('#6f9fd0',0,.05,.2,.6,.1,.02,g)}},
+    padding:{name:'겨울 패딩',w:['패딩','점퍼','코트','자켓','재킷','롱패딩'],b:g=>{[0,.12,.24].forEach((z,i)=>vox(i%2?'#262a30':'#1d2126',0,.08,z-.12,.6,.16,.13,g));vox('#1d2126',-.42,.07,-.05,.24,.14,.3,g);vox('#1d2126',.42,.07,-.05,.24,.14,.3,g);vox('#c9cdd2',0,.17,-.18,.04,.02,.3,g)}},
+    sneakers:{name:'흙 묻은 운동화',w:['운동화','신발','스니커즈','구두','슬리퍼'],b:g=>{[-.1,.12].forEach(x=>{vox('#f2f2f0',x,.05,0,.16,.1,.36,g);vox('#9a7a55',x,.01,0,.17,.03,.37,g);vox('#3f6aa8',x,.09,-.05,.14,.04,.12,g)})}},
+    curtain:{name:'먼지 쌓인 커튼',w:['커튼','블라인드'],b:g=>{vox('#b9c7a3',0,.04,0,.9,.08,.5,g);[-.3,0,.3].forEach(x=>vox('#a7b691',x,.09,0,.05,.02,.5,g))}},
+  };
+  const SPOTS=[[1.6,.75,-1.6],[-1.8,.06,.6],[.8,.05,1.9],[-.2,.05,-1.3],[1.3,.05,.5],[-1.3,.55,2.6],[2.4,.75,-2.9],[-.9,.05,1.2],[.2,.05,.2]];
+  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+  const items=[];
+  // 맡긴 글에 맞는 모델이 있으면 그 모델로, 없으면 글씨 꼬리표를 단 상자로 만든다
+  function textBox(g,text){vox('#c8a77a',0,.12,0,.5,.24,.4,g);vox('#b08f62',0,.245,0,.5,.01,.04,g);
+    const cv=document.createElement('canvas');cv.width=256;cv.height=128;const x=cv.getContext('2d');x.fillStyle='#fbf7ec';x.fillRect(0,0,256,128);x.fillStyle='#1c2b33';x.textAlign='center';x.textBaseline='middle';
+    let f=40;const t=text.slice(0,12);do{x.font=`700 ${f}px Galmuri11, sans-serif`;f-=2}while(x.measureText(t).width>230&&f>14);x.fillText(t,128,64);
+    const tex=new THREE.CanvasTexture(cv);tex.magFilter=THREE.NearestFilter;const tag=new THREE.Mesh(new THREE.PlaneGeometry(.46,.23),new THREE.MeshBasicMaterial({map:tex}));tag.position.set(0,.13,.205);g.add(tag);
+    const tag2=tag.clone();tag2.rotation.x=-Math.PI/2;tag2.position.set(0,.252,0);g.add(tag2)}
+  function matchKind(text){const t=text.replace(/\s/g,'');for(const k in C)if(C[k].w.some(w=>t.includes(w)))return k;return null}
+  function spawn(list){shuffle(SPOTS.slice()).slice(0,list.length).forEach((pos,i)=>{const it=list[i];it.g=new THREE.Group();it.pos=pos;it.g.position.set(...pos);it.g.rotation.y=Math.random()*Math.PI;scene.add(it.g);
+    if(it.text&&!it.kind)textBox(it.g,it.text);else C[it.kind].b(it.g);
+    it.hit=new THREE.Mesh(new THREE.BoxGeometry(.9,.6,.9),new THREE.MeshBasicMaterial({visible:false}));it.g.add(it.hit);it.got=false;items.push(it)});
+    const ul=$('#mission-list');ul.replaceChildren();items.forEach(it=>{const li=document.createElement('li');li.dataset.m=it.id;li.textContent=it.visitor?`누군가 맡긴 ${it.name} 줍기`:`${it.name} 줍기`;ul.append(li)});
+    const li=document.createElement('li');li.dataset.m='door';li.textContent='현관 앞 틈GO 가방에 넣기';ul.append(li);
+    $('#receipt-items').textContent=items.map(i=>i.name).join(', ')}
+  async function prepareItems(){const base=shuffle(Object.keys(C)).slice(0,3).map((k,i)=>({id:'i'+i,kind:k,name:C[k].name}));
+    let extra=null;
+    try{if(window.NotesDB){const r=await window.NotesDB.list('tumgo',30);const rows=(r.rows||[]).filter(n=>n.body&&n.body.trim());
+      if(rows.length){const n=rows[Math.floor(Math.random()*rows.length)];const text=n.body.trim().slice(0,20);const k=matchKind(text);
+        extra={id:'v',kind:k&&!base.some(b=>b.kind===k)?k:null,text,name:text,visitor:true}}}}catch(e){}
+    if(document.fonts)try{await document.fonts.load('700 40px Galmuri11')}catch(e){}
+    spawn(extra?[...base,extra]:base)}
+  // 현관과 틈GO 가방
+  const door=new THREE.Group();door.position.set(2.2,0,RD/2);scene.add(door);
+  const doorLeaf=vox('#5b6470',.4,1,0,.8,2,.08,door);
+  const bag=new THREE.Group();bag.position.set(2.2,0,RD/2-.6);scene.add(bag);
+  vox('#e9eef0',0,.25,0,.5,.5,.35,bag);vox('#7ce0b8',0,.52,0,.5,.06,.35,bag);vox('#1c2b33',0,.3,.18,.2,.08,.01,bag);
+  const bagHit=new THREE.Mesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshBasicMaterial({visible:false}));bagHit.position.y=.4;bag.add(bagHit);
+  // 복도에서 오는 4족 로봇
+  const robot=new THREE.Group();robot.position.set(2.2,0,RD/2+4);scene.add(robot);robot.visible=false;
+  vox('#2a2e33',0,.55,0,.45,.25,.8,robot);vox('#d6dbe0',0,.7,0,.42,.08,.7,robot);vox('#7ce0b8',0,.62,.41,.3,.05,.02,robot,undefined,undefined);
+  [[-.2,.32],[.2,.32],[-.2,-.32],[.2,-.32]].forEach(([x,z])=>vox('#3a3f46',x,.25,z,.08,.5,.08,robot));
+  const corridorLight=new THREE.PointLight('#cfe9ff',0,8,1.2);corridorLight.position.set(2.2,2,RD/2+1.5);scene.add(corridorLight);
+  vox('#2b3036',2.2,-.05,RD/2+3,2,.1,6);
+
+  // 걷기 (WASD + 마우스)
+  let yaw=0,pitch=-.12,locked=false,playing=false,finished=false;
+  const keys={};
+  addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='KeyE')interact()});
+  addEventListener('keyup',e=>keys[e.code]=false);
+  canvas.addEventListener('click',()=>{if(!playing||finished)return;if(!locked&&canvas.requestPointerLock)canvas.requestPointerLock();else interact()});
+  document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===canvas;$('#cross').hidden=!locked;$('#esc-hint').hidden=!locked;if(!locked&&playing&&!finished)toast('마우스를 자유롭게 쓸 수 있습니다. 화면을 클릭하면 다시 걸어요')});
+  document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0022;pitch=Math.max(-1.2,Math.min(1.2,pitch-e.movementY*.0022))});
+  // 터치: 끌어서 둘러보기, 물건을 눌러 줍기 (걷기 없이)
+  let tdrag=null;const touch=matchMedia('(pointer:coarse)').matches;
+  canvas.addEventListener('pointerdown',e=>{if(!touch||!playing)return;tdrag={x:e.clientX,y:e.clientY,yaw,pitch,m:false}});
+  canvas.addEventListener('pointermove',e=>{if(!tdrag)return;const dx=e.clientX-tdrag.x,dy=e.clientY-tdrag.y;if(Math.abs(dx)+Math.abs(dy)>6)tdrag.m=true;yaw=tdrag.yaw-dx*.005;pitch=Math.max(-1.2,Math.min(1.2,tdrag.pitch-dy*.004))});
+  canvas.addEventListener('pointerup',e=>{if(tdrag&&!tdrag.m)tapPick(e);tdrag=null});
+  const ray=new THREE.Raycaster(),center=new THREE.Vector2(0,0);
+  function target(px){ray.setFromCamera(px||center,camera);ray.far=touch?12:2.4;
+    const cands=items.filter(i=>!i.got).map(i=>i.hit);if(items.every(i=>i.got)&&!finished)cands.push(bagHit);
+    const h=ray.intersectObjects(cands,false)[0];if(!h)return null;if(h.object===bagHit)return{bag:true};return items.find(i=>i.hit===h.object)}
+  function tapPick(e){const r=canvas.getBoundingClientRect();const p=new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);act(target(p))}
+  function interact(){if(!playing||finished)return;act(target())}
+  function act(t){if(!t)return;if(t.bag){putBag();return}t.got=true;t.g.visible=false;blip(660);blip(990,.07);mark(t.id);toast(`${t.name}을(를) 주웠습니다`);
+    if(items.every(i=>i.got))toast('현관 앞 틈GO 가방에 넣으세요')}
+  function mark(k){const li=document.querySelector(`[data-m="${k}"]`);if(li)li.classList.add('is-done')}
+  let tt=null;function toast(m){const el=$('#toast');el.textContent=m;el.classList.remove('is-off');clearTimeout(tt);tt=setTimeout(()=>el.classList.add('is-off'),1800)}
+  function collide(nx,nz){if(nx<-RW/2+.35||nx>RW/2-.35||nz<-RD/2+.35||nz>RD/2-.35)return true;return solids.some(s=>nx>s.x0-.3&&nx<s.x1+.3&&nz>s.z0-.3&&nz<s.z1+.3)}
+
+  // 소리
+  let ac=null,master=null,soundOn=true;
+  function startAudio(){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=.5;master.connect(ac.destination);
+    const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=58;g.gain.value=.025;o.connect(g).connect(master);o.start(); // 냉장고 웅웅
+    }
+  function blip(f=880,dt=0){if(!ac||!soundOn)return;const t=ac.currentTime+dt,o=ac.createOscillator(),g=ac.createGain();o.type='square';o.frequency.value=f;g.gain.setValueAtTime(.07,t);g.gain.exponentialRampToValueAtTime(.0001,t+.07);o.connect(g).connect(master);o.start(t);o.stop(t+.08)}
+  function stepSnd(){if(!ac||!soundOn)return;const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=90+Math.random()*20;g.gain.setValueAtTime(.05,t);g.gain.exponentialRampToValueAtTime(.0001,t+.05);o.connect(g).connect(master);o.start(t);o.stop(t+.06)}
+  $('#sound-toggle').addEventListener('click',e=>{soundOn=!soundOn;if(master)master.gain.value=soundOn?.5:0;e.currentTarget.textContent=soundOn?'소리 끄기':'소리 켜기';e.currentTarget.setAttribute('aria-pressed',String(soundOn))});
+
+  // 수거 연출
+  let pickupT=-1;
+  function putBag(){finished=true;mark('door');blip(520);blip(780,.1);blip(1040,.2);if(document.exitPointerLock)document.exitPointerLock();
+    vox('#3f6aa8',0,.56,0,.3,.06,.2,bag);vox('#f4f3ee',.05,.6,0,.25,.05,.18,bag); // 가방 위로 빨래 끝이 보인다
+    toast('가방을 봉인했습니다. 틈GO를 부릅니다');pickupT=0;robot.visible=true}
+  const DB=window.NotesDB;
+  function code(){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return 'TG-'+[0,1,2].map(()=>a[Math.floor(Math.random()*a.length)]).join('')}
+  async function showDone(){$('#code').textContent=code();const d=new Date();$('#when').textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    $('#done').hidden=false;$('#ask-input').focus();loadBoard()}
+  async function loadBoard(){if(!DB)return;const r=await DB.list('tumgo',20);const b=$('#board');b.replaceChildren();
+    r.rows.forEach(n=>{const li=document.createElement('li');li.textContent=`□ ${n.body}`;b.append(li)});
+    $('#ask-state').textContent=r.shared?(r.rows.length?`다른 사람이 맡긴 것 ${r.rows.length}건`:'아직 아무도 적지 않았습니다. 첫 줄을 붙여 주세요.'):'지금은 저장소가 연결되지 않아 이 기기에만 남습니다.'}
+  $('#ask').addEventListener('submit',async e=>{e.preventDefault();if(!DB)return;const r=await DB.add('tumgo',$('#ask-input').value);
+    if(r.error==='filtered'){$('#ask-state').textContent='거친 표현이 있어 붙이지 못했습니다.';return}if(r.error)return;$('#ask-input').value='';blip(880);loadBoard()});
+  const dis=$('#dissolve');for(let i=0;i<24*14;i++){const c=document.createElement('i');c.style.transitionDelay=`${Math.random()*600}ms`;dis.append(c)}
+  $('#to-film').addEventListener('click',()=>{dis.classList.add('is-on');setTimeout(()=>location.href='index.html?play=tumgo#tumgo',1100)});
+  $('#again').addEventListener('click',()=>location.reload());
+  $('#enter').addEventListener('click',async()=>{await prepareItems();$('#gate').hidden=true;$('#mission').hidden=false;playing=true;try{startAudio()}catch(e){}if(!touch&&canvas.requestPointerLock)canvas.requestPointerLock();toast(touch?'끌어서 둘러보고, 물건을 눌러 주우세요':'WASD로 걸으세요')});
+
+  window.__room={act,items,setView:(x,z,y,p)=>{camera.position.x=x;camera.position.z=z;yaw=y;pitch=p}};
+  function resize(){renderer.setSize(Math.ceil(innerWidth/PIX),Math.ceil(innerHeight/PIX),false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}
+  addEventListener('resize',resize);resize();
+  const clock=new THREE.Clock(),fwd=new THREE.Vector3(),side=new THREE.Vector3();let stepAcc=0;
+  (function loop(){const dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;
+    if(playing&&!finished){const sp=2.2*dt;fwd.set(-Math.sin(yaw),0,-Math.cos(yaw));side.set(-fwd.z,0,fwd.x);let mx=0,mz=0;
+      if(keys.KeyW||keys.ArrowUp){mx+=fwd.x;mz+=fwd.z}if(keys.KeyS||keys.ArrowDown){mx-=fwd.x;mz-=fwd.z}if(keys.KeyD||keys.ArrowRight){mx+=side.x;mz+=side.z}if(keys.KeyA||keys.ArrowLeft){mx-=side.x;mz-=side.z}
+      const l=Math.hypot(mx,mz);if(l){mx=mx/l*sp;mz=mz/l*sp;const p=camera.position;if(!collide(p.x+mx,p.z))p.x+=mx;if(!collide(p.x,p.z+mz))p.z+=mz;stepAcc+=dt;if(stepAcc>.38){stepSnd();stepAcc=0}camera.position.y=1.6+Math.sin(t*9)*.025}
+      const tg=target();const pr=$('#prompt');if(tg&&locked){pr.hidden=false;pr.textContent=tg.bag?'E  가방에 넣고 문 앞에 두기':`E  ${tg.name} 줍기`}else pr.hidden=true}
+    else $('#prompt').hidden=true;
+    items.forEach((it,i)=>{if(!it.got)it.g.position.y=it.pos[1]+Math.abs(Math.sin(t*2+i))*.03});
+    if(pickupT>=0){pickupT+=dt;
+      // 카메라가 문 쪽으로 돌아 문이 열리고, 로봇이 와서 가방을 싣고 간다
+      const look=new THREE.Vector3(2.5,.6,RD/2+1.2);camera.position.lerp(new THREE.Vector3(.2,1.45,RD/2-3),Math.min(1,dt*2));camera.lookAt(look);
+      doorLeaf.position.x=.4+Math.min(1,pickupT/1.2)*.0;door.rotation.y=-Math.min(1,pickupT/1.2)*1.4;corridorLight.intensity=Math.min(6,pickupT*5);
+      const rz=RD/2+4-Math.min(1,Math.max(0,(pickupT-1)/2.2))*3.3;robot.position.z=rz;robot.children.slice(-4).forEach((l,i)=>l.rotation.x=Math.sin(t*12+i*1.6)*.4);
+      if(pickupT>3.4&&bag.parent!==robot){robot.attach(bag);bag.position.set(0,.72,0);blip(440)}
+      if(pickupT>3.8)robot.position.z=RD/2+.7+Math.min(4,(pickupT-3.8)*1.6);
+      if(pickupT>6.6&&$('#done').hidden){pickupT=-1;showDone()}}
+    else if(playing||!finished){camera.rotation.order='YXZ';camera.rotation.set(pitch,yaw,0)}
+    renderer.render(scene,camera);requestAnimationFrame(loop)})();
+  })();
+  </script>
+</body>
+</html>

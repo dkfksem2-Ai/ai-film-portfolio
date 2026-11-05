@@ -568,3 +568,129 @@ h4{font-weight:700;font-size:var(--text-lg)}
   .process .process-heading,.process .process-side,.process .process-figures{grid-column:auto;grid-row:auto}
   .process .process-figures{grid-template-columns:minmax(0,1fr)}
 }
+
+/* ===================== V7.3 · copy pass: fewer boxes, text links beside one filled action ===================== */
+.btn--text{background:transparent;color:var(--color-ink);padding:0 var(--space-xs);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.3em}
+.btn--text:hover{background:transparent;text-decoration-color:var(--color-accent);text-decoration-thickness:2px}
+.header-screening{background:transparent;color:var(--color-ink);box-shadow:inset 0 0 0 1px var(--color-ink)}
+.header-screening:hover{background:var(--color-ink);color:var(--color-paper)}
+.top-nav{gap:var(--space-xl)}
+.work-line{font-family:var(--font-body);font-size:var(--text-lead);color:var(--color-ink);margin-bottom:var(--space-md);max-width:30ch}
+.band-tumgo .work-line{margin-left:auto}
+.work-facts div{grid-template-columns:64px minmax(0,1fr)}
+.band-tumgo .work-facts div{grid-template-columns:minmax(0,1fr) 64px}
+.band .work-row h3{margin-bottom:var(--space-sm)}
+.project-memory .project-aside{font-family:var(--font-body);font-size:clamp(1.4rem,1.7vw,1.9rem)}
+.process-tile .figure-label small{display:block;margin-top:var(--space-2xs);font-size:14px;color:var(--color-muted)}
+.process-list li{grid-template-columns:80px minmax(0,1fr)}
+.process-list p{font-size:16px}
+.about h2{font-size:clamp(4.5rem,7vw,8.5rem);line-height:.85}
+.about-role{font-family:var(--font-body);font-size:var(--text-lead);color:var(--color-ink);max-width:24ch}
+.section-intro .intro-copy{max-width:45%}
+.section-intro h1{font-size:clamp(3rem,4.5vw,5.75rem);line-height:1.02;white-space:nowrap}
+@media(max-width:1100px){.section-intro h1{white-space:normal}}
+
+/* ===================== V7.4 · left film index and the floating film window ===================== */
+.film-index{position:fixed;z-index:var(--z-sticky);left:32px;top:50%;transform:translateY(-50%);width:176px;display:grid;gap:var(--space-xs);padding:var(--space-md);background:var(--color-paper);box-shadow:inset 0 0 0 1px var(--color-ink);font-family:var(--font-label)}
+.js .film-index{opacity:0;pointer-events:none;transition:opacity .4s var(--ease-out)}
+.js .film-index.is-shown{opacity:1;pointer-events:auto}
+.fi-label{font-size:13px;color:var(--color-muted)}
+.fi-film{display:grid;gap:var(--space-3xs);padding:var(--space-xs) 0;text-decoration:none;color:var(--color-ink);border-top:1px solid var(--color-rule)}
+.fi-name{font-family:var(--font-display);font-weight:800;font-stretch:75%;font-variation-settings:"wdth" 75;font-size:22px;line-height:1.05;transition:transform .5s var(--spring)}
+.fi-meta{font-size:12px;color:var(--color-muted)}
+.fi-film:hover .fi-name{transform:translateX(4px)}
+.fi-film.is-on .fi-name{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:.18em;text-decoration-color:var(--color-accent)}
+.fi-film[data-film="memory"].is-on .fi-name{text-decoration-color:var(--tomato)}
+.fi-film[data-film="tumgo"].is-on .fi-name{text-decoration-color:var(--mint)}
+.fi-rule{height:1px;background:var(--color-ink);margin:var(--space-2xs) 0}
+.fi-link{font-size:14px;color:var(--color-ink-2);text-decoration:none}
+.fi-link:hover{color:var(--color-ink);text-decoration:underline}
+.fi-film:focus-visible,.fi-link:focus-visible,.mp-btn:focus-visible{outline:2px solid var(--color-focus);outline-offset:3px}
+.mini-player{position:fixed;z-index:var(--z-modal);right:32px;bottom:32px;width:min(520px,calc(100% - 64px));background:var(--room-paper);color:var(--room-ink);box-shadow:0 24px 60px color-mix(in oklab,var(--room-paper) 40%,transparent);transition:opacity .45s var(--ease-out),transform .6s var(--spring)}
+.js .mini-player{opacity:0;transform:translateY(24px)}
+.js .mini-player.is-in{opacity:1;transform:none}
+.mp-bar{display:flex;align-items:center;gap:var(--space-xs);padding:var(--space-xs) var(--space-xs) var(--space-xs) var(--space-md);font-family:var(--font-label)}
+.mp-title{flex:1;font-family:var(--font-display);font-weight:800;font-stretch:75%;font-variation-settings:"wdth" 75;font-size:18px}
+.mp-btn{appearance:none;border:0;background:transparent;color:var(--room-ink-2);font-family:var(--font-label);font-size:14px;height:32px;padding:0 var(--space-sm);box-shadow:inset 0 0 0 1px var(--room-rule-2)}
+.mp-btn:hover{background:var(--room-paper-3);color:var(--room-ink)}
+.mp-close{width:32px;padding:0}
+.mini-player video{display:block;width:100%;aspect-ratio:16/9;background:var(--room-paper)}
+.mini-player.is-empty video{display:none}
+@media(max-width:1719px){.film-index{display:none}}
+.stage-hint a{color:var(--color-ink);text-decoration:underline;text-underline-offset:.25em;margin-left:var(--space-sm)}
+.stage-hint a:hover{text-decoration-color:var(--color-accent)}
+
+/* ===================== V7.5 · the game layer: pixel type ties the portfolio to the two playable rooms ===================== */
+@font-face{font-family:"Galmuri11";src:url("assets/fonts/Galmuri11.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Galmuri11";src:url("assets/fonts/Galmuri11-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+:root{--tomato-deep:oklch(51% .17 32);--font-pixel:"Galmuri11","Pretendard Variable",Pretendard,monospace}
+.brand-name{font-family:var(--font-pixel);font-weight:700;font-stretch:100%;font-variation-settings:normal;font-size:20px;letter-spacing:0}
+.section-intro h1{font-family:var(--font-pixel);font-weight:700;font-stretch:100%;font-variation-settings:normal;letter-spacing:0;font-size:clamp(2.75rem,3.9vw,5rem);line-height:1.18}
+.section-intro .intro-copy .actions{gap:var(--space-md)}
+.section-intro .intro-copy .actions .btn--primary{font-family:var(--font-pixel);font-weight:700;box-shadow:0 0 0 3px var(--color-ink),5px 5px 0 3px var(--color-ink);transition:transform .15s var(--ease-out),box-shadow .15s var(--ease-out),background-color .2s var(--ease-out)}
+.section-intro .intro-copy .actions .btn--primary:hover{transform:translate(-2px,-2px);box-shadow:0 0 0 3px var(--color-ink),7px 7px 0 3px var(--color-ink)}
+.section-intro .intro-copy .actions .btn--primary:active{transform:translate(3px,3px);box-shadow:0 0 0 3px var(--color-ink),2px 2px 0 3px var(--color-ink)}
+.section-intro .intro-copy .actions .btn--primary{background:var(--tomato-deep);color:var(--tomato-ink)}
+.section-intro .intro-copy .actions .btn--night{background:var(--night);color:var(--mint)}
+.section-intro .intro-copy .actions .btn--night:hover{background:var(--night-2)}
+.fi-play{font-family:var(--font-pixel);font-size:13px;color:var(--color-ink)}
+.fi-play::before{content:"▶ ";font-size:10px}
+
+/* ===================== V7.7 · title sequence, play cards, a works list that grows ===================== */
+/* colourways by tone, so a new work only needs tone in works.js */
+.tone-butter{--color-paper:var(--butter);--color-paper-2:var(--butter-2);--color-paper-3:var(--butter-3);--color-ink:var(--butter-ink);--color-ink-2:var(--butter-ink-2);--color-muted:var(--butter-muted);--color-rule:var(--butter-rule);--color-accent:var(--tomato);--color-accent-ink:var(--tomato-ink);background:var(--color-paper);color:var(--color-ink-2)}
+.tone-night{--color-paper:var(--night);--color-paper-2:var(--night-2);--color-paper-3:var(--night-2);--color-ink:var(--night-ink);--color-ink-2:var(--night-ink-2);--color-muted:var(--night-muted);--color-rule:var(--night-rule);--color-accent:var(--mint);--color-accent-ink:var(--mint-ink);background:var(--color-paper);color:var(--color-ink-2)}
+.hero2 .index-inner{grid-template-rows:repeat(var(--n,2),minmax(0,1fr))}
+.band.is-flip .work-row{grid-template-columns:minmax(0,8fr) minmax(0,4fr)}
+.band.is-flip .work-head{order:2;text-align:right}
+.band.is-flip .work-line{margin-left:auto}
+.band.is-flip .work-facts div{grid-template-columns:minmax(0,1fr) 64px;text-align:right}
+.band.is-flip .work-facts dt{order:2}
+.band .hs-col{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+/* hero copy */
+.section-intro .intro-copy{gap:var(--space-lg)}
+.section-intro h1.type-in{display:grid;gap:.06em;font-size:clamp(2.4rem,3.15vw,4rem);line-height:1.12;white-space:nowrap}
+.section-intro h1 .tl{display:block}
+
+.section-intro .intro-lede{font-size:clamp(1.15rem,1.25vw,1.4rem);line-height:1.7;max-width:31ch;color:var(--color-ink)}
+.play-cards{display:grid;gap:var(--space-sm);max-width:520px}
+.play-card{display:grid;grid-template-columns:88px minmax(0,1fr) auto;align-items:center;gap:var(--space-md);padding:var(--space-xs) var(--space-md) var(--space-xs) var(--space-xs);text-decoration:none;background:var(--color-paper);color:var(--color-ink);box-shadow:0 0 0 3px var(--color-ink),5px 5px 0 3px var(--color-ink);transition:transform .15s var(--ease-out),box-shadow .15s var(--ease-out)}
+.play-card img{width:88px;height:56px;object-fit:cover;image-rendering:pixelated}
+.pc-text{display:grid;gap:var(--space-3xs);min-width:0}
+.pc-label{font-family:var(--font-pixel);font-weight:700;font-size:17px;line-height:1.3}
+.pc-note{font-family:var(--font-label);font-size:13px;color:var(--color-muted)}
+.pc-go{font-family:var(--font-pixel);font-size:14px;color:var(--color-accent);transition:transform .5s var(--spring)}
+.play-card:hover{transform:translate(-2px,-2px);box-shadow:0 0 0 3px var(--color-ink),7px 7px 0 3px var(--color-ink)}
+.play-card:hover .pc-go{transform:translateX(4px)}
+.play-card:active{transform:translate(3px,3px);box-shadow:0 0 0 3px var(--color-ink),2px 2px 0 3px var(--color-ink)}
+.play-card:focus-visible{outline:2px solid var(--color-focus);outline-offset:6px}
+.film-links{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-xs) var(--space-md);font-family:var(--font-label);font-size:14px;color:var(--color-muted)}
+.film-links #film-links{display:contents}
+.film-links .btn--text{height:32px;font-size:15px}
+.work-count{margin-right:var(--space-xs)}
+
+/* the title sequence: lines type in, then the lede, then the cards one by one */
+.js .section-intro .intro-copy>*{opacity:1;transform:none;transition:none}
+.js .type-in .tl{clip-path:inset(0 100% 0 0)}
+.js .type-in .tl.is-typed{clip-path:inset(0 0 0 0);transition:clip-path var(--tl-dur,.9s) steps(var(--tl-steps,10),end)}
+.js .section-intro .intro-copy::after{transform:scaleX(0);transform-origin:0 50%;transition:transform .8s var(--ease-out)}
+.js .section-intro.seq-1 .intro-copy::after{transform:none}
+.js .section-intro.section-intro .intro-copy .intro-lede,.js .section-intro.section-intro .intro-copy .film-links{opacity:0;transform:translateY(12px);transition:opacity .8s var(--ease-out),transform .9s var(--ease-out)}
+.js .section-intro.section-intro.seq-2 .intro-copy .intro-lede{opacity:1;transform:none}
+.js .section-intro.section-intro.seq-4 .intro-copy .film-links{opacity:1;transform:none}
+.js .section-intro .play-card{opacity:0;transform:translateX(-24px)}
+.js .section-intro.seq-3 .play-card{opacity:1;transform:none;transition:opacity .6s var(--ease-out) calc(var(--i) * 160ms),transform .8s var(--spring) calc(var(--i) * 160ms),box-shadow .15s var(--ease-out)}
+.js .section-intro.seq-3 .play-card:hover{transform:translate(-2px,-2px);transition-delay:0s}
+.js .section-intro .intro-reel{opacity:0;transition:opacity 1.4s var(--ease-out)}
+.js .section-intro.seq-0 .intro-reel{opacity:1}
+
+/* left film index: fades in and out smoothly */
+.js .film-index{opacity:0;transform:translateY(-50%) translateX(-12px);transition:opacity .8s var(--ease-out),transform .9s var(--ease-out);pointer-events:none}
+.js .film-index.is-shown{opacity:1;transform:translateY(-50%);pointer-events:auto}
+.fi-group{display:grid;gap:var(--space-xs)}
+
+@media(prefers-reduced-motion:reduce){
+  .js .film-index,.js .section-intro .intro-reel,.js .section-intro .intro-lede,.js .section-intro .film-links,.js .section-intro .play-card,.js .type-in .tl.is-typed{transition-duration:.6s!important}
+}
+@media(max-width:1100px){.section-intro h1.type-in{white-space:normal}.play-cards{max-width:none}}

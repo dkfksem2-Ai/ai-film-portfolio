@@ -134,11 +134,11 @@
         setStage(key,Math.floor(visibleProgress*3));
       }
     });
-    const top=interlude.getBoundingClientRect().top+scrollY;
+    if(interlude&&breath){const top=interlude.getBoundingClientRect().top+scrollY;
     const mid=top+interlude.offsetHeight/2-adjusted;
     const normalized=clamp((innerHeight/2-mid)/(innerHeight*.7),-1,1);
     breath.style.setProperty('--breath-y',`${(-normalized*30).toFixed(2)}px`);
-    breath.style.setProperty('--breath-opacity',String((1-Math.abs(normalized)*.13).toFixed(3)));
+    breath.style.setProperty('--breath-opacity',String((1-Math.abs(normalized)*.13).toFixed(3)));}
     const max=document.documentElement.scrollHeight-innerHeight;
     $('#reading-progress').style.width=`${max>0?clamp(scrollY/max*100,0,100):0}%`;
     if(Math.abs(scrollTarget-scrollSmoothed)>0.2){requestAnimationFrame(animateScroll)}else animating=false;
@@ -270,6 +270,7 @@
       if(p<1)requestAnimationFrame(step);else stop();
     })(t0);
   }
+  window.__glideTo=glideTo;window.__openFilm=(k,t)=>openFilm(k,t);
   $$('a[data-glide]').forEach(a=>a.addEventListener('click',e=>{const t=$(a.getAttribute('href'));if(!t)return;e.preventDefault();glideTo(t)}));
   /* 작품 소개 화면: 들어올 때마다 모션그래픽 재생 */
   const intro=$('.section-intro');
@@ -291,7 +292,7 @@
   /* 구간 표시: 스크롤 옆에 현재 위치 */
   const rail=$('#sec-rail');
   if(rail){
-    const secs=[['#projects','처음'],['#hero','두 작품'],['#memory','반찬통의 왕복'],['#memory-notes','반찬통의 왕복 제작 노트'],['#interlude','두 작품 사이'],['#tumgo','틈GO'],['#process','만드는 과정'],['#about','소개']].map(([sel,label])=>({el:$(sel),label})).filter(x=>x.el);
+    const secs=[['#projects','처음'],['#hero','작품 목록'],['#memory','반찬통의 왕복'],['#memory-notes','반찬통 제작 노트'],['#tumgo','틈GO'],['#process','작업 노트'],['#about','정재환']].map(([sel,label])=>({el:$(sel),label})).filter(x=>x.el);
     const ticks=$('#sr-ticks'),label=$('#sr-label');
     secs.forEach((x,i)=>{const li=document.createElement('li');const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',x.label);b.addEventListener('click',()=>glideTo(x.el));li.append(b);ticks.append(li)});
     let cur=-1;
@@ -390,4 +391,49 @@
   let i=0;sec.querySelectorAll('.iq-line').forEach(l=>{const words=l.textContent.trim().split(/\s+/);l.textContent='';words.forEach((w,k)=>{const o=document.createElement('span');o.className='w';const n=document.createElement('i');n.textContent=w;n.style.setProperty('--i',i++);o.append(n);l.append(o);if(k<words.length-1)l.append(' ')})});
   let j=0;sec.querySelectorAll('.ik-line').forEach(l=>{const words=l.textContent.split(' ');l.textContent='';words.forEach((w,k)=>{const wd=document.createElement('span');wd.className='wd';[...w].forEach(c=>{const s=document.createElement('span');s.className='ch';s.textContent=c;s.style.setProperty('--i',j++);wd.append(s)});l.append(wd);if(k<words.length-1){l.append(' ');j++}})});
   new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)sec.classList.add('il-play')}),{threshold:.35}).observe(sec);
+})();
+
+/* V7.4 왼쪽 작품 바로가기: 작품 이름을 누르면 그 작품 설명으로 이동하면서 영상 창이 뜬다 */
+(()=>{const nav=document.getElementById('film-index'),mp=document.getElementById('mini-player');if(!nav||!mp)return;
+  const v=document.getElementById('mp-video'),title=document.getElementById('mp-title');
+  const names={memory:'반찬통의 왕복',tumgo:'틈GO'};let cur=null;
+  const urls=()=>window.PORTFOLIO_VIDEO_URLS||{};
+  function openMini(key){
+    const url=urls()[key];cur=key;title.textContent=names[key];
+    mp.hidden=false;requestAnimationFrame(()=>mp.classList.add('is-in'));
+    if(!url){v.removeAttribute('src');v.load();mp.classList.add('is-empty');return}
+    mp.classList.remove('is-empty');
+    if(v.dataset.key!==key){v.src=url;v.dataset.key=key;v.load()}
+    v.play().catch(()=>{});
+  }
+  function closeMini(){v.pause();mp.classList.remove('is-in');setTimeout(()=>{if(!mp.classList.contains('is-in'))mp.hidden=true},450)}
+  nav.querySelectorAll('.fi-film').forEach(a=>a.addEventListener('click',e=>{
+    e.preventDefault();const key=a.dataset.film,target=document.getElementById(key);
+    if(target&&window.__glideTo)window.__glideTo(target);openMini(key);
+  }));
+  document.getElementById('mp-close').addEventListener('click',closeMini);
+  document.getElementById('mp-expand').addEventListener('click',()=>{const k=cur;closeMini();if(k&&window.__openFilm)window.__openFilm(k)});
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&!mp.hidden&&!document.querySelector('dialog[open]'))closeMini()});
+  // 지금 보고 있는 작품을 표시
+  const secs=['memory','tumgo'].map(id=>document.getElementById(id)).filter(Boolean);
+  const mark=()=>{const y=innerHeight*.45;let on=null;secs.forEach(s=>{const r=s.getBoundingClientRect();if(r.top<=y&&r.bottom>y)on=s.id});
+    nav.querySelectorAll('.fi-film').forEach(a=>a.classList.toggle('is-on',a.dataset.film===on));
+    nav.classList.toggle('is-shown',scrollY>innerHeight*.5)};
+  addEventListener('scroll',mark,{passive:true});mark();
+})();
+
+/* V7.4 소풍에서 뚜껑을 닫고 오면(?play=memory) 그 작품 영상을 바로 연다 */
+(()=>{const k=new URLSearchParams(location.search).get('play');if(!k||!['memory','tumgo'].includes(k))return;
+  const go=()=>{if(window.__openFilm)window.__openFilm(k);else setTimeout(go,100)};setTimeout(go,400);
+  history.replaceState(null,'',location.pathname+location.hash)})();
+
+/* V7.7 첫 화면 순서: 영상 → 제목 한 줄씩 타자 치듯 → 소개 → 참여 카드 차례로 → 작품 링크 */
+(()=>{const sec=document.querySelector('.section-intro');if(!sec)return;const lines=[...sec.querySelectorAll('.type-in .tl')];
+  const at=(ms,fn)=>setTimeout(fn,ms);let t=200;
+  at(t,()=>sec.classList.add('seq-0'));t+=500;
+  at(t,()=>sec.classList.add('seq-1'));
+  lines.forEach(l=>{const n=[...l.textContent].length,d=Math.max(.45,n*.075);l.style.setProperty('--tl-steps',n);l.style.setProperty('--tl-dur',d+'s');at(t,()=>l.classList.add('is-typed'));t+=d*1000+180});
+  at(t+=100,()=>sec.classList.add('seq-2'));
+  at(t+=550,()=>sec.classList.add('seq-3'));
+  at(t+=(document.querySelectorAll('.play-card').length*160)+500,()=>sec.classList.add('seq-4'));
 })();
