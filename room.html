@@ -525,8 +525,14 @@
 .done-modal:not(.is-active){visibility:hidden;}.done-card{max-height:90svh;overflow:auto;}
 @media(max-width:600px){.hud{top:16px;left:12px;right:12px;gap:8px;flex-wrap:wrap;}.hud-left{gap:6px;}.btn-chip{padding:8px 10px;}.counter-label{display:none;}.counter-pill{padding:8px 10px;}.viewport{inset:92px 12px 90px;}.done-card{padding:24px;}.done-title{font-size:23px;}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;}}
+</style><style>
+.room-transition{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;z-index:30;transition:opacity .65s ease;}
+.room-transition.is-dark{opacity:1;transition-duration:.35s;}
+.view-layer{transform:translate(-50%,-50%) translate3d(calc(var(--px,0)*8px),calc(var(--py,0)*6px),0);transition:transform .35s ease-out,opacity .4s ease;}
+@media(hover:none){.view-layer{transform:translate(-50%,-50%)}}
+@media(prefers-reduced-motion:reduce){.view-layer{transform:translate(-50%,-50%)!important}.room-transition{transition:none!important}}
 </style></head>
-<body>
+<body><div aria-hidden="true" class="room-transition is-dark" id="room-transition"></div>
 <!-- Minimal HUD Header -->
 <header class="hud">
 <div class="hud-left">
@@ -577,7 +583,6 @@
 <div class="hotspot-tooltip"><strong>[수거]</strong> 커피 얼룩이 묻은 흰 셔츠</div>
 </div>
 <!-- Item 4: 단추·실밥 풀린 수선 청바지 -->
-
 </div>
 <!-- View 4: 원룸 세탁 구역 & 밀린 세탁물 -->
 <div class="view-layer" data-view="3" id="view-3">
@@ -636,7 +641,7 @@
     const totalViews = 5;
     function fitViews(){
       const stage=$('#viewport');
-      viewLayers.forEach(layer=>{const img=layer.querySelector('img');if(!img.naturalWidth)return;const scale=Math.min(stage.clientWidth/img.naturalWidth,stage.clientHeight/img.naturalHeight);layer.style.width=(img.naturalWidth*scale)+'px';layer.style.height=(img.naturalHeight*scale)+'px';});
+      viewLayers.forEach(layer=>{const img=layer.querySelector('img');if(!img.naturalWidth)return;const scale=Math.min((stage.clientWidth-16)/img.naturalWidth,(stage.clientHeight-16)/img.naturalHeight);layer.style.width=(img.naturalWidth*scale)+'px';layer.style.height=(img.naturalHeight*scale)+'px';});
     }
     let collectedCount = 0;
     const collectedItems = new Set();
@@ -727,18 +732,19 @@
     }
 
     // View Switching
+    let changing=false;
+    const transition=document.getElementById('room-transition');
     function setView(idx) {
-      if (isFinished || idx < 0 || idx >= totalViews) return;
-      currentView = idx;
-      viewLayers.forEach((layer, i) => {
-        layer.classList.toggle('is-active', i === currentView);
-      });
-      dotSteps.forEach((dot, i) => {
-        dot.classList.toggle('is-on', i === currentView);
-      });
-      scheduleHint();
+      if (isFinished || changing || idx < 0 || idx >= totalViews || idx===currentView) return;
+      changing=true;clearTimeout(hintTimer);transition.classList.add('is-dark');
+      setTimeout(()=>{
+        currentView=idx;
+        viewLayers.forEach((layer,i)=>{layer.classList.toggle('is-active',i===currentView);layer.inert=i!==currentView;});
+        dotSteps.forEach((dot,i)=>{dot.classList.toggle('is-on',i===currentView);dot.setAttribute('aria-current',String(i===currentView));});
+        fitViews();requestAnimationFrame(()=>transition.classList.remove('is-dark'));
+        setTimeout(()=>{changing=false;scheduleHint();},650);
+      },350);
     }
-
     navPrev.addEventListener('click', () => {
       playChime([440, 550]);
       setView((currentView - 1 + 4) % 4);
@@ -842,7 +848,7 @@
             setTimeout(() => {
               playScanSound();
               doneModal.classList.add('is-active');btnReplay.focus();
-            }, 600);
+            }, 1000);
           }, 1100);
         } else {
           scheduleHint();
@@ -903,6 +909,10 @@
     };
     window.addEventListener('pointerdown', startAudioOnce);
 
+    viewLayers.forEach((layer,i)=>layer.inert=i!==0);
+    const firstImage=viewLayers[0].querySelector('img');
+    const revealRoom=()=>{fitViews();requestAnimationFrame(()=>transition.classList.remove('is-dark'));};
+    if(firstImage.complete)revealRoom();else firstImage.addEventListener('load',revealRoom,{once:true});
     // Initial show nav arrows for hint & schedule auto-hint
     showNavs();
     scheduleHint();

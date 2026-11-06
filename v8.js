@@ -6,6 +6,7 @@
   if(!hero||!box||!binWrap)return;
   const words=[...box.querySelectorAll('.vh-word')],bins=[...binWrap.querySelectorAll('.vh-bin')],meta=hero.querySelector('.vh-meta'),panels=[...hero.querySelectorAll('.vu-panel')];
   const W=window.WORKS||[],work=id=>W.find(w=>w.id===id)||{};
+  panels.forEach(p=>p.inert=true);
   const st=new Map(),got={};bins.forEach(b=>got[b.dataset.film]=0);
   const set=(el,o)=>{const s=st.get(el);Object.assign(s,o);el.style.setProperty('--x',s.x+'px');el.style.setProperty('--y',s.y+'px');el.style.setProperty('--r',s.r+'deg');el.style.setProperty('--s',s.s)};
   words.forEach((el,i)=>{
@@ -13,52 +14,64 @@
       x:0,y:0,r:0,s:1,hx:0,hy:0,hr:0,
       phX:i*1.37+.4,phY:i*2.11+.9,phR:i*1.73+.2,
       spX:.55+(i%4)*.14,spY:.48+((i+2)%4)*.13,spR:.42+(i%3)*.15,
-      ampX:9+(i%3)*4,ampY:8+((i+1)%3)*4,
+      ampX:4+(i%3),ampY:4+((i+1)%3),
       nextPulse:performance.now()+1400+i*420+Math.random()*1800
     });
   });
 
-  // V9.1 Magazine Center 확정형 좌표계: 11개 오브젝트가 겹치지 않고 센터 밸런스를 유지
-  const WORD_ANCHORS = {
-    // 반찬통의 왕복 (memory)
-    '엄마':     { rx: 0.12, ry: 0.15, r: -2.5 },
-    '1999':     { rx: 0.42, ry: 0.05, r: 1.2 },
-    '돗자리':   { rx: 0.38, ry: 0.30, r: -1.0 },
-    '계란말이': { rx: 0.58, ry: 0.22, r: 2.0 },
-    '반찬통':   { rx: 0.18, ry: 0.54, r: -1.5 },
-    '2026':     { rx: 0.45, ry: 0.48, r: 2.0 },
-    // 틈GO (tumgo)
-    '틈GO':     { rx: 0.72, ry: 0.08, r: -2.0 },
-    '문 앞':    { rx: 0.19, ry: 0.34, r: 1.8 },
-    '빨래':     { rx: 0.05, ry: 0.42, r: -2.2 },
-    '101호':    { rx: 0.76, ry: 0.25, r: 2.5 },
-    '로봇':     { rx: 0.84, ry: 0.35, r: -1.5 }
-  };
-
-  const hit=(a,b,pad=8)=>a.l<b.r+pad&&a.r>b.l-pad&&a.t<b.b+pad&&a.b>b.t-pad;
-
+  // Bounded randomness keeps every floating card inside its available half.
+  const seed=Math.floor(Math.random()*0xffffffff);
+  const hit=(a,b,pad=10)=>a.l<b.r+pad&&a.r>b.l-pad&&a.t<b.b+pad&&a.b>b.t-pad;
   function layout(list=words){
-    const width=box.clientWidth, cardW=words[0]?.offsetWidth||100;
-    const cols=Math.max(1,Math.min(6,Math.floor((width-32)/(cardW+24))));
-    const cellH=Math.max(...words.map(el=>el.offsetHeight))+28;
-    box.style.setProperty('--words-height',(Math.ceil(list.length/cols)*cellH+32)+'px');
-    list.forEach((el,i)=>{
-      const count=Math.min(cols,list.length-Math.floor(i/cols)*cols);
-      const s=st.get(el);
-      s.hx=(width-count*(cardW+24))/2+(i%cols)*(cardW+24)+12;
-      s.hy=16+Math.floor(i/cols)*cellH;
-      s.hr=0;
-    });
+    const pageTop=hero.getBoundingClientRect().top+scrollY;
+    hero.style.setProperty('--hero-available',Math.max(innerWidth<600?650:620,innerHeight-pageTop)+'px');
+    let n=seed;const rnd=()=>((n=(Math.imul(n,1664525)+1013904223)>>>0)/4294967296);
+    const B=box.getBoundingClientRect();
+    const mem=hero.classList.contains('has-memory'),tum=hero.classList.contains('has-tumgo');
+    const minX=mem&&!tum?B.width/2:0,maxX=tum&&!mem?B.width/2:B.width;
+    const specs=list.map(el=>{const scale=.78+rnd()*.36,r=(rnd()-.5)*10;return {el,scale,r};});
+    let arranged=[];
+    // Restart packing if an early random choice leaves no room for the last card.
+    for(let pass=0;pass<60;pass++){
+      arranged=[];let failed=false;
+      const shrink=pass<40?1:.88;
+      const sorted=specs.map(q=>{const scale=q.scale*shrink,ew=q.el.offsetWidth,eh=q.el.offsetHeight,a=Math.abs(q.r)*Math.PI/180;return {...q,scale,ew,eh,w:(ew*Math.cos(a)+eh*Math.sin(a))*scale,h:(eh*Math.cos(a)+ew*Math.sin(a))*scale};}).sort((a,b)=>b.w*b.h-a.w*a.h);
+      for(const q of sorted){
+        let rect=null;
+        for(let attempt=0;attempt<1000;attempt++){
+          const x=minX+12+rnd()*Math.max(0,maxX-minX-q.w-24),y=12+rnd()*Math.max(0,B.height-q.h-24);
+          const candidate={l:x,t:y,r:x+q.w,b:y+q.h};
+          if(!arranged.some(p=>hit(candidate,p.rect,12))){rect=candidate;break;}
+        }
+        if(!rect){failed=true;break;}arranged.push({...q,rect});
+      }
+      if(!failed)break;
+    }
+    if(arranged.length!==list.length){
+      const cols=Math.max(1,Math.floor((maxX-minX)/94)),rows=Math.ceil(specs.length/cols),cw=(maxX-minX)/cols,ch=B.height/rows;
+      const shuffled=[...specs].sort(()=>rnd()-.5);
+      arranged=shuffled.map((q,i)=>{
+        const ew=q.el.offsetWidth,eh=q.el.offsetHeight,a=Math.abs(q.r)*Math.PI/180;
+        const rw=ew*Math.cos(a)+eh*Math.sin(a),rh=eh*Math.cos(a)+ew*Math.sin(a);
+        const scale=Math.min(q.scale,(cw-18)/rw,(ch-18)/rh)*(.88+rnd()*.12),w=rw*scale,h=rh*scale;
+        const x=minX+(i%cols)*cw+8+rnd()*Math.max(0,cw-w-16),y=Math.floor(i/cols)*ch+8+rnd()*Math.max(0,ch-h-16);
+        return {...q,ew,eh,scale,w,h,rect:{l:x,t:y,r:x+w,b:y+h}};
+      });
+    }
+    arranged.forEach(q=>{const state=st.get(q.el);state.baseScale=q.scale;state.hx=q.rect.l+(q.w-q.ew)/2;state.hy=q.rect.t+(q.h-q.eh)/2;state.hr=q.r;q.el.style.setProperty('--rest-scale',q.scale);});
   }
   function drop(list,first){
     list.forEach((el,i)=>{const s=st.get(el);
-      if(first){set(el,{x:s.hx,y:-el.offsetHeight-60-Math.random()*200,r:s.hr*3,s:1});el.classList.add('is-falling');
-        setTimeout(()=>set(el,{x:s.hx,y:s.hy,r:s.hr}),80+i*70);setTimeout(()=>el.classList.remove('is-falling'),1200+i*70)}
-      else set(el,{x:s.hx,y:s.hy,r:s.hr,s:1})});
+      if(first){set(el,{x:s.hx,y:-el.offsetHeight-60-Math.random()*200,r:s.hr*3,s:s.baseScale});el.classList.add('is-falling');
+        setTimeout(()=>set(el,{x:s.hx,y:s.hy,r:s.hr,s:s.baseScale}),80+i*70);setTimeout(()=>el.classList.remove('is-falling'),1200+i*70)}
+      else set(el,{x:s.hx,y:s.hy,r:s.hr,s:s.baseScale})});
   }
-  const live=()=>words.filter(w=>!w.classList.contains('is-in'));
+  const live=()=>words.filter(w=>!w.classList.contains('is-in')&&!w.classList.contains('is-eaten'));
   const start=()=>{layout();drop(words,true);requestAnimationFrame(()=>hero.classList.add('is-set'))};
-  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>setTimeout(start,150));
+  let started=false;
+  const begin=()=>{if(started)return;started=true;start();};
+  setTimeout(begin,100);
+  if(document.fonts)document.fonts.ready.then(()=>{if(!started)begin();else{const l=live();layout(l);drop(l,false);}});
   let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{const l=live();layout(l);drop(l,false)},200)});
 
   // 우주 유영(무중력 부유) + 간헐적 스케일 꿈틀거림(squirm) 및 미세 떨림(tremor) 루프
@@ -74,11 +87,11 @@
         const s=st.get(el);if(!s)return;
         const dx=Math.sin(t*s.spX+s.phX)*s.ampX+Math.cos(t*s.spY*.7+s.phR)*3.5;
         const dy=Math.cos(t*s.spY+s.phY)*s.ampY+Math.sin(t*s.spX*.6+s.phX)*3.5;
-        const dr=Math.sin(t*s.spR+s.phR)*3.2;
+        const dr=Math.sin(t*s.spR+s.phR)*1.6;
         el.style.setProperty('--dx',dx.toFixed(2)+'px');
         el.style.setProperty('--dy',dy.toFixed(2)+'px');
         el.style.setProperty('--dr',dr.toFixed(2)+'deg');
-        if(now>=s.nextPulse){
+        if(false && now>=s.nextPulse){
           const mode=Math.random()<.58?'is-squirm':'is-tremor';
           el.classList.remove('is-squirm','is-tremor');
           void el.offsetWidth;
@@ -118,19 +131,20 @@
   const say=(bin,text,cls)=>{const p=bin.querySelector('.bin-say');p.textContent=text;bin.classList.remove('say-wrong','say-ok');if(cls){void bin.offsetWidth;bin.classList.add(cls)}};
   const binAt=(cx,cy)=>bins.find(b=>{if(b.classList.contains('is-gone'))return false;const r=b.getBoundingClientRect(),pad=24;return cx>r.left-pad&&cx<r.right+pad&&cy>r.top-pad&&cy<r.bottom+pad});
   function collect(el,bin){
+    if(el.classList.contains('is-eaten')||bin.classList.contains('is-full'))return;
     const B=box.getBoundingClientRect(),m=(bin.querySelector('.bin-lid,.bg-mouth')||bin).getBoundingClientRect();
     el.classList.add('is-eaten');set(el,{x:m.left-B.left+m.width/2-el.offsetWidth/2,y:m.top-B.top+m.height/2-el.offsetHeight/2,s:.15,r:0});
     setTimeout(()=>el.classList.add('is-in'),400);
     const id=bin.dataset.film,n=++got[id],total=+bin.dataset.total;
     sfxCollect(id,n,total);
-    bin.style.setProperty('--fill',n/total);bin.querySelector('.bin-count b').textContent=n;
+    bin.style.setProperty('--fill',n/total);bin.style.setProperty('--growth',1+n/total*.24);bin.querySelector('.bin-count b').textContent=n;
     bin.classList.remove('gulp');void bin.offsetWidth;bin.classList.add('gulp');
     bin.querySelectorAll('.f').forEach((f,i)=>f.classList.toggle('on',i<n));
     say(bin,n<total?`${n}개 담았어요. ${total-n}개 남았어요`:work(id).collect.done,'say-ok');
-    if(n>=total){bin.classList.add('is-full');setTimeout(()=>unlock(id),650)}
+    if(n>=total){bin.classList.add('is-full');setTimeout(()=>bin.classList.add('is-completing'),400);setTimeout(()=>unlock(id),1500)}
   }
   function bounce(el,bin){const s=st.get(el);sfxWrong();say(bin,work(bin.dataset.film).collect.wrong||'',"say-wrong");
-    el.classList.add('is-shake');setTimeout(()=>{el.classList.remove('is-shake');set(el,{x:s.hx,y:s.hy,r:s.hr,s:1})},380);
+    el.classList.add('is-shake');setTimeout(()=>{el.classList.remove('is-shake');set(el,{x:s.hx,y:s.hy,r:s.hr,s:s.baseScale})},380);
     setTimeout(()=>say(bin,''),1800)}
   // 다 담은 작품은 그 절반을 작품 화면으로 연다. 남은 단어는 비어 있는 쪽으로 옮긴다
   function syncHeroState(){
@@ -140,7 +154,7 @@
   }
   function unlock(id){const p=panels.find(x=>x.dataset.film===id),bin=bins.find(b=>b.dataset.film===id);if(!p)return;
     sfxComplete(id);
-    p.classList.add('is-on');if(bin)bin.classList.add('is-gone');
+    p.inert=false;p.classList.add('is-on');if(bin)bin.classList.add('is-gone');
     const v=p.querySelector('video');if(v&&v.dataset.src){if(!v.src)v.src=v.dataset.src;v.play().catch(()=>{})}
     syncHeroState();
     setTimeout(()=>{const l=live();layout(l);drop(l,false)},350)}
@@ -182,8 +196,8 @@
   });
 
   // 다시 담기
-  function resetAll(){bins.forEach(b=>{got[b.dataset.film]=0;b.style.setProperty('--fill',0);b.classList.remove('is-full','gulp','is-gone');b.querySelector('.bin-count b').textContent=0;b.querySelectorAll('.f').forEach(f=>f.classList.remove('on'));say(b,'')});
-    panels.forEach(p=>{p.classList.remove('is-on');const v=p.querySelector('video');if(v)v.pause()});syncHeroState();
+  function resetAll(){bins.forEach(b=>{got[b.dataset.film]=0;b.style.setProperty('--fill',0);b.classList.remove('is-full','gulp','is-gone','is-completing');b.style.setProperty('--growth',1);b.querySelector('.bin-count b').textContent=0;b.querySelectorAll('.f').forEach(f=>f.classList.remove('on'));say(b,'')});
+    panels.forEach(p=>{p.inert=true;p.classList.remove('is-on');const v=p.querySelector('video');if(v)v.pause()});syncHeroState();
     words.forEach(w=>w.classList.remove('is-in','is-eaten'));setTimeout(()=>{layout();drop(words,true)},300)}
   hero.querySelectorAll('.vu-again').forEach(b=>b.addEventListener('click',resetAll));
 

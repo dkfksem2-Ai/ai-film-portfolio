@@ -21,12 +21,12 @@
   const ART={
     lunchbox:`<div class="bin-visual bin-svg">
       <div class="bin-halo"></div>
-      <div class="bin-lid bg-mouth"><img class="bin-img" src="assets/icon-lunchbox.webp" alt="락앤락 반찬통 일러스트 아이콘" draggable="false"></div>
+      <div class="bin-lid bg-mouth"><img class="bin-img" src="assets/v96/lunch-target.webp" alt="락앤락 반찬통 일러스트 아이콘" draggable="false"></div>
       <div class="bin-slots" aria-hidden="true"><span class="f f1"></span><span class="f f2"></span><span class="f f3"></span><span class="f f4"></span><span class="f f5"></span><span class="f f6"></span></div>
     </div>`,
     bag:`<div class="bin-visual bin-svg">
       <div class="bin-halo"></div>
-      <div class="bin-body bg-mouth"><img class="bin-img" src="assets/icon-tumgo-bag.webp" alt="틈GO 수거 가방 일러스트 아이콘" draggable="false"></div>
+      <div class="bin-body bg-mouth"><img class="bin-img" src="assets/v96/bag-target.webp" alt="틈GO 수거 가방 일러스트 아이콘" draggable="false"></div>
       <div class="bin-slots" aria-hidden="true"><span class="f f1"></span><span class="f f2"></span><span class="f f3"></span><span class="f f4"></span><span class="f f5"></span></div>
     </div>`};
   const bins=document.getElementById('vh-bins');
@@ -35,9 +35,9 @@
   // 첫 화면: 다 담으면 열리는 작품 화면 (그릇이 있던 절반을 채운다)
   const unlock=document.getElementById('vh-unlock');
   if(unlock){W.filter(w=>w.collect).forEach(w=>{const a=el('article',`vu-panel keep-motion row-${w.tone}`);a.dataset.film=w.id;if(w.font)a.style.setProperty('--work-font',w.font);a.setAttribute('aria-label',`${w.title} 열림`);
-    a.innerHTML=`<div class="vu-media"><video muted loop playsinline preload="none" poster="${esc(w.poster)}" data-src="${esc(w.teaser||'')}"></video></div>
+    a.innerHTML=`<button type="button" class="vu-media" data-open="${w.id}" aria-label="${esc(w.title)} 영상부터 관람하기"><video muted loop playsinline preload="none" poster="${esc(w.poster)}" data-src="${esc(w.teaser||'')}"></video></button>
       <h2 class="vu-title">${esc(w.title)}</h2><p class="vu-line">${esc(w.line)}</p>
-      <div class="vu-actions">${w.play?`<a class="btn btn--primary" href="${esc(w.play.href)}">${esc(w.play.label)}</a>`:''}<button type="button" class="btn btn--secondary" data-open="${w.id}">영상 보기</button><a class="btn btn--secondary" href="#${esc(w.id)}" data-glide>작품 소개</a><button type="button" class="btn--text vu-again">다시 담기</button></div>`;unlock.append(a)})}
+      <div class="vu-actions"><button type="button" class="btn btn--primary" data-open="${w.id}">영상부터 관람하기</button>${w.play?`<a class="btn btn--secondary" href="${esc(w.play.href)}">${esc(w.play.label)}</a>`:''}<a class="btn btn--secondary" href="#${esc(w.id)}" data-glide>작품 소개</a><button type="button" class="btn--text vu-again">다시 담기</button></div>`;unlock.append(a)})}
   // 첫 화면: 작품 목록과 들어가 보기 링크
   const list=document.getElementById('vh-films');
   if(list){W.forEach(w=>{const li=el("li","vh-film keep-motion");li.dataset.tone=w.tone;li.dataset.film=w.id;
