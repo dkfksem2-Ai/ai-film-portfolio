@@ -77,9 +77,9 @@ button{cursor:pointer}
 
 /* ---------- Screen frame (1920×950 = header 85 + 865) ---------- */
 .screen{position:relative;min-height:var(--screen)}
-.cta-abs,.screen-cta{position:absolute;left:0;right:0;bottom:44px;margin-inline:auto;max-width:var(--container);padding-inline:var(--pad);display:flex;align-items:center;justify-content:space-between;gap:var(--space-lg);pointer-events:none}
+.cta-abs,.screen-cta{position:absolute;left:50%;right:auto;bottom:24px;transform:translateX(-50%);margin:0;width:auto;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:20}
 .cta-abs>*,.screen-cta>*{pointer-events:auto}
-.explore-link{display:inline-flex;align-items:center;gap:var(--space-md);font-size:15px;color:var(--color-ink-2);text-decoration:none}
+.explore-link{display:inline-flex;align-items:center;justify-content:center;color:var(--color-ink-2);text-decoration:none}
 .round-arrow{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px var(--color-rule);transition:box-shadow var(--dur-short) var(--ease-out),background-color var(--dur-short) var(--ease-out)}
 .round-arrow svg{transition:transform .7s var(--spring)}
 .explore-link:hover{color:var(--color-ink)}
@@ -521,14 +521,14 @@ h4{font-weight:700;font-size:var(--text-lg)}
 .interlude .cta-abs .explore-link:hover .round-arrow{background:var(--butter-2)}
 
 /* 6. 틈GO: the film bleeds off the left, the type stands in a night column on the right */
-.project-tumgo .screen-a{grid-template-columns:minmax(0,62%) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;padding-bottom:0;padding-right:max(var(--pad),calc((100% - var(--container)) / 2 + var(--pad)))}
+.project-tumgo .screen-a{display:block;height:auto;min-height:var(--screen);padding-bottom:96px}
 .project-tumgo .feature-art{grid-column:1;grid-row:1/3;border-radius:0;box-shadow:none}
 .project-tumgo .film-head{grid-column:2;grid-row:1;max-width:none;padding:var(--space-3xl) 0 0 var(--space-2xl);margin:0}
 .project-tumgo .project-heading{flex-direction:column;align-items:start;gap:var(--space-lg)}
 .project-tumgo .project-heading h2{font-size:clamp(6rem,9vw,11rem);line-height:.82;color:var(--color-ink)}
 .project-tumgo .project-aside{text-align:left;font-size:clamp(1.4rem,1.6vw,1.75rem);font-family:var(--font-body);color:var(--color-ink)}
 .project-tumgo .stage-hint{position:static;grid-column:2;grid-row:2;padding:0 0 var(--space-md) var(--space-2xl);align-self:end}
-.project-tumgo .screen-cta{position:absolute;left:calc(62% + var(--space-2xl));right:max(var(--pad),calc((100% - var(--container)) / 2 + var(--pad)));bottom:44px;max-width:none;padding:0;flex-direction:column;align-items:start;gap:var(--space-lg)}
+.project-tumgo .screen-cta{position:absolute;left:50%;transform:translateX(-50%);bottom:24px;width:auto;max-width:none;padding:0;display:flex;align-items:center;justify-content:center}
 .project-tumgo .stage-hint{display:none}
 .project-tumgo .screen-cta .cta-links{order:-1}
 

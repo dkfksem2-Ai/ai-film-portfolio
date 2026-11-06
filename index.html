@@ -1,259 +1,386 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#f6f4ef">
-  <meta name="description" content="정재환의 AI 영상 포트폴리오. 반찬통의 왕복과 틈GO, 두 편의 광고 필름과 제작 노트.">
-  <title>정재환 · AI 광고 필름</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&family=Noto+Serif+KR:wght@400;500&family=Jua&family=Black+Han+Sans&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="v8.css">
-  <script defer src="video-config.js"></script>
-  <script defer src="storyboard-data.js"></script>
-  <script defer src="works.js"></script>
-  <script defer src="works-render.js"></script>
-  <script defer src="site.js"></script>
-  <script defer src="v8.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="#0d1117" name="theme-color"/>
+<meta content="정재환의 AI 영상 포트폴리오. 반찬통의 왕복과 틈GO, 두 편의 광고 필름과 제작 노트." name="description"/>
+<title>정재환 · AI 광고 필름</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,400&amp;family=Noto+Serif+KR:wght@400;500&amp;family=Jua&amp;family=Black+Han+Sans&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet"/>
+<link href="styles.css" rel="stylesheet"/>
+<link href="v8.css" rel="stylesheet"/>
+<link href="responsive.css" rel="stylesheet"/>
+<script defer="" src="video-config.js"></script>
+<script defer="" src="storyboard-data.js"></script>
+<script defer="" src="works.js"></script>
+<script defer="" src="works-render.js"></script>
+<script defer="" src="site.js"></script>
+<script defer="" src="v8.js"></script>
 </head>
 <body>
-  <div class="reading-progress" aria-hidden="true"><span id="reading-progress"></span></div>
-  <header class="site-header" id="top">
-    <div class="header-inner wrapper">
-      <a class="brand" href="#top" aria-label="맨 위로 이동"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 44 36" width="44" height="36" fill="none"><rect class="bm-frame" x="2" y="2" width="40" height="23" rx="4" stroke="currentColor" stroke-width="2"/><path class="bm-play" d="M19 9.2v9.6l8-4.8z" fill="currentColor"/><path class="bm-line" d="M2 32.5h40" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".35"/><path class="bm-done" d="M2 32.5h40" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle class="bm-head" cx="12" cy="32.5" r="2.6" fill="currentColor"/></svg></span><span class="brand-name">정재환<small>영상 연출</small></span></a>
-      <button class="header-screening btn btn--primary" type="button" data-open="memory"><span class="ws-icon" aria-hidden="true"><svg viewBox="0 0 14 14" width="12" height="12"><path d="M4.4 2.4v9.2L11.6 7z" fill="currentColor"/></svg></span><span class="ws-label">상영관</span></button>
-    </div>
-  </header>
+<div aria-hidden="true" class="cartier-backdrop" id="cartier-backdrop">
+<div class="cb-halo cb-halo--amber"></div>
+<div class="cb-halo cb-halo--cyan"></div>
+<div class="cb-halo cb-halo--sapphire"></div>
+<div class="cb-mesh"></div>
+</div>
+<div aria-hidden="true" class="reading-progress"><span id="reading-progress"></span></div>
+<header class="site-header" id="top">
+<div class="header-inner wrapper">
+<a aria-label="홈으로 이동" class="brand" data-glide="" href="#top"><span aria-hidden="true" class="brand-mark"><svg fill="none" height="36" viewbox="0 0 44 36" width="44"><rect class="bm-frame" height="23" rx="4" stroke="currentColor" stroke-width="2" width="40" x="2" y="2"></rect><path class="bm-play" d="M19 9.2v9.6l8-4.8z" fill="currentColor"></path><path class="bm-line" d="M2 32.5h40" opacity=".35" stroke="currentColor" stroke-linecap="round" stroke-width="1.6"></path><path class="bm-done" d="M2 32.5h40" stroke="currentColor" stroke-linecap="round" stroke-width="1.6"></path><circle class="bm-head" cx="12" cy="32.5" fill="currentColor" r="2.6"></circle></svg></span><span class="brand-name">홈으로</span></a>
+<div class="header-actions">
+<div class="bgm-player-wrap" id="bgm-player-wrap">
+<button aria-label="배경음악 켜기/끄기" aria-pressed="false" class="bgm-toggle" id="bgm-toggle" type="button">
+<span aria-hidden="true" class="bgm-waves"><i></i><i></i><i></i></span>
+<span class="bgm-text">BGM</span>
+</button>
+<div class="bgm-volume-wrap" id="bgm-volume-wrap">
+<input aria-label="배경음악 볼륨" class="bgm-volume-slider" id="bgm-volume" max="1" min="0" step="0.02" type="range" value="0.5"/>
+</div>
+</div>
+<button class="header-screening btn btn--primary" data-open="memory" type="button"><span aria-hidden="true" class="ws-icon"><svg height="12" viewbox="0 0 14 14" width="12"><path d="M4.4 2.4v9.2L11.6 7z" fill="currentColor"></path></svg></span><span class="ws-label">상영관</span></button>
+</div>
+</div>
+</header>
+<audio id="site-bgm" loop="" preload="auto" src="assets/audio/portfolio-bgm.mp3"></audio>
+<nav aria-label="작품 바로가기" class="film-index" id="film-index">
+<p class="fi-label">작품</p>
+<div class="fi-group" id="film-index-films"></div>
+<span aria-hidden="true" class="fi-rule"></span>
+<div class="fi-group" id="film-index-play"></div>
+<span aria-hidden="true" class="fi-rule"></span>
+<a class="fi-link" data-glide="" href="#process">작업 노트</a>
+<a class="fi-link" data-glide="" href="#about">소개</a>
+</nav>
+<aside aria-labelledby="mp-title" class="mini-player" hidden="" id="mini-player">
+<div class="mp-bar"><span class="mp-title" id="mp-title">반찬통의 왕복</span><button class="mp-btn" id="mp-expand" type="button">크게 보기</button><button aria-label="영상 창 닫기" class="mp-btn mp-close" id="mp-close" type="button">✕</button></div>
+<video controls="" id="mp-video" playsinline="" poster="assets/memory-cover.webp" preload="none"></video>
+</aside>
+<main>
+<div aria-hidden="true" class="cartier-thread"><span class="ct-line"></span><span class="ct-node" id="ct-node"></span></div>
+<!-- 1. 첫 화면: 다크 코스믹 캔버스 위 우주처럼 부유하는 소스 오브젝트들을 끌어 그릇에 담는다 -->
+<section aria-labelledby="intro-title" class="v8-hero screen" id="projects">
+<div aria-hidden="true" class="vh-backdrop">
+<div class="vh-reel vh-reel--left"><video autoplay="" loop="" muted="" playsinline="" poster="assets/memory-cover.webp" preload="metadata" src="assets/previews/memory-teaser.mp4"></video></div>
+<div class="vh-reel vh-reel--right"><video autoplay="" loop="" muted="" playsinline="" poster="assets/tumgo-cover.webp" preload="metadata" src="assets/previews/tumgo-teaser.mp4"></video></div>
+<div class="vh-aura"></div>
+<div class="vh-grid-lines"></div>
+<div class="vh-watermark"><span>1999—2026</span><span>AI FILM ARCHIVE</span></div>
+</div>
+<div class="vh-stage-center">
+<div class="vh-meta">
+<div class="vh-badges"><span class="vh-pill vh-pill--butter">FILM 01 · 반찬통의 왕복</span><span class="vh-pill vh-pill--mint">FILM 02 · 틈GO</span></div>
+<h1 class="vh-title" id="intro-title">정재환의 AI 광고 필름</h1>
+<p class="vh-hint">우주에 떠다니는 장면 조각을 끌어 아래 용기에 담아 보세요</p>
+<noscript><p><a href="#memory">반찬통의 왕복</a> <a href="#tumgo">틈GO</a> <a href="picnic.html">1999년 소풍에 앉아 보기</a> <a href="room.html">현우의 원룸에 들어가 보기</a></p></noscript>
+</div>
+<div aria-label="작품 오브젝트. 끌어서 그릇에 담거나 누르면 그 작품 소개로 갑니다" class="vh-words" id="vh-words"></div>
+<div class="vh-bins" id="vh-bins"></div>
+<div class="vh-unlock" id="vh-unlock"></div>
+</div>
+</section>
+<!-- 2. 작품 목록: 두 편을 한 표에 -->
+<section aria-labelledby="hero-heading" class="hero2 screen" id="hero">
+<h2 class="visually-hidden" id="hero-heading">작품 목록</h2>
+<div class="index-inner" id="index-bands"></div>
+<noscript><ul><li><a href="#memory">반찬통의 왕복</a></li><li><a href="#tumgo">틈GO</a></li></ul></noscript>
+<p class="index-note">줄 위에 올리면 그 작품이 켜집니다. 장면을 누르면 그 장면으로 갑니다.</p>
+<div class="cta-abs"><a aria-label="1999년에서 2026년으로 스크롤" class="explore-link" data-glide="" href="#era-bridge"><span aria-hidden="true" class="round-arrow"><svg fill="none" height="16" viewbox="0 0 16 16" width="16"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></a></div>
+</section>
+<!-- 2.5 Viens-là 스타일 연도 카운터 브릿지 (1999 → 2026 스크롤 연동) -->
+<section aria-label="1999년부터 2026년까지 시간의 흐름" class="era-counter" id="era-bridge">
+<div class="era-sticky">
+<div class="wrapper era-inner">
+<div class="era-top">
+<span class="era-tag">TIME ARCHIVE · FILM 01 PROLOGUE</span>
+<span class="era-range">1999 — 2026 (27 YEARS)</span>
+</div>
+<div class="era-main">
+<div aria-live="polite" class="era-year-wrap">
+<span class="era-year" id="era-year-num">1999</span>
+<span class="era-unit">년</span>
+</div>
+<div class="era-cards">
+<article class="era-card is-active" data-era-step="0">
+<div class="ec-thumb"><img alt="1999년 봄 소풍 도트 장면" src="assets/memory-pixel.webp"/></div>
+<div class="ec-meta"><span class="ec-badge">1999 · 2D PIXEL</span><h3>봄 소풍 돗자리 위, 첫 번째 반찬통</h3><p>엄마가 새벽부터 말아 넣은 계란말이와 소시지. 도트 그래픽으로 기억의 첫 페이지를 열었습니다.</p></div>
+</article>
+<article class="era-card" data-era-step="1">
+<div class="ec-thumb"><img alt="2007년 고등학교 교실 3D 장면" src="assets/memory-3d.webp"/></div>
+<div class="ec-meta"><span class="ec-badge">2007 · 3D ANIMATION</span><h3>교실의 점심시간, 말없이 비워 내던 온기</h3><p>당연한 듯 열고 닫던 파란 뚜껑. 픽셀이 입체(3D)로 자라나는 동안에도 반찬통은 같은 자리를 지켰습니다.</p></div>
+</article>
+<article class="era-card" data-era-step="2">
+<div class="ec-thumb"><img alt="2026년 어른이 된 아들의 실사 장면" src="assets/memory-reality.webp"/></div>
+<div class="ec-meta"><span class="ec-badge">2026 · LIVE-ACTION AI</span><h3>27년 만에 아들이 채워 돌려주는 반찬통</h3><p>이제는 아들의 부엌에서 채워져 엄마의 집 현관으로 향하는 왕복의 완성.</p></div>
+</article>
+</div>
+</div>
+<div class="era-bar-wrap">
+<span class="eb-year">1999</span>
+<div class="era-bar"><span class="era-bar-fill" id="era-bar-fill"></span></div>
+<span class="eb-year">2026</span>
+<a aria-label="반찬통의 왕복으로 스크롤" class="explore-link era-skip" data-glide="" href="#memory"><span aria-hidden="true" class="round-arrow"><svg fill="none" height="16" viewbox="0 0 16 16" width="16"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></a>
+</div>
+</div>
+</div>
+</section>
+<!-- 3·4. 반찬통의 왕복 -->
+<section aria-labelledby="memory-title" class="project project-memory" id="memory">
+<div class="screen-a screen">
+<div class="film-head wrapper">
+<div class="project-heading">
+<h2 id="memory-title">반찬통의 왕복</h2>
+<p class="project-aside">담는 건, 반찬만이 아니니까.</p>
+</div>
+</div>
+<div aria-label="반찬통의 왕복 장면 미리보기. 마우스를 좌우로 움직이면 시대별 장면이 재생됩니다" class="feature-art memory-art motion-stage" data-motion="memory" data-preview-video="" tabindex="0">
+<div class="poster-frame" id="memory-stage">
+<img alt="1999년 소풍 장면의 도트 애니메이션" class="stage-layer is-active" data-slide="0" src="assets/memory-pixel.webp"/>
+<img alt="2007년 교실에서 엄마 도시락을 먹는 고등학생 아들, 3D" class="stage-layer" data-slide="1" src="assets/memory-3d.webp"/>
+<img alt="2026년 반찬통을 건네는 아들" class="stage-layer" data-slide="2" src="assets/memory-reality.webp"/>
+<video aria-hidden="true" class="zone-video" data-zone="0" loop="" muted="" playsinline="" poster="assets/memory-pixel.webp" preload="none" src="assets/loops/memory-1.mp4"></video>
+<video aria-hidden="true" class="zone-video" data-zone="1" loop="" muted="" playsinline="" poster="assets/memory-3d.webp" preload="none" src="assets/loops/memory-2.mp4"></video>
+<video aria-hidden="true" class="zone-video" data-zone="2" loop="" muted="" playsinline="" poster="assets/memory-reality.webp" preload="none" src="assets/loops/memory-3.mp4"></video>
+<video aria-hidden="true" class="stage-video" hidden="" loop="" muted="" playsinline="" poster="assets/memory-cover.webp" preload="none"></video>
+</div>
+<div class="stage-overlay"></div>
+<div aria-hidden="true" class="stage-zones"><span class="stage-zone is-on"><em>1999 도트</em></span><span class="stage-zone"><em>2007 3D</em></span><span class="stage-zone"><em>2026 실사</em></span></div>
+<div class="stage-bottom"><span class="stage-caption" id="memory-stage-caption">1999년, 소풍 가는 날</span><button aria-label="반찬통의 왕복 상영관에서 보기" class="play-disc" data-open="memory" type="button"><span class="pd-icon"><svg aria-hidden="true" height="20" viewbox="0 0 14 14" width="20"><path d="M4.4 2.4v9.2L11.6 7z" fill="currentColor"></path></svg></span></button></div>
+<div class="quicklook" data-quicklook="memory" hidden=""><video muted="" playsinline="" poster="assets/memory-cover.webp" preload="none" src="assets/previews/memory-teaser.mp4"></video><div class="quicklook-hud"><button aria-label="미리보기 닫기" class="quicklook-close" data-close-peek="memory" type="button">✕</button></div><div class="quicklook-progress"><span></span></div></div>
+</div>
+<div class="stage-actions-wrap wrapper">
+<p class="stage-hint">화면 위를 좌우로 훑으면 1999, 2007, 2026이 차례로 움직입니다.</p>
+<div class="stage-buttons">
+<a class="btn btn--primary" href="picnic.html">1999년 소풍에 앉아 보기</a>
+<button class="btn btn--secondary" data-open-notes="memory" type="button">19컷 제작 노트</button>
+</div>
+</div>
+<div class="screen-cta wrapper"><a aria-label="다음 작품 틈GO로 스크롤" class="explore-link" data-glide="" href="#tumgo"><span aria-hidden="true" class="round-arrow"><svg fill="none" height="16" viewbox="0 0 16 16" width="16"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></a></div>
+</div>
+</section>
+<!-- 6. 틈GO -->
+<section aria-labelledby="tumgo-title" class="project project-tumgo" id="tumgo">
+<div class="screen-a screen">
+<div class="wrapper tumgo-grid">
+<div aria-label="틈GO 장면 미리보기. 마우스를 좌우로 움직이면 장면이 재생됩니다" class="feature-art tumgo-art motion-stage" data-motion="tumgo" data-preview-video="" tabindex="0">
+<div class="poster-frame">
+<img alt="야간 계단을 내려오는 틈GO 로봇과 현우" class="stage-layer is-active" data-slide="0" src="assets/tumgo-cover.webp"/>
+<img alt="밀린 빨래 앞에서 머리를 감싸는 현우" class="stage-layer" data-slide="1" src="assets/tumgo-life.webp"/>
+<img alt="101호 문 앞에서 가방을 수거하는 틈GO 로봇" class="stage-layer" data-slide="2" src="assets/tumgo-hallway.webp"/>
+<video aria-hidden="true" class="zone-video" data-zone="0" loop="" muted="" playsinline="" poster="assets/tumgo-cover.webp" preload="none" src="assets/loops/tumgo-1.mp4"></video>
+<video aria-hidden="true" class="zone-video" data-zone="1" loop="" muted="" playsinline="" poster="assets/tumgo-life.webp" preload="none" src="assets/loops/tumgo-2.mp4"></video>
+<video aria-hidden="true" class="zone-video" data-zone="2" loop="" muted="" playsinline="" poster="assets/tumgo-hallway.webp" preload="none" src="assets/loops/tumgo-3.mp4"></video>
+<video aria-hidden="true" class="stage-video" hidden="" loop="" muted="" playsinline="" poster="assets/tumgo-cover.webp" preload="none"></video>
+</div>
+<div class="stage-overlay"></div>
+<div aria-hidden="true" class="stage-zones"><span class="stage-zone is-on"><em>조우</em></span><span class="stage-zone"><em>고민</em></span><span class="stage-zone"><em>수거</em></span></div>
+<div class="stage-bottom"><span class="stage-caption" id="tumgo-stage-caption">계단에서 처음 만난 로봇</span><button aria-label="틈GO 상영관에서 보기" class="play-disc" data-open="tumgo" type="button"><span class="pd-icon"><svg aria-hidden="true" height="20" viewbox="0 0 14 14" width="20"><path d="M4.4 2.4v9.2L11.6 7z" fill="currentColor"></path></svg></span></button></div>
+<div class="quicklook" data-quicklook="tumgo" hidden=""><video muted="" playsinline="" poster="assets/tumgo-cover.webp" preload="none" src="assets/previews/tumgo-teaser.mp4"></video><div class="quicklook-hud"><button aria-label="미리보기 닫기" class="quicklook-close" data-close-peek="tumgo" type="button">✕</button></div><div class="quicklook-progress"><span></span></div></div>
+</div>
+<div class="tumgo-col">
+<div class="project-heading">
+<h2 id="tumgo-title">틈GO</h2>
+<p class="project-aside">문 앞에 두세요. 나머지는 틈GO가.</p>
+<p class="tumgo-desc">늦은 퇴근길 계단에서 처음 마주친 4족 배송 로봇. 밀린 빨래와 수선을 문 앞에서 맡기고 돌려받는 야간 생활 서비스를 실사형 AI 영상으로 그렸습니다.</p>
+</div>
+<div aria-label="장면 미리보기 선택" class="tumgo-beats" role="group">
+<button class="tb-row is-on" data-tumgo-beat="0" type="button"><span class="tb-no">01</span><span class="tb-name">계단에서의 조우</span><span class="tb-note">퇴근길 어두운 계단을 내려오는 틈GO 로봇</span></button>
+<button class="tb-row" data-tumgo-beat="1" type="button"><span class="tb-no">02</span><span class="tb-name">밀린 빨래 앞의 고민</span><span class="tb-note">금요일 밤 원룸, 산처럼 쌓인 세탁물</span></button>
+<button class="tb-row" data-tumgo-beat="2" type="button"><span class="tb-no">03</span><span class="tb-name">101호 문 앞 수거</span><span class="tb-note">QR 스캔 후 수거 가방을 싣고 떠나는 로봇</span></button>
+</div>
+<dl class="tumgo-specs">
+<div><dt>형식</dt><dd>가상 생활 서비스 광고 · 약 1분 · 42컷 기획</dd></div>
+<div><dt>도구</dt><dd>Veo 3.1, Kling, Runway · 로봇 합성 After Effects</dd></div>
+</dl>
+<div class="tumgo-actions">
+<a class="btn btn--primary" href="room.html">현우의 원룸에 들어가 보기</a>
+<button class="btn btn--secondary" data-open-notes="tumgo" type="button">42컷 기획 노트</button>
+</div>
+</div>
+<!-- 틈GO 수거 이후의 여정 롤업 시퀀스 (빨래 > 수선 > 포장) - web_design.mp4 레퍼런스 -->
 
-  <nav class="film-index" id="film-index" aria-label="작품 바로가기">
-    <p class="fi-label">작품</p>
-    <div id="film-index-films" class="fi-group"></div>
-    <span class="fi-rule" aria-hidden="true"></span>
-    <div id="film-index-play" class="fi-group"></div>
-    <span class="fi-rule" aria-hidden="true"></span>
-    <a class="fi-link" href="#process" data-glide>작업 노트</a>
-    <a class="fi-link" href="#about" data-glide>정재환</a>
-  </nav>
+</div><div aria-label="틈GO 서비스 프로세스: 빨래, 수선, 포장" class="tumgo-journey" id="tumgo-journey">
+<div class="tj-header">
+<span class="tj-eyebrow">TUMGO · SERVICE STORY</span>
+<h3 class="tj-title">수거 다음의 일, 세탁에서 포장까지</h3>
+<div class="tj-nav-pills" role="tablist">
+<button aria-selected="true" class="tj-pill is-active" data-tj-tab="0" role="tab" type="button"><span class="tj-tab-no">01</span> 빨래</button>
+<button aria-selected="false" class="tj-pill" data-tj-tab="1" role="tab" type="button"><span class="tj-tab-no">02</span> 수선</button>
+<button aria-selected="false" class="tj-pill" data-tj-tab="2" role="tab" type="button"><span class="tj-tab-no">03</span> 포장</button>
+</div>
+</div>
+<div class="tj-stage-wrap">
+<div class="tj-deck">
+<!-- Step 1: 빨래 -->
+<article class="tj-card tj-card--1 is-active" data-tj-step="0">
+<div class="tj-card-visual">
+<img alt="세탁을 기다리는 원룸의 빨래 바구니" src="assets/room-view-2.webp"/>
+<span class="tj-badge">STAGE 01 · MIDNIGHT LAUNDRY</span>
+</div>
+<div class="tj-card-body">
+<div class="tj-num-wrap"><span class="tj-big-num">01</span><span class="tj-step-tag">수거 이후</span></div>
+<h4 class="tj-card-title">세탁</h4>
+<p class="tj-desc">수거한 옷을 소재와 색상에 맞게 분류하고 세탁하는 서비스 흐름입니다.</p>
 
-  <aside class="mini-player" id="mini-player" hidden aria-labelledby="mp-title">
-    <div class="mp-bar"><span class="mp-title" id="mp-title">반찬통의 왕복</span><button type="button" class="mp-btn" id="mp-expand">크게 보기</button><button type="button" class="mp-btn mp-close" id="mp-close" aria-label="영상 창 닫기">✕</button></div>
-    <video id="mp-video" poster="assets/memory-cover.webp" controls playsinline preload="none"></video>
-  </aside>
+</div>
+</article>
+<!-- Step 2: 수선 -->
+<article class="tj-card tj-card--2" data-tj-step="1">
+<div class="tj-card-visual">
+<img alt="수거 가방에 넣기 전 찢어진 청바지 확인" src="assets/room-view-4.webp"/>
+<span class="tj-badge">STAGE 02 · PRECISION MENDING</span>
+</div>
+<div class="tj-card-body">
+<div class="tj-num-wrap"><span class="tj-big-num">02</span><span class="tj-step-tag">디테일 케어</span></div>
+<h4 class="tj-card-title">수선</h4>
+<p class="tj-desc">찢어진 부분 등 수선이 필요한 곳을 확인하고 세탁과 함께 관리합니다.</p>
 
-  <main>
-    <!-- 1. 첫 화면: 흩어진 단어를 끌어 그 작품의 그릇에 담는다. 다 담으면 체험 페이지 안내 창이 열린다 -->
-    <section id="projects" class="v8-hero screen" aria-labelledby="intro-title">
-      <div class="vh-bins" id="vh-bins"></div>
-      <div class="vh-words" id="vh-words" aria-label="작품 단어. 누르면 그 작품 소개로 갑니다"></div>
-      <div class="vh-meta">
-        <h1 id="intro-title" class="vh-title">정재환의 AI 광고 필름</h1>
-        <p class="vh-hint">단어를 끌어서 맞는 그릇에 담아 보세요. 틈GO 단어는 수거 가방에, 반찬통 단어는 락앤락 통에 들어갑니다.</p>
-        <ul class="vh-films" id="vh-films" aria-label="작품"></ul>
-        <button type="button" class="vh-reset btn--text" id="vh-reset" hidden>단어 다시 흩기</button>
-        <noscript><p><a href="#memory">반찬통의 왕복</a> <a href="#tumgo">틈GO</a> <a href="picnic.html">1999년 소풍에 앉아 보기</a> <a href="room.html">현우의 원룸에 들어가 보기</a></p></noscript>
-      </div>
-    </section>
+</div>
+</article>
+<!-- Step 3: 포장 & 배송 -->
+<article class="tj-card tj-card--3" data-tj-step="2">
+<div class="tj-card-visual">
+<img alt="전용 수거 가방을 들고 문을 나서는 현우" src="assets/room-view-5.webp"/>
+<span class="tj-badge">STAGE 03 · SEALED PACKAGING</span>
+</div>
+<div class="tj-card-body">
+<div class="tj-num-wrap"><span class="tj-big-num">03</span><span class="tj-step-tag">새벽 배송</span></div>
+<h4 class="tj-card-title">포장·전달</h4>
+<p class="tj-desc">관리를 마친 옷은 전용 가방에 정리해 문 앞에서 돌려받는 서비스 구상입니다.</p>
 
-    <!-- 2. 작품 목록: 두 편을 한 표에 -->
-    <section class="hero2 screen" id="hero" aria-labelledby="hero-heading">
-      <h2 id="hero-heading" class="visually-hidden">작품 목록</h2>
-      <div class="index-inner" id="index-bands"></div>
-      <noscript><ul><li><a href="#memory">반찬통의 왕복</a></li><li><a href="#tumgo">틈GO</a></li></ul></noscript>
-      <p class="index-note">줄 위에 올리면 그 작품이 켜집니다. 장면을 누르면 그 장면으로 갑니다.</p>
-      <div class="cta-abs"><a class="explore-link" href="#memory" data-glide><span class="round-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16" fill="none"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="explore-text">반찬통의 왕복으로</span></a></div>
-    </section>
+</div>
+</article>
+</div>
+</div>
+</div>
+<div class="screen-cta"><a aria-label="만드는 과정으로 스크롤" class="explore-link" data-glide="" href="#process"><span aria-hidden="true" class="round-arrow"><svg fill="none" height="16" viewbox="0 0 16 16" width="16"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></a></div>
+</div>
+</section>
+<!-- 7. 만드는 과정 -->
+<section aria-labelledby="process-title" class="process screen" id="process">
+<div class="wrapper process-inner">
+<div class="process-heading">
+<h2 id="process-title">AI 파이프라인 설계 및<br/>후반 디렉팅 범위</h2>
+</div>
+<div class="process-figures">
+<!-- 19컷: 반찬통의 왕복 -->
+<div class="process-tile process-tile--memory">
+<div class="pt-thumb">
+<img alt="반찬통의 왕복 1999년 도트 키프레임 씬" src="assets/memory-pixel.webp"/>
+</div>
+<div class="pt-content">
+<div class="pt-top">
+<span class="pt-tag">FILM 01 · 반찬통의 왕복</span>
+</div>
+<span class="figure">19</span>
+<span class="figure-label">컷, 반찬통의 왕복 (19컷)<br/><small>Seedance 2.5 멀티모달 씬 생성 · After Effects 모션 매칭</small></span>
+</div>
+</div>
+<!-- 42컷: 틈GO -->
+<div class="process-tile process-tile--tumgo">
+<div class="pt-thumb">
+<img alt="틈GO 101호 문 앞 4족 로봇 수거 실사 씬" src="assets/tumgo-hallway.webp"/>
+</div>
+<div class="pt-content">
+<div class="pt-top">
+<span class="pt-tag">FILM 02 · 틈GO 시나리오</span>
+</div>
+<span class="figure">42</span>
+<span class="figure-label">컷, 틈GO 시나리오 (42컷)<br/><small>Veo 3.1, Kling 실사 씬 생성 · 4족 로봇 3D 트래킹 합성</small></span>
+</div>
+</div>
+</div>
+<div class="process-side">
+<ol class="process-list">
+<li><strong>01. 기획·스토리보드 설계</strong><p>타깃 페르소나 분석, 42컷 시나리오 콘티 설계 및 프롬프트 엔지니어링 (ChatGPT, Claude)</p></li>
+<li><strong>02. 멀티모달 에셋 생성</strong><p>Veo 3.1, Kling, Runway, Seedance 2.5를 활용한 컷별 시작·종료 키프레임 생성 및 일관성 디렉팅</p></li>
+<li><strong>03. 보이스·사운드 디자인</strong><p>ElevenLabs 기반 내추럴 캐릭터 보이스 생성, 사운드 스템 믹스 및 씬별 맞춤 폴리·SFX 마스터링</p></li>
+<li><strong>04. 컴포지팅 및 후반 마스터링</strong><p>After Effects 로봇 4족 트래킹·합성 및 도트 전환 모션그래픽, Premiere Pro 4K 색보정 및 최종 마스터링</p></li>
+</ol>
+<button class="archive-link btn btn--text" data-open-notes="memory" type="button">컷별 제작 노트 전체 보기</button>
+</div>
+</div>
+<div class="cta-abs"><a aria-label="정재환 소개로 스크롤" class="explore-link" data-glide="" href="#about"><span aria-hidden="true" class="round-arrow"><svg fill="none" height="16" viewbox="0 0 16 16" width="16"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></span></a></div>
+</section>
+<!-- 8. 소개 + 푸터 -->
+<div class="last-screen screen">
+<section aria-labelledby="about-title" class="about wrapper" id="about">
+<div class="about-lead">
+<p class="about-eyebrow"><span aria-hidden="true" class="ae-dot"></span>SOLO AI FILMMAKER · END-TO-END</p>
+<div class="about-statement-clean" id="about-title">
+<p class="asc-row">광고 영상을</p>
+<p class="asc-row asc-row--accent"><strong>스토리 기획</strong>부터</p>
+<p class="asc-row asc-row--accent"><strong>영상편집</strong>까지</p>
+<p class="asc-row asc-row--punch">오로지 <em>혼자</em> 작업했습니다.</p>
+</div>
+<p class="about-intro">기획, AI 생성, After Effects 합성, 편집과 검수를 혼자 맡았습니다. AI가 만든 컷을 그대로 쓰지 않고, 도트 전환이나 로봇 합성처럼 손으로 고친 부분은 작품마다 따로 적어 두었습니다.</p>
+<div class="about-contact">
+<span class="ac-label">메일</span>
+<span class="ac-mail" id="about-mail">dkfksem2@gmail.com</span>
+<button class="ac-copy btn btn--secondary btn--small" id="copy-mail" type="button">주소 복사</button>
+</div>
+</div>
+<dl class="about-cv"><!-- 이력서 항목: 내용만 바꾸거나 <div>를 복사해 늘리세요 -->
 
-    <!-- 3·4. 반찬통의 왕복 -->
-    <section class="project project-memory" id="memory" aria-labelledby="memory-title">
-      <div class="screen-a screen">
-        <div class="film-head wrapper">
-          <div class="project-heading">
-            <h2 id="memory-title">반찬통의 왕복</h2>
-            <p class="project-aside">담는 건, 반찬만이 아니니까.</p>
-          </div>
-        </div>
-          <div class="feature-art memory-art motion-stage" data-motion="memory" data-preview-video="" tabindex="0" aria-label="반찬통의 왕복 장면 미리보기. 마우스를 좌우로 움직이면 시대별 장면이 재생됩니다">
-            <div class="poster-frame" id="memory-stage">
-              <img class="stage-layer is-active" data-slide="0" src="assets/memory-pixel.webp" alt="1999년 소풍 장면의 도트 애니메이션">
-              <img class="stage-layer" data-slide="1" src="assets/memory-3d.webp" alt="2007년 교실에서 엄마 도시락을 먹는 고등학생 아들, 3D">
-              <img class="stage-layer" data-slide="2" src="assets/memory-reality.webp" alt="2026년 반찬통을 건네는 아들">
-              <video class="zone-video" data-zone="0" poster="assets/memory-pixel.webp" muted playsinline loop preload="none" src="assets/loops/memory-1.mp4" aria-hidden="true"></video>
-              <video class="zone-video" data-zone="1" poster="assets/memory-3d.webp" muted playsinline loop preload="none" src="assets/loops/memory-2.mp4" aria-hidden="true"></video>
-              <video class="zone-video" data-zone="2" poster="assets/memory-reality.webp" muted playsinline loop preload="none" src="assets/loops/memory-3.mp4" aria-hidden="true"></video>
-              <video class="stage-video" poster="assets/memory-cover.webp" muted playsinline loop preload="none" hidden aria-hidden="true"></video>
-            </div>
-            <div class="stage-overlay"></div>
-            <div class="stage-zones" aria-hidden="true"><span class="stage-zone is-on"><em>1999 도트</em></span><span class="stage-zone"><em>2007 3D</em></span><span class="stage-zone"><em>2026 실사</em></span></div>
-            <div class="stage-bottom"><span class="stage-caption" id="memory-stage-caption">1999년, 소풍 가는 날</span><button type="button" data-open="memory" class="play-disc" aria-label="반찬통의 왕복 상영관에서 보기"><span class="pd-icon"><svg viewBox="0 0 14 14" width="20" height="20" aria-hidden="true"><path d="M4.4 2.4v9.2L11.6 7z" fill="currentColor"/></svg></span></button></div>
-            <div class="quicklook" data-quicklook="memory" hidden><video poster="assets/memory-cover.webp" muted playsinline preload="none" src="assets/previews/memory-teaser.mp4"></video><div class="quicklook-hud"><button type="button" class="quicklook-close" data-close-peek="memory" aria-label="미리보기 닫기">✕</button></div><div class="quicklook-progress"><span></span></div></div>
-          </div>
-          <p class="stage-hint">화면 위를 좌우로 훑으면 1999, 2007, 2026이 차례로 움직입니다. <a href="picnic.html">1999년 소풍에 앉아 보기</a></p>
-        <div class="screen-cta wrapper"><a class="explore-link" href="#memory-notes" data-glide><span class="round-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16" fill="none"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="explore-text">제작 노트로</span></a></div>
-      </div>
+<div><dt>작업</dt><dd><strong>AI 영상 기획, 연출, 모션그래픽</strong></dd></div>
+<div><dt>교육</dt><dd><strong>[AI Worker] K-콘텐츠 생성형 AI 영상편집 모션그래픽 숏폼 크리에이티브 전문가 과정</strong></dd></div>
+<div><dt>다루는 것</dt><dd><ul class="cv-tags"><li>광고 기획·스토리보드</li><li>생성형 AI 이미지·영상</li><li>After Effects 모션그래픽·합성</li><li>Premiere Pro 편집·색 보정</li><li>사운드 디자인·믹스</li><li>웹 포트폴리오 코딩</li></ul></dd></div>
+<div><dt>작품</dt><dd><strong>반찬통의 왕복</strong><span>락앤락 비공식 브랜드 필름, 1분 23초, 2026</span><strong>틈GO</strong><span>가상 생활 서비스 광고, 약 1분, 2026</span></dd></div>
 
-      <div class="screen-b screen" id="memory-notes">
-        <div class="wrapper notes-inner">
-          <div class="project-foot">
-            <div class="project-synopsis">
-              <h3>도트에서 3D로, 다시 실사로.</h3>
-              <p>1999년은 도트, 2007년은 3D, 2026년은 실사로 찍었습니다. 시대마다 화면이 바뀌는 동안 반찬통을 받던 아이가 건네는 어른이 됩니다.</p>
-            </div>
-            <div class="project-links actions"><button class="btn btn--primary" data-open="memory" type="button">처음부터 보기</button><button class="btn btn--text" data-open-notes="memory" type="button">19컷 제작 노트</button></div>
-          </div>
-          <div class="making" aria-label="제작 과정과 이야기의 순간들">
-            <div class="mk-compare well" data-film="memory">
-              <div class="mk-head"><h4>#05, 도트가 흩어져 3D로 모이는 컷</h4><div class="mk-tabs" role="tablist"><button type="button" class="is-on" data-pair="0" role="tab" aria-selected="true">비교선 끌기</button></div></div>
-              <div class="mk-stage" tabindex="0" aria-label="왼쪽·오른쪽 화살표로 비교선을 움직입니다">
-                <img class="mk-after" src="assets/making/m05-after.webp" alt="2007년 3D 프레임">
-                <div class="mk-before"><img src="assets/making/m05-before.webp" alt="1999년 도트 프레임"></div>
-                <span class="mk-tag mk-tag-l">1999 도트</span><span class="mk-tag mk-tag-r">2007 3D</span>
-                <span class="mk-handle" aria-hidden="true"><i></i></span>
-              </div>
-              <p class="mk-cap">같은 구도로 맞춘 도트 프레임과 3D 프레임. After Effects에서 도트를 픽셀 단위로 흩었다가 같은 자리의 3D로 모으고, 화면을 4:3에서 16:9로 넓혔습니다.</p>
-            </div>
-            <div class="mk-moments">
-              <h4>먼저 보면 좋은 세 장면</h4>
-              <button type="button" class="mm" data-jump="memory:2"><span class="mm-media"><img src="assets/making/s02.webp" alt=""><video poster="assets/making/s02.webp" muted playsinline loop preload="none" src="assets/making/s02.mp4"></video></span><span class="mm-text"><b><span class="mm-no">#02</span> 엄마의 손</b><small>1999년. 계란말이를 썰다 손을 벤다. 화면이 꺼지고 대화창만 남는다.</small></span></button>
-              <button type="button" class="mm" data-jump="memory:10"><span class="mm-media"><img src="assets/making/s10.webp" alt=""><video poster="assets/making/s10.webp" muted playsinline loop preload="none" src="assets/making/s10.mp4"></video></span><span class="mm-text"><b><span class="mm-no">#10</span> 늦은 밤 통화</b><small>2026년. 빈 통 너머 자취방. "응 엄마, 잘 먹었어."</small></span></button>
-              <button type="button" class="mm" data-jump="memory:17"><span class="mm-media"><img src="assets/making/s17.webp" alt=""><video poster="assets/making/s17.webp" muted playsinline loop preload="none" src="assets/making/s17.mp4"></video></span><span class="mm-text"><b><span class="mm-no">#17</span> 엄마의 시선</b><small>2026년. 카메라가 엄마 뒤로 돌면, 어른 아들이 일곱 살 아이로 보인다.</small></span></button>
-            </div>
-          </div>
-        </div>
-        <div class="cta-abs"><a class="explore-link" href="#tumgo" data-glide><span class="round-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16" fill="none"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="explore-text">다음 작품으로</span></a></div>
-      </div>
-    </section>
-
-    <!-- 6. 틈GO -->
-    <section class="project project-tumgo" id="tumgo" aria-labelledby="tumgo-title">
-      <div class="screen-a screen">
-        <div class="film-head wrapper">
-          <div class="project-heading">
-            <h2 id="tumgo-title">틈GO</h2>
-            <p class="project-aside">문 앞에 두세요. 나머지는 틈GO가.</p>
-          </div>
-        </div>
-          <div class="feature-art tumgo-art motion-stage" data-motion="tumgo" data-preview-video="" tabindex="0" aria-label="틈GO 장면 미리보기. 마우스를 좌우로 움직이면 장면이 재생됩니다">
-            <div class="poster-frame">
-              <img class="stage-layer is-active" data-slide="0" src="assets/tumgo-cover.webp" alt="야간 계단을 내려오는 틈GO 로봇과 현우">
-              <img class="stage-layer" data-slide="1" src="assets/tumgo-life.webp" alt="밀린 빨래 앞에서 머리를 감싸는 현우">
-              <img class="stage-layer" data-slide="2" src="assets/tumgo-hallway.webp" alt="101호 문 앞에서 가방을 수거하는 틈GO 로봇">
-              <video class="zone-video" data-zone="0" poster="assets/tumgo-cover.webp" muted playsinline loop preload="none" src="assets/loops/tumgo-1.mp4" aria-hidden="true"></video>
-              <video class="zone-video" data-zone="1" poster="assets/tumgo-life.webp" muted playsinline loop preload="none" src="assets/loops/tumgo-2.mp4" aria-hidden="true"></video>
-              <video class="zone-video" data-zone="2" poster="assets/tumgo-hallway.webp" muted playsinline loop preload="none" src="assets/loops/tumgo-3.mp4" aria-hidden="true"></video>
-              <video class="stage-video" poster="assets/memory-cover.webp" muted playsinline loop preload="none" hidden aria-hidden="true"></video>
-            </div>
-            <div class="stage-overlay"></div>
-            <div class="stage-zones" aria-hidden="true"><span class="stage-zone is-on"><em>조우</em></span><span class="stage-zone"><em>고민</em></span><span class="stage-zone"><em>수거</em></span></div>
-            <div class="stage-bottom"><span class="stage-caption" id="tumgo-stage-caption">계단에서 처음 만난 로봇</span><button type="button" data-open="tumgo" class="play-disc" aria-label="틈GO 상영관에서 보기"><span class="pd-icon"><svg viewBox="0 0 14 14" width="20" height="20" aria-hidden="true"><path d="M4.4 2.4v9.2L11.6 7z" fill="currentColor"/></svg></span></button></div>
-            <div class="quicklook" data-quicklook="tumgo" hidden><video poster="assets/tumgo-cover.webp" muted playsinline preload="none" src="assets/previews/tumgo-teaser.mp4"></video><div class="quicklook-hud"><button type="button" class="quicklook-close" data-close-peek="tumgo" aria-label="미리보기 닫기">✕</button></div><div class="quicklook-progress"><span></span></div></div>
-          </div>
-          <p class="stage-hint">화면 위를 좌우로 훑으면 조우, 고민, 수거가 차례로 움직입니다.</p>
-        <div class="screen-cta wrapper"><a class="explore-link" href="#process" data-glide><span class="round-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16" fill="none"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="explore-text">만드는 과정으로</span></a><div class="cta-links"><a class="btn btn--text" href="room.html">현우의 원룸에 들어가 보기</a><button type="button" class="btn btn--primary" data-open="tumgo">처음부터 보기</button><button type="button" class="btn btn--text" data-open-notes="tumgo">42컷 기획 노트</button></div></div>
-      </div>
-    </section>
-
-    <!-- 7. 만드는 과정 -->
-    <section class="process screen" id="process" aria-labelledby="process-title">
-      <div class="wrapper process-inner">
-        <div class="process-heading">
-          <h2 id="process-title">어떤 도구로,<br>어디까지 손댔나.</h2>
-        </div>
-          <div class="process-figures">
-            <div class="process-tile process-tile--memory"><span class="figure">19</span><span class="figure-label">컷, 반찬통의 왕복<br><small>Seedance 2.5로 만들고 도트와 전환은 After Effects</small></span></div>
-            <div class="process-tile process-tile--tumgo"><span class="figure">42</span><span class="figure-label">컷, 틈GO 기획<br><small>Veo 3.1, Kling, Runway로 만들고 로봇 합성은 After Effects</small></span></div>
-          </div>
-        <div class="process-side">
-          <ol class="process-list">
-            <li><strong>글</strong><p>ChatGPT, Claude와 페르소나, 스토리보드, 컷 표를 썼습니다</p></li>
-            <li><strong>그림</strong><p>GPT Image로 컷마다 시작과 끝 프레임을, 틈GO는 Nano Banana와 Gemini로 인물·로봇·공간 기준을 잡았습니다</p></li>
-            <li><strong>소리</strong><p>ElevenLabs로 목소리를, Suno로 음악을, MMAudio로 효과음을 만들었습니다</p></li>
-            <li><strong>손질</strong><p>After Effects로 합성과 타이포를, Premiere Pro로 편집과 색, 믹스를 마쳤습니다</p></li>
-          </ol>
-          <button class="archive-link btn btn--text" type="button" data-open-notes="memory">컷별 제작 노트 전체 보기</button>
-        </div>
-      </div>
-      <div class="cta-abs"><a class="explore-link" href="#about" data-glide><span class="round-arrow" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16" fill="none"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="explore-text">소개로</span></a></div>
-    </section>
-
-    <!-- 8. 소개 + 푸터 -->
-    <div class="last-screen screen">
-      <section class="about wrapper" id="about" aria-labelledby="about-title">
-        <div class="about-lead">
-          <h2 id="about-title">정재환</h2>
-          <p class="about-role">광고 영상을 기획부터 편집까지 직접 만듭니다.</p>
-          <!-- 자기소개: 자소서 요약 2~3문장으로 바꿔 쓰세요 -->
-          <p class="about-intro">기획, AI 생성, After Effects 합성, 편집과 검수를 혼자 맡았습니다. AI가 만든 컷을 그대로 쓰지 않고, 도트 전환이나 로봇 합성처럼 손으로 고친 부분은 작품마다 따로 적어 두었습니다.</p>
-          <div class="about-contact">
-            <span class="ac-label">메일</span>
-            <span class="ac-mail" id="about-mail">dkfksem2@gmail.com</span>
-            <button type="button" class="ac-copy btn btn--secondary btn--small" id="copy-mail">주소 복사</button>
-          </div>
-        </div>
-        <dl class="about-cv">
-          <!-- 이력서 항목: 내용만 바꾸거나 <div>를 복사해 늘리세요 -->
-          <div><dt>하는 일</dt><dd><strong>AI 영상 기획, 연출, 모션그래픽</strong></dd></div>
-          <div><dt>교육</dt><dd><strong>[AI Worker] K-콘텐츠 생성형 AI 영상편집 모션그래픽 숏폼 크리에이티브 전문가 과정</strong><span>2026</span></dd></div>
-          <div><dt>다루는 것</dt><dd><ul class="cv-tags"><li>광고 기획·스토리보드</li><li>생성형 AI 이미지·영상</li><li>After Effects 모션그래픽·합성</li><li>Premiere Pro 편집·색 보정</li><li>사운드 디자인·믹스</li><li>웹 포트폴리오 코딩</li></ul></dd></div>
-          <div><dt>작품</dt><dd><strong>반찬통의 왕복</strong><span>락앤락 비공식 브랜드 필름, 1분 23초, 2026</span><strong>틈GO</strong><span>가상 생활 서비스 광고, 약 1분, 2026</span></dd></div>
-          <div><dt>경력과 자격</dt><dd><span class="cv-empty">이력서 내용을 여기에 적어 주세요</span></dd></div>
-        </dl>
-      </section>
-
-      <footer class="footer"><div class="footer-inner wrapper"><div><strong class="footer-mark">정재환</strong><p>이 사이트의 작품은 AI 기반 개인 교육·포트폴리오 작업입니다.<br>「반찬통의 왕복」은 락앤락의 공식 광고가 아닙니다. 틈GO는 가상의 서비스입니다.</p><p class="footer-ref">사이트 디자인 레퍼런스: <a href="https://viens-la.com/" target="_blank" rel="noopener">Viens-là</a>, <a href="https://www.new.company/" target="_blank" rel="noopener">The New Company</a>, <a href="https://dan.paris/" target="_blank" rel="noopener">Dan Paris</a>. 색과 글꼴은 가져오지 않았습니다.</p></div><div class="footer-actions"><a href="#top" class="back-top btn btn--secondary btn--small" data-glide><span class="bt-icon" aria-hidden="true"><svg viewBox="0 0 12 12" width="11" height="11" fill="none"><path d="M6 10V2.2M2.6 5.4 6 2l3.4 3.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="bt-label">맨 위로</span></a><button type="button" class="footer-link" id="open-evaluator">평가용 제작 자료</button></div></div></footer>
-    </div>
-  </main>
-
-  <nav class="sec-rail" id="sec-rail" aria-label="현재 구간"><span class="sr-label" id="sr-label"></span><ol id="sr-ticks"></ol></nav>
-
-  <div class="layout-guide" id="layout-guide" hidden aria-hidden="true"><span class="g-out"></span><span class="g-in"></span><em>1920 × 950, 콘텐츠 1440 (안쪽 1280), G 키로 끄기</em></div>
-
-  <dialog class="vh-done" id="vh-done" aria-labelledby="vh-done-title">
-    <div class="vd-card" id="vh-done-card">
-      <button type="button" class="vd-x" id="vh-done-x" aria-label="창 닫기">✕</button>
-      <div class="vd-art" id="vh-done-art" aria-hidden="true"></div>
-      <h2 id="vh-done-title">수거 신청 완료</h2>
-      <p class="vd-text" id="vh-done-text"></p>
-      <div class="vd-actions">
-        <a class="btn btn--primary" id="vh-done-play" href="room.html">체험하러 가기</a>
-        <button type="button" class="btn btn--secondary" id="vh-done-film">포트폴리오 영상 보기</button>
-        <button type="button" class="btn btn--text" id="vh-done-close">닫기</button>
-      </div>
-    </div>
-  </dialog>
-
-  <dialog class="screening" id="screening-dialog" aria-labelledby="sc-title">
-    <div class="sc">
-      <header class="sc-bar">
-        <span class="sc-film" id="sc-number">첫 번째 작품</span>
-        <div class="sc-actions">
-          <button type="button" class="sc-next btn btn--secondary btn--small" id="switch-film"><span id="sc-next-label">다음 작품 틈GO</span></button>
-          <button type="button" class="sc-close" id="close-modal" aria-label="닫기"><i aria-hidden="true">✕</i></button>
-        </div>
-      </header>
-      <div class="sc-stage">
-        <div class="sc-player">
-          <video id="screen-video" poster="assets/memory-cover.webp" controls playsinline preload="metadata" hidden></video>
-          <div class="sc-poster" id="sc-poster"><img id="sc-poster-img" src="assets/memory-cover.webp" alt=""><p id="player-status">영상을 불러오는 중입니다</p></div>
-        </div>
-        <div class="sc-chapters" id="sc-chapters" aria-label="챕터"></div>
-      </div>
-      <section class="sc-info">
-        <div class="sc-lead">
-          <h2 id="sc-title">반찬통의 왕복</h2>
-          <p class="sc-logline" id="sc-logline"></p>
-          <p class="sc-synopsis" id="sc-synopsis"></p>
-        </div>
-        <dl class="sc-meta" id="sc-meta"></dl>
-      </section>
-      <details class="sc-cuts" id="sc-cuts">
-        <summary><span>컷별 제작 노트</span><small id="sc-cuts-count"></small><i aria-hidden="true">+</i></summary>
-        <ol class="sc-cut-list" id="sc-cut-list"></ol>
-        <p class="sc-cut-note" id="sc-cut-note"></p>
-      </details>
-    </div>
-  </dialog>
+</dl>
+</section>
+<footer class="footer"><div class="footer-inner wrapper"><div><p>이 사이트의 작품은 AI 기반 개인 교육·포트폴리오 작업입니다.<br/>「반찬통의 왕복」은 락앤락의 공식 광고가 아닙니다. 틈GO는 가상의 서비스입니다.</p><p class="footer-ref">사이트 디자인 레퍼런스: <a href="https://viens-la.com/" rel="noopener" target="_blank">Viens-là</a>, <a href="https://www.new.company/" rel="noopener" target="_blank">The New Company</a>, <a href="https://dan.paris/" rel="noopener" target="_blank">Dan Paris</a>. 색과 글꼴은 가져오지 않았습니다.</p></div><div class="footer-actions"><a class="back-top btn btn--secondary btn--small" data-glide="" href="#top"><span aria-hidden="true" class="bt-icon"><svg fill="none" height="11" viewbox="0 0 12 12" width="11"><path d="M6 10V2.2M2.6 5.4 6 2l3.4 3.4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"></path></svg></span><span class="bt-label">맨 위로</span></a><button class="footer-link" id="open-evaluator" type="button">평가용 제작 자료</button></div></div></footer>
+</div>
+</main>
+<nav aria-label="현재 구간" class="sec-rail" id="sec-rail"><span class="sr-label" id="sr-label"></span><ol id="sr-ticks"></ol></nav>
+<div aria-hidden="true" class="layout-guide" hidden="" id="layout-guide"><span class="g-out"></span><span class="g-in"></span><em>1920 × 950, 콘텐츠 1440 (안쪽 1280), G 키로 끄기</em></div>
+<dialog aria-labelledby="vh-done-title" class="vh-done" id="vh-done">
+<div class="vd-card" id="vh-done-card">
+<button aria-label="창 닫기" class="vd-x" id="vh-done-x" type="button">✕</button>
+<div aria-hidden="true" class="vd-art" id="vh-done-art"></div>
+<h2 id="vh-done-title">수거 신청 완료</h2>
+<p class="vd-text" id="vh-done-text"></p>
+<div class="vd-actions">
+<a class="btn btn--primary" href="room.html" id="vh-done-play">체험하러 가기</a>
+<button class="btn btn--secondary" id="vh-done-film" type="button">포트폴리오 영상 보기</button>
+<button class="btn btn--text" id="vh-done-close" type="button">닫기</button>
+</div>
+</div>
+</dialog>
+<dialog aria-labelledby="sc-title" class="screening" id="screening-dialog">
+<div class="sc">
+<header class="sc-bar">
+<span class="sc-film" id="sc-number">첫 번째 작품</span>
+<div class="sc-actions">
+<button class="sc-next btn btn--secondary btn--small" id="switch-film" type="button"><span id="sc-next-label">다음 작품 틈GO</span></button>
+<button aria-label="닫기" class="sc-close" id="close-modal" type="button"><i aria-hidden="true">✕</i></button>
+</div>
+</header>
+<div class="sc-stage">
+<div class="sc-player">
+<video controls="" hidden="" id="screen-video" playsinline="" poster="assets/memory-cover.webp" preload="metadata"></video>
+<div class="sc-poster" id="sc-poster"><img alt="" id="sc-poster-img" src="assets/memory-cover.webp"/><p id="player-status">영상을 불러오는 중입니다</p></div>
+</div>
+<div aria-label="챕터" class="sc-chapters" id="sc-chapters"></div>
+</div>
+<section class="sc-info">
+<div class="sc-lead">
+<h2 id="sc-title">반찬통의 왕복</h2>
+<p class="sc-logline" id="sc-logline"></p>
+<p class="sc-synopsis" id="sc-synopsis"></p>
+</div>
+<dl class="sc-meta" id="sc-meta"></dl>
+</section>
+<details class="sc-cuts" id="sc-cuts">
+<summary><span>컷별 제작 노트</span><small id="sc-cuts-count"></small><i aria-hidden="true">+</i></summary>
+<ol class="sc-cut-list" id="sc-cut-list"></ol>
+<p class="sc-cut-note" id="sc-cut-note"></p>
+</details>
+</div>
+</dialog>
 </body>
 </html>

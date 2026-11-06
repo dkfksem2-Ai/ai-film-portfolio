@@ -40,39 +40,39 @@
     /* gate */
     .gate{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:color-mix(in oklab,var(--butter) 70%,transparent);transition:opacity .6s var(--ease)}
     .gate.is-out{opacity:0;pointer-events:none}
-    .gate-card{display:grid;gap:22px;justify-items:start;max-width:600px;padding:40px 44px;background:var(--butter-3)}
-    .gate h1{margin:0;font-weight:700;font-size:56px;line-height:1.1;letter-spacing:0}
-    .gate p{margin:0;font-size:17px;line-height:1.7;color:var(--ink-2)}
-    .btn{appearance:none;border:0;height:52px;padding:0 24px;font-size:17px;font-weight:700;background:var(--tomato);color:var(--tomato-ink);box-shadow:0 0 0 3px var(--ink),4px 4px 0 3px var(--ink);transition:transform .15s var(--ease),box-shadow .15s var(--ease)}
+    .gate-card{display:grid;gap:22px;justify-items:start;max-width:600px;padding:40px 44px;background:var(--butter-3);letter-spacing:-.015em}
+    .gate h1{margin:0;font-weight:700;font-size:52px;line-height:1.15;letter-spacing:-.025em}
+    .gate p{margin:0;font-size:16.5px;line-height:1.68;color:var(--ink-2);letter-spacing:-.012em}
+    .btn{appearance:none;border:0;height:50px;padding:0 24px;font-size:16px;font-weight:700;letter-spacing:-.015em;background:var(--tomato);color:var(--tomato-ink);box-shadow:0 0 0 3px var(--ink),4px 4px 0 3px var(--ink);transition:transform .15s var(--ease),box-shadow .15s var(--ease)}
     .btn:hover{transform:translate(-2px,-2px);box-shadow:0 0 0 3px var(--ink),6px 6px 0 3px var(--ink)}
     .btn:active{transform:translate(3px,3px);box-shadow:0 0 0 3px var(--ink),1px 1px 0 3px var(--ink)}
-    .link{appearance:none;border:0;background:transparent;color:var(--ink);font-size:16px;text-decoration:underline;text-underline-offset:.3em;padding:0 6px;height:52px}
+    .link{appearance:none;border:0;background:transparent;color:var(--ink);font-size:15.5px;letter-spacing:-.012em;text-decoration:underline;text-underline-offset:.3em;padding:0 8px;height:50px;display:inline-flex;align-items:center}
     .link:hover{text-decoration-color:var(--tomato);text-decoration-thickness:3px}
     .row{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
     .skip{position:fixed;z-index:6;right:32px;bottom:28px}
     .skip[hidden]{display:none}
     /* the note, held up in front of you */
-    .note{position:fixed;z-index:10;left:50%;top:50%;width:min(620px,calc(100% - 48px));padding:34px 38px 28px;background:var(--paper);display:grid;gap:18px;transform:translate(-50%,-50%) rotate(-1deg);transition:opacity .4s var(--ease),transform .8s var(--spring)}
+    .note{position:fixed;z-index:10;left:50%;top:50%;width:min(620px,calc(100% - 48px));padding:34px 38px 28px;background:var(--paper);display:grid;gap:18px;transform:translate(-50%,-50%) rotate(-1deg);letter-spacing:-.015em;box-shadow:0 0 0 3px var(--ink),8px 8px 0 3px var(--shadow);transition:opacity .4s var(--ease),transform .8s var(--spring)}
     .note[hidden]{display:grid;opacity:0;pointer-events:none;transform:translate(-50%,10%) rotate(3deg) scale(.6)}
     .note::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:repeating-linear-gradient(90deg,var(--tomato) 0 10px,transparent 10px 20px)}
-    .note-tag{margin:0;font-size:13px;color:var(--muted)}
-    .note-from{margin:0;font-weight:700;font-size:24px}
-    .note-text{margin:0;font-size:28px;line-height:1.6;color:var(--ink);min-height:3.2em}
-    .note-meta{margin:0;font-size:13px;color:var(--muted)}
-    .note textarea{width:100%;min-height:120px;resize:none;border:0;background:var(--butter-3);color:var(--ink);font-size:22px;line-height:1.5;padding:12px 14px;box-shadow:inset 0 0 0 3px var(--ink-2)}
-    .note .small{margin:0;font-size:13px;color:var(--muted)}
+    .note-tag{margin:0;font-size:13px;color:var(--muted);letter-spacing:-.01em}
+    .note-from{margin:0;font-weight:700;font-size:23px;letter-spacing:-.02em}
+    .note-text{margin:0;font-size:24px;line-height:1.65;color:var(--ink);min-height:3.2em;letter-spacing:-.015em;font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;font-weight:500}
+    .note-meta{margin:0;font-size:13px;color:var(--muted);letter-spacing:-.01em}
+    .note textarea{width:100%;min-height:120px;resize:none;border:0;background:var(--butter-3);color:var(--ink);font-size:18px;line-height:1.6;letter-spacing:-.015em;font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;padding:12px 14px;box-shadow:inset 0 0 0 3px var(--ink-2)}
+    .note .small{margin:0;font-size:12.5px;color:var(--muted);letter-spacing:-.01em}
     .note [hidden]{display:none!important}
     .theater{position:fixed;inset:0;z-index:15;display:grid;place-items:center;background:color-mix(in oklab,var(--ink) 78%,transparent);transition:opacity .6s var(--ease)}
     .theater[hidden]{display:grid;opacity:0;pointer-events:none}
-    .theater-card{width:min(1100px,calc(100% - 64px));display:grid;gap:16px;padding:20px;background:var(--butter-3)}
+    .theater-card{width:min(1100px,calc(100% - 64px));display:grid;gap:16px;padding:20px;background:var(--butter-3);letter-spacing:-.015em}
     .theater-head{display:flex;justify-content:space-between;align-items:center;gap:16px}
-    .theater-head h2{margin:0;font-size:24px}
+    .theater-head h2{margin:0;font-size:24px;letter-spacing:-.02em}
     .theater video{width:100%;aspect-ratio:16/9;background:var(--ink);display:block}
-    .theater-empty{aspect-ratio:16/9;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-size:16px;padding:24px;text-align:center}
+    .theater-empty{aspect-ratio:16/9;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-size:16px;padding:24px;text-align:center;letter-spacing:-.012em}
     .theater-empty[hidden]{display:none}
-    .ask{position:fixed;z-index:9;left:50%;bottom:90px;transform:translateX(-50%);display:grid;gap:14px;justify-items:start;padding:22px 26px;background:var(--paper);max-width:560px;transition:opacity .5s var(--ease)}
+    .ask{position:fixed;z-index:9;left:50%;bottom:90px;transform:translateX(-50%);display:grid;gap:14px;justify-items:start;padding:22px 26px;background:var(--paper);max-width:560px;letter-spacing:-.015em;box-shadow:0 0 0 3px var(--ink),6px 6px 0 3px var(--shadow);transition:opacity .5s var(--ease)}
     .ask[hidden]{display:grid;opacity:0;pointer-events:none}
-    .ask p{margin:0;font-size:17px;line-height:1.6}
+    .ask p{margin:0;font-size:16px;line-height:1.65;letter-spacing:-.012em}
     .dissolve{position:fixed;inset:0;z-index:30;pointer-events:none;display:grid;grid-template-columns:repeat(24,1fr);grid-auto-rows:1fr}
     .dissolve i{background:var(--ink);opacity:0;transform:scale(.2);transition:opacity .25s var(--ease),transform .35s var(--ease)}
     .dissolve.is-on i{opacity:1;transform:none}
@@ -94,7 +94,7 @@
     <div class="gate-card px">
       <h1 id="gate-title">1999년 봄,<br>소풍 가는 날</h1>
       <p id="gate-text">「반찬통의 왕복」의 첫 장면입니다. 아이가 돗자리에 앉으면, 그 아이의 눈으로 영상을 먼저 보고 반찬통을 엽니다. 쪽지를 읽고, 한 장 남기고 가세요.</p>
-      <div class="row"><button type="button" class="btn" id="enter">소풍 가기</button><a class="link" href="index.html#memory">작품만 보기</a></div>
+      <div class="row"><button type="button" class="btn" id="enter">소풍 가기</button><a class="link" href="index.html#memory">작품만 보기</a><button type="button" class="link" id="exit-gate">나가기</button></div>
     </div>
   </section>
 
@@ -160,22 +160,99 @@
   const rnd=(a=>()=>((a=Math.imul(a^a>>>15,a|1)^(a+Math.imul(a^a>>>7,a|61)),((a^a>>>14)>>>0)/4294967296)))(1999);
   const pick=arr=>arr[Math.floor(rnd()*arr.length)];
   const pathX=z=>4+z*.35;
-  // ground, river, path
+  // ground, river, path, Minecraft-style stepped terrain & details
   const ground=[];
   for(let x=-30;x<=30;x++)for(let z=-30;z<=30;z++){
-    if(z<-16&&z>-21){ground.push([x,-.9,z,pick(['#6fb6e6','#7cc1ec','#64a9dc'])]);continue}
+    if(z<-16&&z>-21){
+      ground.push([x,-1.4,z,'#4f8ec4']);
+      ground.push([x,-.9,z,pick(['#6fb6e6','#7cc1ec','#64a9dc'])]);
+      continue;
+    }
     const d=Math.hypot(x,z),path=Math.abs(x-pathX(z))<1.2&&z>-16;
-    ground.push([x,-.5+(d>24?Math.floor(rnd()*2)*.5:0),z,path?pick(['#d9c08a','#e2cb98']):pick(['#86c25a','#7ab650','#92cc63','#80bb55'])]);
+    const stepH=d>22?Math.floor((d-22)/3.5)*1:0;
+    const topY=-.5+stepH;
+    // 마인크래프트식 흙 블록 단면(잔디 아래 흙층)
+    for(let y=-1.5;y<topY;y+=1){
+      ground.push([x,y,z,pick(['#8b5a36','#7a4e2d','#96633c'])]);
+    }
+    ground.push([x,topY,z,path?pick(['#d9c08a','#e2cb98','#cbb07a']):pick(['#86c25a','#7ab650','#92cc63','#80bb55'])]);
   }
   blocks(ground);
-  const bridge=[];for(let z=-21;z<=-16;z++)for(let dx=-1;dx<=1;dx++)bridge.push([Math.round(pathX(-16))+dx,-.35,z,'#a5703f',1,.3,1]);blocks(bridge);
-  const hills=[];for(let a=0;a<360;a+=3){const r=40+rnd()*6,h=2+Math.floor(rnd()*6),x=Math.cos(a*Math.PI/180)*r,z=Math.sin(a*Math.PI/180)*r;for(let y=0;y<h;y++)hills.push([Math.round(x),y,Math.round(z),y>h-2?'#8fb4a6':'#7aa596',3,1,3])}blocks(hills);
+  // 나무 다리 + 마인크래프트 울타리 기둥·난간·랜턴
+  const bridge=[];
+  const bx0=Math.round(pathX(-16));
+  for(let z=-21;z<=-16;z++){
+    for(let dx=-1;dx<=1;dx++)bridge.push([bx0+dx,-.35,z,'#a5703f',1,.3,1]);
+    [-1.45,1.45].forEach(side=>{
+      if(z===-21||z===-16||z===-18){
+        bridge.push([bx0+side,.15,z,'#7a4e33',.22,.85,.22]);
+        if(z===-21||z===-16)bridge.push([bx0+side,.68,z,'#ffde7a',.26,.26,.26]);
+      }
+      bridge.push([bx0+side,.32,z,'#b8834a',.12,.12,1]);
+      bridge.push([bx0+side,.08,z,'#b8834a',.12,.12,1]);
+    });
+  }
+  blocks(bridge);
+  // 강가 수련잎(연꽃)과 갈대 블록
+  const riverDeco=[];
+  [[-6,-18.2],[-2,-19.4],[3,-17.6],[11,-18.8],[-12,-17.8],[14,-19.2]].forEach(([rx,rz])=>{
+    riverDeco.push([rx,-.38,rz,'#4e943a',.65,.06,.65]);
+    if(rnd()>.4)riverDeco.push([rx,-.3,rz,'#f7b8c8',.22,.14,.22]);
+  });
+  [[-9,-15.6],[-8.6,-15.4],[8,-15.5],[8.4,-15.7],[-4,-21.4],[12,-21.3]].forEach(([rx,rz])=>{
+    for(let h=0;h<3;h++)riverDeco.push([rx,-.2+h*.35,rz,'#68b048',.16,.35,.16]);
+  });
+  blocks(riverDeco);
+  // 마인크래프트식 하늘 해 블록
+  const sunBlocks=[];
+  vox('#fff59e',18,23,-28,4.2,4.2,4.2,scene);
+  vox('#ffe066',18,23,-28,4.8,4.8,3.6,scene);
+  const hills=[];for(let a=0;a<360;a+=3){const r=40+rnd()*6,h=2+Math.floor(rnd()*6),x=Math.cos(a*Math.PI/180)*r,z=Math.sin(a*Math.PI/180)*r;for(let y=0;y<h;y++)hills.push([Math.round(x),y,Math.round(z),y>h-2?'#8fb4a6':(y>h-3?'#7aa596':'#8b5a36'),3,1,3])}blocks(hills);
   const mat=[];for(let x=-4;x<=3;x++)for(let z=-3;z<=4;z++)mat.push([x+.5,0,z+.5,(x+z)&1?'#f4efe4':'#d9534a',1,.08,1]);blocks(mat);
+  // 들판 복셀 잔디·민들레·양귀비·튤립 블록 디테일
+  const flora=[];
+  for(let i=0;i<140;i++){
+    const fx=Math.round((rnd()-.5)*42),fz=Math.round((rnd()-.5)*40);
+    if(fz<-15&&fz>-22)continue;
+    if(Math.abs(fx-pathX(fz))<1.8&&fz>-16)continue;
+    if(fx>=-5&&fx<=4&&fz>=-4&&fz<=5)continue;
+    if(Math.hypot(fx,fz)>22)continue;
+    const gx=fx+(rnd()-.5)*.4,gz=fz+(rnd()-.5)*.4;
+    flora.push([gx,.14,gz,pick(['#5da13b','#6ab043','#4e8f31']),.12,.32,.12]);
+    if(rnd()<.55){
+      flora.push([gx+.14,.1,gz-.1,pick(['#5da13b','#6ab043']),.1,.24,.1]);
+    }
+    if(rnd()<.42){
+      const fcol=pick(['#e04842','#f6d33c','#f29cb6','#ffffff','#ff9e44']);
+      flora.push([gx,.34,gz,fcol,.22,.16,.22]);
+    }
+  }
+  blocks(flora);
   const trees=[];
   function tree(tx,tz,h){for(let y=0;y<h;y++)trees.push([tx,y,tz,'#7a4e33']);for(let x=-2;x<=2;x++)for(let y=0;y<3;y++)for(let z=-2;z<=2;z++){if(Math.abs(x)+Math.abs(z)+y*.6>3.6||rnd()<.18)continue;trees.push([tx+x,h+y,tz+z,pick(['#f6b8c8','#f9c9d6','#f2a7bb','#fde0e8'])])}}
   [[-8,-7,5],[7,-10,6],[-13,4,5],[12,2,5],[2,-14,6],[-5,12,5],[10,11,4],[-15,-12,6],[16,-15,5],[-3,-11,5]].forEach(t=>tree(...t));blocks(trees);
   const clouds=new THREE.Group();scene.add(clouds);{const l=[];for(let k=0;k<9;k++){const cx=(rnd()-.5)*70,cz=(rnd()-.5)*70,cy=16+rnd()*5;for(let i=0;i<10;i++)l.push([cx+Math.floor(rnd()*6),cy+Math.floor(rnd()*2),cz+Math.floor(rnd()*3),'#ffffff',2,1,2])}blocks(l,clouds)}
-  blocks([[1.7,.25,-.5,'#4f8fcf',.22,.42,.22],[1.7,.5,-.5,'#f4efe4',.18,.08,.18],[-1.5,.14,-.3,'#d9534a',.2,.2,.2],[-1.5,.28,-.3,'#5a8a3a',.04,.08,.04],[-1.25,.14,-.1,'#e8c93f',.2,.2,.2],[2.4,.06,1.2,'#f6e7c8',1.1,.04,.8]]);
+  // 돗자리 위 소품 + 라탄 피크닉 바구니 + 벗어둔 운동화
+  blocks([
+    [1.7,.25,-.5,'#4f8fcf',.22,.42,.22],[1.7,.5,-.5,'#f4efe4',.18,.08,.18],
+    [-1.5,.14,-.3,'#d9534a',.2,.2,.2],[-1.5,.28,-.3,'#5a8a3a',.04,.08,.04],
+    [-1.25,.14,-.1,'#e8c93f',.2,.2,.2],[2.4,.06,1.2,'#f6e7c8',1.1,.04,.8],
+    // 피크닉 바구니
+    [-2.2,.22,-1.4,'#c79553',.72,.38,.52],[-2.2,.42,-1.4,'#a87638',.78,.06,.58],
+    [-2.2,.56,-1.4,'#8f5d26',.08,.28,.54],
+    // 돗자리 가장자리에 벗어둔 작은 운동화 한 켤레
+    [3.2,.08,2.6,'#3f6aa8',.18,.1,.32],[3.2,.04,2.6,'#f4efe4',.2,.04,.34],
+    [3.48,.08,2.45,'#3f6aa8',.18,.1,.32],[3.48,.04,2.45,'#f4efe4',.2,.04,.34]
+  ]);
+  // 나비 두 마리 (복셀 날개짓)
+  const butterflies=[];
+  [['#fff275',-2.6,1.2,-.8],['#ff9ebb',2.8,1.4,-1.8],['#8be8ff',-1.2,1.6,-3.2]].forEach(([col,bx,by,bz],i)=>{
+    const bg=new THREE.Group();bg.position.set(bx,by,bz);scene.add(bg);
+    const wL=vox(col,-.08,0,0,.14,.04,.18,bg);
+    const wR=vox(col,.08,0,0,.14,.04,.18,bg);
+    vox('#3a2e28',0,0,0,.04,.05,.16,bg);
+    butterflies.push({g:bg,wL,wR,x0:bx,y0:by,z0:bz,ph:i*2.1});
+  });
 
   // ---- 락앤락 반찬통: 투명 몸통, 테두리 있는 뚜껑, 네 면의 잠금 날개 ----
   const box=new THREE.Group();box.position.set(0,.08,-.15);box.scale.setScalar(1.35);scene.add(box);
@@ -238,14 +315,50 @@
   function hit(e){const r=canvas.getBoundingClientRect();mv.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(mv,camera);return ray.intersectObject(hitBox).length>0}
   addEventListener('keydown',e=>{if(mode!=='seated'||e.target.closest('textarea'))return;if(e.key==='ArrowLeft')yaw+=.08;if(e.key==='ArrowRight')yaw-=.08;if(e.key==='ArrowUp')pitch=Math.min(.6,pitch+.06);if(e.key==='ArrowDown')pitch=Math.max(-1.2,pitch-.06)});
 
-  // ---- 소리: 파일 없이 만든다 ----
-  let ac=null,master=null,soundOn=true;
-  function startAudio(){ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=.5;master.connect(ac.destination);
+  // ---- 소리: 파일 없이 만든다 (흙길 발자국 소리 + 잔디 밟는 사각사각 소리 포함) ----
+  let ac=null,master=null,soundOn=true,stepNoiseBuf=null;
+  function startAudio(){
+    if(ac){if(ac.state==='suspended')ac.resume().catch(()=>{});return}
+    ac=new (window.AudioContext||window.webkitAudioContext)();master=ac.createGain();master.gain.value=.5;master.connect(ac.destination);
     const len=ac.sampleRate*2,buf=ac.createBuffer(1,len,ac.sampleRate),d=buf.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
-    const w=ac.createBufferSource();w.buffer=buf;w.loop=true;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=420;const g=ac.createGain();g.gain.value=.12;w.connect(lp).connect(g).connect(master);w.start();
-    (function bird(){if(!ac)return;const t=ac.currentTime,o=ac.createOscillator(),gg=ac.createGain(),f=2400+Math.random()*1800;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*1.4,t+.07);o.frequency.exponentialRampToValueAtTime(f*.9,t+.14);gg.gain.setValueAtTime(0,t);gg.gain.linearRampToValueAtTime(.06,t+.02);gg.gain.exponentialRampToValueAtTime(.0001,t+.18);o.connect(gg).connect(master);o.start(t);o.stop(t+.2);setTimeout(bird,Math.random()<.6?180+Math.random()*200:1200+Math.random()*2600)})()}
+    stepNoiseBuf=buf;
+    const w=ac.createBufferSource();w.buffer=buf;w.loop=true;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=420;const g=ac.createGain();g.gain.value=.1;w.connect(lp).connect(g).connect(master);w.start();
+    (function bird(){if(!ac)return;const t=ac.currentTime,o=ac.createOscillator(),gg=ac.createGain(),f=2400+Math.random()*1800;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*1.4,t+.07);o.frequency.exponentialRampToValueAtTime(f*.9,t+.14);gg.gain.setValueAtTime(0,t);gg.gain.linearRampToValueAtTime(.06,t+.02);gg.gain.exponentialRampToValueAtTime(.0001,t+.18);o.connect(gg).connect(master);o.start(t);o.stop(t+.2);setTimeout(bird,Math.random()<.6?180+Math.random()*200:1200+Math.random()*2600)})();
+  }
   function blip(f=880,dt=0){if(!ac||!soundOn)return;const t=ac.currentTime+dt,o=ac.createOscillator(),g=ac.createGain();o.type='square';o.frequency.value=f;g.gain.setValueAtTime(.08,t);g.gain.exponentialRampToValueAtTime(.0001,t+.06);o.connect(g).connect(master);o.start(t);o.stop(t+.07)}
-  function step(){if(!ac||!soundOn)return;const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.value=140+Math.random()*30;g.gain.setValueAtTime(.05,t);g.gain.exponentialRampToValueAtTime(.0001,t+.05);o.connect(g).connect(master);o.start(t);o.stop(t+.06)}
+  function step(onGrass=false){
+    if(!ac||!soundOn)return;
+    const t=ac.currentTime;
+    if(onGrass&&stepNoiseBuf){
+      // 잔디·풀 밟는 소리: 바스락거리는 고역/중역 노이즈 + 부드러운 잔디 쿠션 저음
+      const src=ac.createBufferSource();src.buffer=stepNoiseBuf;
+      const bp=ac.createBiquadFilter();bp.type='bandpass';bp.frequency.setValueAtTime(2200+Math.random()*700,t);bp.Q.value=1.8;
+      const hp=ac.createBiquadFilter();hp.type='highpass';hp.frequency.value=950;
+      const ng=ac.createGain();ng.gain.setValueAtTime(.001,t);ng.gain.linearRampToValueAtTime(.22,t+.018);ng.gain.exponentialRampToValueAtTime(.0008,t+.115);
+      src.connect(hp).connect(bp).connect(ng).connect(master);
+      src.start(t,Math.random()*1.2,.13);
+      // 두 번째 풀잎 스침 레이어
+      const src2=ac.createBufferSource();src2.buffer=stepNoiseBuf;
+      const bp2=ac.createBiquadFilter();bp2.type='bandpass';bp2.frequency.setValueAtTime(3400+Math.random()*600,t+.02);bp2.Q.value=2.4;
+      const ng2=ac.createGain();ng2.gain.setValueAtTime(.001,t+.015);ng2.gain.linearRampToValueAtTime(.14,t+.035);ng2.gain.exponentialRampToValueAtTime(.0008,t+.12);
+      src2.connect(bp2).connect(ng2).connect(master);
+      src2.start(t+.015,Math.random()*1.2,.12);
+      // 부드러운 흙·잔디 딛는 저음
+      const o=ac.createOscillator(),og=ac.createGain();o.type='sine';o.frequency.setValueAtTime(98+Math.random()*16,t);o.frequency.exponentialRampToValueAtTime(48,t+.065);
+      og.gain.setValueAtTime(.08,t);og.gain.exponentialRampToValueAtTime(.0008,t+.07);o.connect(og).connect(master);o.start(t);o.stop(t+.075);
+    }else{
+      // 흙길 발자국 소리: 단단한 흙/모래 밟는 소리
+      if(stepNoiseBuf){
+        const src=ac.createBufferSource();src.buffer=stepNoiseBuf;
+        const bp=ac.createBiquadFilter();bp.type='bandpass';bp.frequency.setValueAtTime(950+Math.random()*350,t);bp.Q.value=1.4;
+        const ng=ac.createGain();ng.gain.setValueAtTime(.001,t);ng.gain.linearRampToValueAtTime(.15,t+.01);ng.gain.exponentialRampToValueAtTime(.0008,t+.065);
+        src.connect(bp).connect(ng).connect(master);
+        src.start(t,Math.random()*1.2,.075);
+      }
+      const o=ac.createOscillator(),g=ac.createGain();o.type='triangle';o.frequency.setValueAtTime(145+Math.random()*28,t);o.frequency.exponentialRampToValueAtTime(68,t+.055);
+      g.gain.setValueAtTime(.11,t);g.gain.exponentialRampToValueAtTime(.0008,t+.06);o.connect(g).connect(master);o.start(t);o.stop(t+.065);
+    }
+  }
   $('#sound-toggle').addEventListener('click',e=>{soundOn=!soundOn;if(master)master.gain.value=soundOn?.5:0;bgm.muted=!soundOn;e.currentTarget.textContent=soundOn?'소리 끄기':'소리 켜기';e.currentTarget.setAttribute('aria-pressed',String(soundOn))});
 
   // ---- 쪽지 ----
@@ -309,7 +422,23 @@
   $('#copy-link').addEventListener('click',async()=>{if(!lastId)return;const u=DB.shareUrl('picnic.html',lastId);try{await navigator.clipboard.writeText(u);$('#copy-link').textContent='복사됨'}catch(err){$('#done-state').textContent=u}setTimeout(()=>$('#copy-link').textContent='링크 복사',1800)});
 
   const dis=$('#dissolve');for(let i=0;i<24*14;i++){const c=document.createElement('i');c.style.transitionDelay=`${Math.random()*600}ms`;dis.append(c)}
-  function toFilm(){dis.classList.add('is-on');setTimeout(()=>{location.href='index.html?play=memory#memory'},1100)}
+  function navWithDissolve(url,useBack=false){
+    try{startAudio();blip(660);blip(880,.08)}catch(e){}
+    dis.classList.add('is-on');
+    setTimeout(()=>{
+      if(useBack&&history.length>1)history.back();
+      else location.href=url;
+    },850);
+  }
+  function toFilm(){navWithDissolve('index.html?play=memory#memory')}
+  document.querySelectorAll('a[href^="index.html"]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      e.preventDefault();
+      navWithDissolve(a.getAttribute('href'));
+    });
+  });
+  const exitBtn=$('#exit-gate');
+  if(exitBtn)exitBtn.addEventListener('click',()=>navWithDissolve('index.html#memory',true));
 
   $('#enter').addEventListener('click',()=>{$('#gate').classList.add('is-out');try{startAudio()}catch(e){}bgmTo(BGM_MAX);setTimeout(()=>$('#gate').hidden=true,600);mode='intro';introT=0;$('#skip').hidden=false});
   $('#skip').addEventListener('click',()=>{if(mode==='intro'||mode==='settle')firstPerson()});
@@ -324,7 +453,11 @@
       introT+=dt;const u=Math.min(1,introT/INTRO),e=1-Math.pow(1-u,1.6);placeKid(e);
       const swing=Math.sin(introT*14)*(u<1?.9:0);legL.rotation.x=swing;legR.rotation.x=-swing;armL.rotation.x=-swing*.8;armR.rotation.x=swing*.8;
       kid.position.y=Math.abs(Math.sin(introT*14))*.06*(1-u);
-      if(introT-lastStep>.14&&u<1){step();lastStep=introT}
+      if(introT-lastStep>.21&&u<.98){
+        const onGrass=Math.abs(kid.position.x-pathX(kid.position.z))>=1.15||e>=.42;
+        step(onGrass);
+        lastStep=introT;
+      }
       tmp.copy(kid.position).add(new THREE.Vector3(3.2,2.6,4.2));camera.position.lerp(tmp,Math.min(1,dt*2.2));camera.lookAt(kid.position.x,kid.position.y+.8,kid.position.z-1.2);
       if(u>=1){mode='settle';introT=0;camFrom.copy(camera.position);kid.rotation.y=Math.PI;legL.rotation.x=legR.rotation.x=-1.4;kid.position.y=-.3;armL.rotation.x=armR.rotation.x=-.4}
     }else if(mode==='settle'){
@@ -341,6 +474,13 @@
       paper.position.lerpVectors(from,to,1-Math.pow(1-paperT,3));paper.quaternion.copy(camera.quaternion);paper.rotateZ((1-paperT)*.6)}
     for(let i=0;i<N;i++){pp[i*3+1]-=sp[i]*dt*.6;pp[i*3]+=Math.sin(t*.7+i)*dt*.2;if(pp[i*3+1]<0)pp[i*3+1]=12}
     pg.attributes.position.needsUpdate=true;clouds.position.x=Math.sin(t*.02)*6;
+    butterflies.forEach(b=>{
+      const a=t*1.6+b.ph;
+      b.g.position.set(b.x0+Math.cos(a)*.8,b.y0+Math.sin(a*2.2)*.22,b.z0+Math.sin(a)*.8);
+      b.g.rotation.y=-a;
+      const flap=Math.sin(t*18+b.ph)*.65;
+      b.wL.rotation.z=flap;b.wR.rotation.z=-flap;
+    });
     renderer.render(scene,camera);requestAnimationFrame(loop)})();
   })();
   </script>
