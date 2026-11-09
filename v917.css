@@ -1,0 +1,70 @@
+/* V9.17 — 첫 화면(세 시대 분할·QR 스캔·어두운 공간+노이즈), 반찬통 엔딩 카피, 틈GO 빛 굴절 전환, 소개 가운데 */
+:root { --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); }
+@keyframes grain-shift { 0% { transform: translate(0,0); } 25% { transform: translate(-3%,2%); } 50% { transform: translate(2%,-3%); } 75% { transform: translate(-2%,-1%); } 100% { transform: translate(0,0); } }
+.grain-layer, .portfolio-atmosphere::before, .tumgo-sticky::before {
+  content: ""; position: absolute; inset: -10%; pointer-events: none; background-image: var(--grain); opacity: .09; mix-blend-mode: overlay; animation: grain-shift .9s steps(3) infinite;
+}
+
+/* ---------- 첫 화면 배경: 제작 이야기와 같은 공간, 아주 어둡게 ---------- */
+.atmosphere-warm { background-image: url('assets/v910/bg-memory-kitchen-daylight.png') !important; }
+.atmosphere-cool { background-image: url('assets/v910/bg-tumgo-laundry.png') !important; }
+.portfolio-atmosphere .atmosphere-image { filter: brightness(.5) saturate(.85) !important; opacity: .44 !important; transform: none !important; background-size: cover; }
+.portfolio-atmosphere::before { z-index: 2; opacity: .12; }
+.portfolio-atmosphere::after { background: radial-gradient(ellipse at 50% 45%, #0c111755 0%, #0c1117e6 85%), linear-gradient(180deg, #0c1117aa, transparent 45%, #0c1117cc) !important; }
+@media (max-width: 700px) {
+  .feature-memory { --hero-photo: url('assets/v910/bg-memory-kitchen-daylight.png'); }
+  .feature-tumgo { --hero-photo: url('assets/v910/bg-tumgo-laundry.png'); }
+}
+
+/* ---------- 반찬통 카드: 세 시대가 세로로 나뉜 한 장 ---------- */
+.era-split { position: absolute; inset: 0; display: flex; gap: 3px; background: #0c1117; }
+.era-slice { position: relative; flex: 1 1 0; min-width: 0; overflow: hidden; transition: flex-grow .7s cubic-bezier(.2,.7,.2,1); }
+.era-slice.is-on { flex-grow: 2.4; }
+.era-slice img { position: absolute !important; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.04); transition: transform .9s ease, filter .6s ease; filter: saturate(.75) brightness(.8); }
+.era-slice.is-on img { transform: scale(1); filter: none; }
+.era-slice em { position: absolute; left: 12px; top: 12px; z-index: 2; font: 700 clamp(12px, .9vw, 15px)/1 var(--font-display); font-style: normal; color: #fff; padding: 7px 10px; border-radius: 99px; background: #0c1117b0; white-space: nowrap; opacity: .75; transition: opacity .4s ease; }
+.era-slice.is-on em { opacity: 1; background: #f3dfaa; color: #3b2414; }
+.feature-media--era:hover img { transform: none; }
+.feature-media--era .feature-play { left: auto; right: 18px; }
+
+/* ---------- 반찬통 엔딩: 세 반찬통 뚜껑 위에 한 마디씩 ---------- */
+.scene-pull--plate.is-ending .pull-readout { display: block !important; }
+.pull-word {
+  position: absolute; z-index: 30; margin: 0; transform: translate(-50%, -100%) translateY(18px); opacity: 0; pointer-events: none; white-space: nowrap;
+  font: 750 clamp(30px, 3.4vw, 64px)/1.1 var(--font-display); letter-spacing: -.045em; color: #fff7e2;
+  text-shadow: 0 2px 0 #3b2414, 0 6px 18px #000c, 0 0 40px #00000080;
+  padding: .12em .42em .18em; border-radius: 16px; background: rgb(32 22 14 / .55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  transition: opacity .55s ease, transform .7s cubic-bezier(.2,.7,.2,1);
+}
+.pull-word.is-on { opacity: 1; transform: translate(-50%, -100%); }
+
+/* ---------- 하는 방법 2단계: 강조 ---------- */
+.pe-em { color: #0f2a22; background: #8ff0cf; padding: .05em .35em; border-radius: 6px; font-weight: 750; }
+
+/* ---------- 틈GO 소개: 빛 굴절·크롬 전환, 노이즈 배경 ---------- */
+.tumgo-sticky { background: radial-gradient(ellipse at 30% 40%, #13302a 0%, #0c1117 60%); }
+.tumgo-sticky::before { z-index: 0; opacity: .14; }
+.tumgo-sticky .tumgo-grid { position: relative; z-index: 1; }
+.tumgo-scroll.is-scroll .tumgo-art .stage-layer { will-change: opacity, transform; }
+.tg-sheen { position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit; opacity: 0; mix-blend-mode: screen;
+  background: linear-gradient(112deg, transparent 28%, #ffffff10 38%, #ffffffa0 46%, #bfe9ff70 50%, #ffd6f560 54%, transparent 64%); background-size: 260% 100%; }
+#tumgo-journey .grain-layer { z-index: 1; opacity: .1; }
+
+/* ---------- 소개: 가운데 배치, 단어가 떠오르며 또렷해짐 ---------- */
+.last-screen .about { display: flex !important; justify-content: center; }
+.about-lead { max-width: 980px !important; margin-inline: auto !important; text-align: center; }
+.about-statement-clean { align-items: center; }
+.about-intro { margin-inline: auto !important; }
+.about-contact { justify-content: center; margin-inline: auto; }
+.about-statement-clean .w { display: inline-block; transform: translateY(calc((1 - var(--f, 0)) * .45em)); filter: blur(calc((1 - var(--f, 0)) * 7px)); transition: opacity .12s linear; }
+
+@media (prefers-reduced-motion: reduce) {
+  .grain-layer, .portfolio-atmosphere::before, .tumgo-sticky::before { animation: none; }
+  .about-statement-clean .w { transform: none; filter: none; }
+  .pull-word { transition: none; }
+}
+@media (max-width: 700px) {
+  .pull-word { font-size: 17px; padding: .2em .5em; border-radius: 10px; }
+  .pull-word:nth-of-type(odd) { margin-top: -1.9em; }
+  .era-slice em { font-size: 10px; padding: 4px 6px; left: 6px; top: 6px; }
+}

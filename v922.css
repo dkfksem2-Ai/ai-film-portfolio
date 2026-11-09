@@ -1,0 +1,125 @@
+/* V9.22 — 두 작품의 글꼴·색을 각자의 기획서에서 가져온다.
+   반찬통의 왕복(락앤락 제작 기준서 PDF): 제목 Hahmlet 900 #0f2f2e · 본문 IBM Plex Sans KR #3d5654 · 표기 Galmuri11 · 강조 #0a7a6e · 바탕 #eef4f2
+   틈GO(기획서 PPTX): 맑은 고딕 · 바탕 #10141a/#061a10 · 강조 #22c55e · 글자 #f2f5f7 · 흐린 글자 #b9c2cb/#6e7984 */
+:root {
+  --ll-head: "Hahmlet", "Noto Serif KR", serif;
+  --ll-body: "IBM Plex Sans KR", "Pretendard Variable", Pretendard, sans-serif;
+  --ll-pix: "Galmuri11", "IBM Plex Sans KR", monospace;
+  --ll-ink: #0f2f2e; --ll-text: #3d5654; --ll-teal: #0a7a6e; --ll-dim: #6f8582; --ll-bg: #eef4f2;
+  --tg-font: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", "Noto Sans KR", "Pretendard Variable", Pretendard, sans-serif;
+  --tg-bg: #10141a; --tg-deep: #061a10; --tg-green: #22c55e; --tg-ink: #f2f5f7; --tg-soft: #b9c2cb; --tg-dim: #6e7984;
+}
+
+/* ---------- 첫 화면 제목 ---------- */
+.cl-hero-title .h-a > span { font-family: var(--ll-head) !important; font-weight: 900 !important; color: #f4f8f7 !important; letter-spacing: -.06em; }
+.cl-hero-title .h-a .cl-it { font-family: var(--ll-body) !important; font-weight: 400; color: #9fb3af !important; opacity: 1; letter-spacing: -.02em; }
+.cl-hero-title .h-b > span { font-family: var(--tg-font) !important; font-weight: 700 !important; color: var(--tg-green) !important; letter-spacing: -.05em; word-spacing: 0; }
+.cl-hero-lede { font-family: var(--ll-body) !important; }
+
+/* ---------- 1. 반찬통 콜라주: 글꼴 셋(제목·본문·표기), 밑줄 없음, 소개는 한 줄 ---------- */
+.cl-memory { color: var(--ll-ink); }
+.cl .cl-memory .cl-title { font-family: var(--ll-head) !important; font-weight: 900 !important; color: var(--ll-ink) !important; letter-spacing: -.055em !important; top: 37%; }
+.cl-memory .cl-label { display: none; }
+.cl-memory .cl-sub { left: 24%; top: 77%; max-width: none; white-space: nowrap; font-family: var(--ll-body); font-weight: 400; color: var(--ll-text); font-size: clamp(16px, 1.25vw, 30px); letter-spacing: -.02em; }
+.cl-memory .cl-sub .cl-it { display: inline; font: inherit; font-size: 1em; }
+.cl-memory .cl-cta { left: 24%; top: 88%; }
+.cl-memory .cl-btn { background: var(--ll-ink); color: #f4f8f7; font-family: var(--ll-body); font-weight: 600; }
+.cl-memory .cl-btn span { font-family: var(--ll-pix); font-weight: 400; opacity: .75; }
+.cl-memory .cl-btn:hover { background: var(--ll-teal); }
+.cl-memory .cl-no { font-family: var(--ll-pix); color: var(--ll-teal); }
+.cl-memory .cl-ph figcaption { font-family: var(--ll-pix); letter-spacing: 0; mix-blend-mode: normal; color: #fff; background: #0f2f2ecc; padding: 3px 7px; left: 8px; top: 8px; }
+.cl-link { border-bottom: 0 !important; padding-bottom: 0 !important; text-decoration: none !important; }
+.cl-memory .cl-link { font-family: var(--ll-body); color: var(--ll-text); }
+.cl-memory .cl-link:hover { color: var(--ll-teal); }
+
+/* ---------- 2. 틈GO 콜라주: 맑은 고딕 한 가지, 문장은 제목 아래로 ---------- */
+.cl-tumgo, .cl-tumgo * { font-family: var(--tg-font) !important; }
+.cl .cl-tumgo .cl-title { font-weight: 700 !important; letter-spacing: -.05em !important; color: var(--tg-ink) !important; top: 40%; }
+.cl-tumgo .cl-title .tg-go { color: var(--tg-green); }
+.cl-tumgo .cl-label { top: 36%; color: var(--tg-soft); letter-spacing: .02em; }
+.cl-tumgo .cl-sub { top: 75%; left: 35%; color: var(--tg-soft); font-weight: 400; }
+.cl-tumgo .cl-sub .cl-it { font-size: 1em; color: var(--tg-ink); font-weight: 700; }
+.cl-tumgo .cl-no { color: var(--tg-soft); }
+.cl-tumgo .cl-btn { background: var(--tg-green); color: var(--tg-deep); font-weight: 700; }
+.cl-tumgo .cl-btn span { opacity: .7; font-weight: 400; }
+.cl-tumgo .cl-btn:hover { background: var(--tg-ink); }
+.cl-tumgo .cl-link { color: var(--tg-soft); }
+.cl-tumgo .cl-link:hover { color: var(--tg-green); }
+
+/* ---------- 틈GO 본문 전체: 맑은 고딕 + 기획서 색 ---------- */
+.project-tumgo, .project-tumgo *:not(svg):not(path) { font-family: var(--tg-font) !important; }
+.project-tumgo .btn--primary, .project-tumgo .vu-film, #tumgo-journey .btn--primary { background: var(--tg-green) !important; color: var(--tg-deep) !important; }
+#tumgo-journey .pull-readout, #tumgo-journey .pull-copy h2 { color: var(--tg-ink) !important; }
+#tumgo-journey .pull-readout { color: var(--tg-green) !important; font-weight: 700; }
+#tumgo-journey .pull-copy { background: rgb(16 20 26 / .86) !important; }
+
+/* ---------- 3. 틈GO 소개: 영상 배경, 01 조우 · 02 고민 · 03 수거 ---------- */
+.tumgo-scroll.is-scroll .tumgo-art .zone-video { display: block !important; }
+.tumgo-sticky .tumgo-art .zone-video { z-index: 3; opacity: 0 !important; transition: opacity .7s ease !important; object-position: 50% 50%; }
+.tumgo-sticky .tumgo-art .zone-video.is-play { opacity: 1 !important; }
+.tumgo-sticky .tumgo-art .stage-bottom, .tumgo-sticky .tumgo-art .stage-zones, .tumgo-sticky .project-aside, .tumgo-sticky .tumgo-actions { display: none !important; }
+.tumgo-sticky .tumgo-art::before { z-index: 5; background: radial-gradient(ellipse 60% 95% at 100% 50%, #10141af2 0%, #10141ac0 38%, #10141a55 62%, transparent 80%) !important; }
+.tumgo-sticky .tumgo-col { top: 13svh !important; translate: none !important; }
+.tumgo-sticky .project-heading h2#tumgo-title { font-weight: 700 !important; letter-spacing: -.05em !important; color: var(--tg-ink) !important; }
+.tumgo-sticky h2#tumgo-title .tg-go { color: var(--tg-green); }
+.tumgo-sticky .tb-big { margin: 24svh 0 0 !important; display: flex; align-items: flex-end; justify-content: flex-end; gap: clamp(14px, 1.4vw, 28px); flex-direction: row; }
+.tb-big-n { font-family: var(--tg-font) !important; font-weight: 700 !important; letter-spacing: -.06em !important; color: var(--tg-ink) !important; }
+.tb-big-w { font: 700 clamp(30px, 3.2vw, 72px)/1 var(--tg-font); letter-spacing: -.04em; color: var(--tg-green); padding-bottom: .35em; white-space: nowrap; }
+.tb-big-w.is-in { animation: tbw-in .6s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes tbw-in { from { opacity: 0; transform: translateY(14px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* ---------- 4. 수납장: 빈 칸은 그림자로 패인 자리, 오가는 수건은 가장자리를 부드럽게 ---------- */
+#tumgo-journey .pull-seats i {
+  background: radial-gradient(ellipse 58% 62% at 50% 58%, #120c0766 0%, #120c0733 55%, transparent 78%) !important;
+  box-shadow: none !important; border-radius: 14px !important; filter: blur(3px);
+}
+#tumgo-journey .pull-seats i::after { content: ""; position: absolute; left: 6%; right: 6%; bottom: 6%; height: 18%; border-radius: 50%; background: #0000002e; filter: blur(6px); }
+#tumgo-journey .pull-item { border-radius: 12px; overflow: visible; }
+#tumgo-journey .pull-item > :is(img, video) { border-radius: 12px; }
+#tumgo-journey .pull-cloth { border-radius: 10px; }
+#tumgo-journey .pull-cloth::before {
+  border-radius: 10px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent), linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent), linear-gradient(180deg, transparent, #000 10%, #000 90%, transparent);
+  mask-composite: intersect;
+  box-shadow: 0 6px 14px #0004;
+}
+/* 이동하는 중간에만 살짝 번져 움직임이 이어 보이게 */
+#tumgo-journey .pull-item { filter: blur(calc(var(--lift, 0) * (1 - var(--lift, 0)) * 5px)); transition: filter .2s linear; }
+#tumgo-journey .pull-item.is-active, #tumgo-journey .pull-item[data-state="open"] { filter: none; }
+#tumgo-journey .pull-item > :is(img, video) { box-shadow: 0 22px 50px -18px #000b; }
+
+/* ---------- 6. 소개: 한 방울 얼룩 안에 글 ---------- */
+.ab .ab-card {
+  width: min(70svh, 60vw); aspect-ratio: 1 / 1; min-height: 0 !important; justify-self: center; align-self: center;
+  border-radius: 50%; display: grid; place-content: center; text-align: center; padding: 11% 10%; overflow: visible;
+}
+.ab .about-statement-clean { text-align: center !important; font-size: clamp(26px, 3.1vw, 56px) !important; color: #2b1a0c !important; }
+.ab .about-statement-clean .asc-row > span { color: #2b1a0c !important; }
+.ab .about-statement-clean .ab-solo { color: #5a3416 !important; font-family: var(--ll-head); font-weight: 900; }
+.ab .ab-contact { justify-content: center !important; margin-top: clamp(18px, 3vh, 34px) !important; }
+.ab .ab-contact .ab-mail { color: #3b2412 !important; }
+.ab-pin { background: #f3efe7 !important; }
+@media (max-width: 760px) {
+  .ab .ab-card { width: min(94vw, 64svh); padding: 14% 9%; }
+  .ab .about-statement-clean { font-size: clamp(20px, 6.2vw, 30px) !important; }
+  .tumgo-sticky .tumgo-col { top: auto !important; bottom: 6svh !important; }
+  .tumgo-sticky .tb-big { margin: 3svh 0 0 !important; justify-content: flex-start; flex-direction: row; }
+  .tb-big-w { font-size: 26px; }
+  .cl-memory .cl-sub { white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tb-big-w.is-in { animation: none; }
+  #tumgo-journey .pull-item { filter: none; transition: none; }
+}
+.cl-memory .cl-title .row { margin-bottom: -.06em !important; }
+.cl-memory .cl-title { line-height: .95 !important; }
+.ab .about-statement-clean { font-size: clamp(22px, 2.5vw, 46px) !important; }
+.ab .about-statement-clean .asc-row > span { white-space: nowrap; }
+@media (max-width: 760px) {
+  .ab .ab-card { width: 90vw; padding: 12% 8%; }
+  .ab .about-statement-clean { font-size: clamp(18px, 5.4vw, 26px) !important; }
+  .ab .ab-contact { flex-direction: column; gap: 10px !important; align-items: center; }
+  .ab .ab-contact .ab-mail { font-size: 15px !important; }
+}
+@media (max-width: 760px) { .tumgo-sticky .tumgo-art::before { background: linear-gradient(0deg, #10141af2 0%, #10141ab0 40%, transparent 72%) !important; } }

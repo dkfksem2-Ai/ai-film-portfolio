@@ -1,0 +1,16 @@
+/* V9.16 — 입구 카드를 띠의 세로 가운데에, 게임 시작하기 버튼을 가운데로 */
+.optional-play { padding-block: clamp(48px, 8svh, 96px); }
+.optional-play > summary.pe-entry { margin-block: 0 !important; }
+.optional-play[open] > summary.pe-entry { margin-bottom: 18px !important; }
+.optional-play[open] .pe-guide { margin-bottom: 0; }
+.pe-controls { position: relative; justify-content: center; margin-top: 30px; }
+.pe-controls .pe-dots { position: absolute; left: 0; top: 50%; transform: translateY(-50%); margin: 0; }
+.pe-start { margin: 0 !important; min-height: 56px; padding: 0 34px; font-size: 17px; animation: pe-pulse 2.4s ease-out infinite; }
+.pe-start::after { content: " →"; }
+.pe-skip { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+@media (max-width: 760px) {
+  .pe-controls { flex-direction: column; gap: 10px; }
+  .pe-controls .pe-dots, .pe-skip { position: static; transform: none; }
+  .pe-start { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .pe-start { animation: none; } }

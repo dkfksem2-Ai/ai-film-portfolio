@@ -1,0 +1,18 @@
+/* V9.23 — 글자 잘림·겹침 재검토 */
+/* 큰 제목: 올라오는 연출의 가림 상자를 글자보다 넉넉하게 (위·오른쪽 획이 잘리지 않게) */
+.cl-title .row, .cl-hero-title .row { padding-top: .14em !important; padding-right: .1em !important; padding-bottom: .22em !important; margin-top: -.14em !important; margin-right: -.1em !important; margin-bottom: -.16em !important; }
+.cl-memory .cl-title .row { margin-bottom: -.1em !important; }
+.ab .ab-card { padding-left: 5% !important; padding-right: 5% !important; }
+.ab .ab-contact { flex-wrap: nowrap; }
+@media (max-width: 760px) { .ab .ab-contact { flex-wrap: wrap; } }
+@media (min-width: 761px) {
+/* 소개 문장·버튼을 % 대신 제목 크기에 맞춰 둔다 → 낮고 넓은 화면(1366×768 등)에서도 '왕복'과 겹치지 않게 */
+.cl-memory .cl-sub { top: calc(37% + 2.24 * clamp(64px, 8.3vw, 220px) + 14px) !important; }
+.cl-memory .cl-cta { top: calc(37% + 2.24 * clamp(64px, 8.3vw, 220px) + 14px + 2.6em + clamp(16px, 1.25vw, 30px)) !important; }
+.cl-tumgo .cl-sub { top: calc(40% + 1.12 * clamp(80px, 12vw, 320px) + 24px) !important; }
+/* 낮고 넓은 화면에서 사진이 제목·표기에 닿지 않게 */
+.cl-memory .p2 { width: 16% !important; aspect-ratio: 1 / 1 !important; }
+.cl-memory .p4 { left: 73% !important; }
+.cl-tumgo .p2 { width: 26% !important; }
+.cl-tumgo .cl-label { top: calc(40% - 30px) !important; }
+}
