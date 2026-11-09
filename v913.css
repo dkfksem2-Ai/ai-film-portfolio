@@ -1,0 +1,19 @@
+/* V9.13 — 제작 과정 노트 버튼, 소개 문장 단어 채움 */
+.process-notes { display: flex; flex-wrap: wrap; gap: 12px; }
+.process-notes .notes-btn {
+  min-height: 48px; padding: 12px 22px; border: 0; border-radius: 999px;
+  font: 600 15px/1.2 var(--font-display, "Pretendard Variable", Pretendard, sans-serif); letter-spacing: -.01em;
+  text-decoration: none; cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, transform .2s ease;
+}
+.process-notes .notes-btn--memory { background: #ecd28f; color: #3b2414; }
+.process-notes .notes-btn--memory:hover { background: #e2c06a; }
+.process-notes .notes-btn--tumgo { background: #182226; color: #bce7d5; }
+.process-notes .notes-btn--tumgo:hover { background: #22343a; color: #d7f5e8; }
+.process-notes .notes-btn:active { transform: translateY(1px); }
+.process-notes .notes-btn:focus-visible { outline: 3px solid #278054; outline-offset: 3px; }
+
+/* 소개 문장: 스크롤에 따라 흐린 단어가 한 단어씩 또렷해진다 (레퍼런스: Awwwards · Sol, Scroll-based Text Highlight) */
+.about-statement-clean .w { display: inline; opacity: calc(.16 + .84 * var(--f, 0)); transition: opacity .12s linear; }
+@media (prefers-reduced-motion: reduce) { .about-statement-clean .w { opacity: 1; } }
+@media (min-width: 2000px) { .process-notes .notes-btn { font-size: 17px; min-height: 54px; padding-inline: 26px; } }

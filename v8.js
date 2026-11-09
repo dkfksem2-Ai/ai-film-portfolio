@@ -27,6 +27,7 @@
     hero.style.setProperty('--hero-available',Math.max(innerWidth<600?650:620,innerHeight-pageTop)+'px');
     let n=seed;const rnd=()=>((n=(Math.imul(n,1664525)+1013904223)>>>0)/4294967296);
     const B=box.getBoundingClientRect();
+    if(!B.width||!B.height)return;
     const mem=hero.classList.contains('has-memory'),tum=hero.classList.contains('has-tumgo');
     const minX=mem&&!tum?B.width/2:0,maxX=tum&&!mem?B.width/2:B.width;
     const specs=list.map(el=>{const scale=.78+rnd()*.36,r=(rnd()-.5)*10;return {el,scale,r};});
@@ -66,6 +67,10 @@
         setTimeout(()=>set(el,{x:s.hx,y:s.hy,r:s.hr,s:s.baseScale}),80+i*70);setTimeout(()=>el.classList.remove('is-falling'),1200+i*70)}
       else set(el,{x:s.hx,y:s.hy,r:s.hr,s:s.baseScale})});
   }
+  hero.closest('details')?.addEventListener('toggle',e=>{
+    hero.querySelectorAll('video').forEach(v=>{if(!e.target.open)v.pause();else if(v.closest('.vh-backdrop')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)v.play().catch(()=>{});});
+    if(e.target.open)requestAnimationFrame(()=>{const l=live();layout(l);drop(l,false);});
+  });
   const live=()=>words.filter(w=>!w.classList.contains('is-in')&&!w.classList.contains('is-eaten'));
   const start=()=>{layout();drop(words,true);requestAnimationFrame(()=>hero.classList.add('is-set'))};
   let started=false;

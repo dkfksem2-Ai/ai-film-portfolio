@@ -8,7 +8,7 @@
   document.documentElement.classList.add('js');
   const projectData = {
     memory: {name:'반찬통의 왕복', number:'FILM 01 / THE RETURN',cuts: MEMORY_CUTS, duration:82.8, color:'#96a7c6', note:'1999 도트 → 2007 3D → 2026 실사. 시대가 바뀌는 시점에 같은 반찬통의 위치와 동작을 연결하고, 잠금 소리도 칩튠에서 실제 음향으로 성장하도록 설계했습니다.'},
-    tumgo: {name:'틈GO (TUMGO)', number:'FILM 02 / TUMGO',cuts:TUMGO_CUTS,duration:62.04,color:'#a8e7b8',note:'서울의 야간 계단, 101호 현관, 4족 서비스 로봇. 캐릭터와 공간을 반복 검증하며 기계적 보행, QR 스캔, 가방 적재를 장면별로 구성했습니다.'}
+    tumgo: {name:'틈GO (TUMGO)', number:'FILM 02 / TUMGO',cuts:TUMGO_CUTS,duration:62.04,color:'#a8e7b8',note:'서울의 야간 계단, 현관, 4족 서비스 로봇. 캐릭터와 공간을 반복 검증하며 기계적 보행, QR 스캔, 가방 적재를 장면별로 구성했습니다.'}
   };
   let currentFilm='memory', currentCut=0;
   // Public film URLs are configured in video-config.js (never put a Blob token here).
@@ -23,7 +23,7 @@
      Crossfades use a real F9-like ease-in-out curve in CSS, never hard timed cuts. */
   const captions={
     memory:['1999년, 소풍 가는 날','2007년, 교실의 점심','2026년, 돌려주는 반찬통'],
-    tumgo:['계단에서 처음 만난 로봇','밀린 빨래 앞의 현우','101호 문 앞 수거']
+    tumgo:['계단에서 처음 만난 로봇','밀린 빨래 앞의 현우','문 앞 수거']
   };
   const stages={};
   function setStage(key,n){
@@ -195,7 +195,7 @@
   /* ===== Screening room (V5.2): one film, one player, quiet details ===== */
   const filmInfo={
     memory:{
-      number:'첫 번째 작품', next:'tumgo', nextLabel:'다음 작품 틈GO',
+      number:'첫 번째 작품', next:'tumgo', nextLabel:'틈GO 광고 영상 보기',
       poster:'assets/memory-cover.webp',
       logline:'엄마가 채워 보내던 반찬통이, 27년 만에 아들의 손으로 채워져 돌아온다.',
       synopsis:'1999년의 도트, 2007년의 3D, 2026년의 실사. 시대마다 그림의 결이 바뀌는 동안 같은 반찬통이 엄마에게서 아들로, 다시 엄마에게로 건너간다.',
@@ -203,7 +203,7 @@
       chapters:[['고지',0,3],['1999 기억',3,19.2],['전환',19.2,26.5],['2007 성장',26.5,47.6],['전환',47.6,50.4],['2026 현실',50.4,75.6],['엔딩',75.6,82.8]]
     },
     tumgo:{
-      number:'두 번째 작품', next:'memory', nextLabel:'다음 작품 반찬통의 왕복',
+      number:'두 번째 작품', next:'memory', nextLabel:'반찬통의 왕복 광고 영상 보기',
       poster:'assets/tumgo-cover.webp',
       logline:'문 앞에 두세요. 나머지는 틈GO가.',
       synopsis:'늦은 퇴근길 계단에서 처음 마주친 배송 로봇. 밀린 빨래와 수선을 문 앞에서 맡기고 돌려받는, 가까운 미래의 생활 서비스를 실사형 AI 영상으로 그렸다.',
@@ -302,10 +302,10 @@
   }));
   $$('[data-open-notes]').forEach(b=>b.addEventListener('click',()=>openFilm(b.dataset.openNotes,'making')));
   $$('[data-jump]').forEach(b=>b.addEventListener('click',()=>{const [key,n]=b.dataset.jump.split(':');openFilm(key,'watch',Number(n))}));
-  $('#open-evaluator').addEventListener('click',()=>openFilm('memory','making'));
+  $('#open-evaluator')?.addEventListener('click',()=>openFilm('memory','making'));
   video.addEventListener('timeupdate',()=>updateChapters(video.currentTime));
   /* Glide: SCROLL TO EXPLORE 클릭 시 AE Easy Ease처럼 천천히 출발해 천천히 멈추는 스크롤 */
-  const headerH=()=>($('.site-header')?.offsetHeight||85);
+  const headerH=()=>($('.site-header')?.offsetHeight||0);
   const easeIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
   let glideId=0;
   function glideTo(el){
@@ -444,105 +444,6 @@
   new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)sec.classList.add('il-play')}),{threshold:.35}).observe(sec);
 })();
 
-/* V7.4 왼쪽 작품 바로가기: 작품 이름을 누르면 그 작품 설명으로 이동하면서 영상 창이 뜬다 */
-(()=>{const nav=document.getElementById('film-index'),mp=document.getElementById('mini-player');if(!nav||!mp)return;
-  const v=document.getElementById('mp-video'),title=document.getElementById('mp-title');
-  const names={memory:'반찬통의 왕복',tumgo:'틈GO'};
-  const posters={memory:'assets/memory-cover.webp',tumgo:'assets/tumgo-cover.webp'};
-  let cur=null;
-  const urls=()=>window.PORTFOLIO_VIDEO_URLS||{};
-  function openMini(key){
-    const url=urls()[key];cur=key;title.textContent=names[key];
-    if(posters[key])v.poster=posters[key];
-    mp.hidden=false;requestAnimationFrame(()=>mp.classList.add('is-in'));
-    if(!url){v.removeAttribute('src');v.load();mp.classList.add('is-empty');return}
-    mp.classList.remove('is-empty');
-    if(v.dataset.key!==key){v.src=url;v.dataset.key=key;v.load()}
-    v.play().catch(()=>{});
-  }
-  function closeMini(){v.pause();mp.classList.remove('is-in');setTimeout(()=>{if(!mp.classList.contains('is-in'))mp.hidden=true},450)}
-  nav.querySelectorAll('.fi-film').forEach(a=>a.addEventListener('click',e=>{
-    e.preventDefault();const key=a.dataset.film,target=document.getElementById(key);
-    if(target&&window.__glideTo)window.__glideTo(target);openMini(key);
-  }));
-  document.getElementById('mp-close').addEventListener('click',closeMini);
-  document.getElementById('mp-expand').addEventListener('click',()=>{const k=cur;closeMini();if(k&&window.__openFilm)window.__openFilm(k)});
-  addEventListener('keydown',e=>{if(e.key==='Escape'&&!mp.hidden&&!document.querySelector('dialog[open]'))closeMini()});
-  // 지금 보고 있는 작품을 표시 + 왼쪽 네비게이션이 사라지지 않도록 항상 표시 유지
-  const secs=['memory','tumgo'].map(id=>document.getElementById(id)).filter(Boolean);
-  const darkSecs=['projects','era-bridge','tumgo'].map(id=>document.getElementById(id)).filter(Boolean);
-  const mark=()=>{
-    const y=innerHeight*.45;let on=null;
-    secs.forEach(s=>{const r=s.getBoundingClientRect();if(r.top<=y&&r.bottom>y)on=s.id});
-    nav.querySelectorAll('.fi-film').forEach(a=>a.classList.toggle('is-on',a.dataset.film===on));
-    const inDark=darkSecs.some(s=>{const r=s.getBoundingClientRect();return r.top<=y&&r.bottom>y});
-    nav.classList.toggle('on-dark',inDark);
-    nav.classList.add('is-shown');
-  };
-  addEventListener('scroll',mark,{passive:true});addEventListener('resize',mark);mark();
-})();
-
-/* V8.4 Viens-là 스타일 1999 → 2026 스크롤 연도 카운터 & Cartier 스크롤 흐름 연출 */
-(()=>{
-  const eraSec=document.getElementById('era-bridge');
-  const yearEl=document.getElementById('era-year-num');
-  const fillEl=document.getElementById('era-bar-fill');
-  const cards=eraSec?[...eraSec.querySelectorAll('.era-card')]:[];
-  const threadNode=document.getElementById('ct-node');
-  const morphTargets=[...document.querySelectorAll('.feature-art, .mk-compare, .process-tile')];
-  let lastYear=1999;
-
-  function updateFlow(){
-    const maxScroll=Math.max(1,document.documentElement.scrollHeight-innerHeight);
-    const totalP=Math.max(0,Math.min(1,scrollY/maxScroll));
-    document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}px`);
-    if(threadNode){
-      document.documentElement.style.setProperty('--thread-p',(totalP*100).toFixed(2)+'%');
-    }
-    if(eraSec&&yearEl){
-      const r=eraSec.getBoundingClientRect();
-      const span=Math.max(1,eraSec.offsetHeight-innerHeight);
-      const rawP=(-r.top)/span;
-      const p=Math.max(0,Math.min(1,rawP));
-      const yr=Math.round(1999+p*(2026-1999));
-      if(yr!==lastYear){
-        lastYear=yr;
-        yearEl.textContent=String(yr);
-        yearEl.classList.remove('is-tick');
-        void yearEl.offsetWidth;
-        yearEl.classList.add('is-tick');
-      }
-      if(fillEl)fillEl.style.width=(p*100).toFixed(1)+'%';
-      const activeStep=yr<2007?0:(yr<2020?1:2);
-      cards.forEach((c,i)=>c.classList.toggle('is-active',i===activeStep));
-      eraSec.style.setProperty('--era-p',p.toFixed(3));
-      eraSec.classList.toggle('is-complete', p>=.96);
-    }
-    // Cartier — Le Chœur des Pierres 스타일 스크롤 마스크/스케일 흐름
-    morphTargets.forEach(el=>{
-      const r=el.getBoundingClientRect();
-      const centerDist=Math.abs((r.top+r.height*.5)-innerHeight*.5)/(innerHeight*.75);
-      const openness=Math.max(0,Math.min(1,1-Math.max(0,centerDist-.15)));
-      const inset=((1-openness)*5.5).toFixed(2);
-      const sc=(1+(1-openness)*.045).toFixed(3);
-      el.style.setProperty('--cartier-inset',`${inset}%`);
-      el.style.setProperty('--cartier-scale',sc);
-    });
-  }
-  cards.forEach((c,i)=>{
-    c.addEventListener('click',()=>{
-      if(!eraSec)return;
-      const top=eraSec.getBoundingClientRect().top+scrollY;
-      const span=Math.max(1,eraSec.offsetHeight-innerHeight);
-      const targetP=i===0?0.05:(i===1?0.42:0.92);
-      scrollTo({top:top+span*targetP,behavior:'smooth'});
-    });
-  });
-  addEventListener('scroll',updateFlow,{passive:true});
-  addEventListener('resize',updateFlow);
-  updateFlow();
-})();
-
 /* V7.4 소풍에서 뚜껑을 닫고 오면(?play=memory) 그 작품 영상을 바로 연다 */
 (()=>{const k=new URLSearchParams(location.search).get('play');if(!k||!['memory','tumgo'].includes(k))return;
   const go=()=>{if(window.__openFilm)window.__openFilm(k);else setTimeout(go,100)};setTimeout(go,400);
@@ -568,7 +469,7 @@
   
   let bgmPlaying = false;
   const savedVol = localStorage.getItem('portfolio-bgm-volume');
-  const initialVol = savedVol !== null ? parseFloat(savedVol) : 0.5;
+  const initialVol = savedVol !== null && Number.isFinite(Number(savedVol)) ? Math.max(0,Math.min(1,Number(savedVol))) : 0.5;
   bgmAudio.volume = initialVol;
   if(volSlider) volSlider.value = initialVol;
 
@@ -577,8 +478,9 @@
     if(bgmBtn) {
       bgmBtn.classList.toggle('is-playing', bgmPlaying);
       bgmBtn.setAttribute('aria-pressed', String(bgmPlaying));
+      bgmBtn.setAttribute('aria-label',bgmPlaying?'체험 음악 끄기':'체험 음악 켜기');
       const txt = bgmBtn.querySelector('.bgm-text');
-      if(txt) txt.textContent = bgmPlaying ? 'BGM ON' : 'BGM OFF';
+      if(txt) txt.textContent = bgmPlaying ? '체험 음악 끄기' : '체험 음악 켜기';
     }
     if(bgmPlaying) {
       const vol = volSlider ? parseFloat(volSlider.value) : initialVol;
@@ -589,9 +491,9 @@
         bgmPlaying = false;
         if(bgmBtn) {
           bgmBtn.classList.remove('is-playing');
-          bgmBtn.setAttribute('aria-pressed', 'false');
+          bgmBtn.setAttribute('aria-pressed', 'false');bgmBtn.setAttribute('aria-label','체험 음악 켜기');
           const txt = bgmBtn.querySelector('.bgm-text');
-          if(txt) txt.textContent = 'BGM';
+          if(txt) txt.textContent = '체험 음악 켜기';
         }
       });
     } else {
@@ -611,13 +513,14 @@
       const val = parseFloat(volSlider.value);
       bgmAudio.volume = val;
       localStorage.setItem('portfolio-bgm-volume', String(val));
-      if(val > 0 && !bgmPlaying && bgmAudio.paused) {
-        setBgmState(true);
-      } else if(val === 0 && bgmPlaying) {
+      if(val === 0 && bgmPlaying) {
         setBgmState(false);
       }
     });
   }
+
+  document.getElementById('screen-video')?.addEventListener('play',()=>setBgmState(false));
+  document.getElementById('playground')?.addEventListener('toggle',e=>{if(!e.currentTarget.open)setBgmState(false)});
 
   // Smooth Fadeout before entering 1999 소풍(picnic.html) or 틈GO 원룸(room.html)
   function fadeOutAndNavigate(url, duration = 380) {
@@ -638,7 +541,7 @@
         bgmPlaying = false;
         if(bgmBtn) {
           bgmBtn.classList.remove('is-playing');
-          bgmBtn.setAttribute('aria-pressed', 'false');
+          bgmBtn.setAttribute('aria-pressed', 'false');bgmBtn.setAttribute('aria-label','체험 음악 켜기');
         }
         window.location.href = url;
       }
@@ -668,57 +571,3 @@
 })();
 
 
-// V9.4 틈GO 3단계 롤업 인터랙션 (빨래 > 수선 > 포장 - web_design.mp4)
-(()=>{
-  const journey = document.getElementById('tumgo-journey');
-  if(!journey) return;
-  const cards = [...journey.querySelectorAll('.tj-card')];
-  const pills = [...journey.querySelectorAll('.tj-pill')];
-  if(!cards.length) return;
-
-  let currentStep = 0;
-  let manualChoice = false;
-
-  function setStep(idx) {
-    currentStep = Math.max(0, Math.min(cards.length - 1, idx));
-    cards.forEach((c, i) => {
-      c.classList.toggle('is-active', i === currentStep);
-      c.inert = i !== currentStep;
-      c.setAttribute('aria-hidden',String(i !== currentStep));
-      c.classList.toggle('is-prev', i < currentStep);
-    });
-    pills.forEach((p, i) => {
-      p.classList.toggle('is-active', i === currentStep);
-      p.setAttribute('aria-selected', String(i === currentStep));
-    });
-  }
-
-  pills.forEach(p => {
-    p.addEventListener('click', () => {
-      manualChoice = true;
-      const idx = Number(p.dataset.tjTab);
-      setStep(idx);
-    });
-  });
-
-  setStep(0);
-  // 스크롤 연동 자동 스텝 진행
-  let lastScrollTime = 0;
-  window.addEventListener('scroll', () => {
-    const now = performance.now();
-    if(now - lastScrollTime < 50) return;
-    lastScrollTime = now;
-
-    const r = journey.getBoundingClientRect();
-    if(r.bottom<0 || r.top>innerHeight)manualChoice=false;
-    if(manualChoice)return;
-    const winH = window.innerHeight;
-    if(r.top < winH * 0.4 && r.bottom > winH * 0.6) {
-      const progress = Math.max(0, Math.min(1, (winH * 0.4 - r.top) / (r.height * 0.7)));
-      const step = Math.min(cards.length - 1, Math.floor(progress * cards.length));
-      if(step !== currentStep) {
-        setStep(step);
-      }
-    }
-  }, { passive: true });
-})();

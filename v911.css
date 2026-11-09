@@ -1,0 +1,141 @@
+/* V9.11 — 반찬통: 통 안의 희미한 장면, 엔딩 카피 / 틈GO 소개: 고정 무대와 아래에서 닦아 올리는 단계 전환 */
+
+/* ---------- 반찬통 ---------- */
+.scene-pull--plate .pull-copy { background: rgb(27 24 19 / .68); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.scene-pull--plate .pull-copy h2 { font-size: clamp(34px, 3.6vw, 64px); }
+/* 차례가 오기 전에는 유리 너머로 비치듯 통 안에 희미하게 담겨 있다 */
+.scene-pull--plate { --ghost: .32; }
+.scene-pull--plate .pull-item {
+  opacity: calc(var(--ghost) + (1 - var(--ghost)) * var(--lift, 0));
+  filter: saturate(calc(.8 + .2 * var(--lift, 0)));
+  box-shadow: 0 14px 36px rgb(0 0 0 / calc(var(--lift, 0) * .48));
+}
+.scene-pull--plate .pull-item > :is(img, video) {
+  --feather: calc((1 - var(--lift, 0)) * 10%);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent),
+              linear-gradient(180deg, transparent, #000 var(--feather), #000 calc(100% - var(--feather)), transparent);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.pull-tagline {
+  display: none;
+  margin: 14px 0 0;
+  font: 600 clamp(22px, 2vw, 36px)/1.28 var(--font-display);
+  letter-spacing: -.045em;
+  color: #f3dfaa;
+  word-break: keep-all;
+}
+.scene-pull--plate.is-ending .pull-readout,
+.scene-pull--plate.is-ending .pull-instruction { display: none; }
+.scene-pull--plate.is-ending .pull-tagline { display: block; animation: v911-rise .6s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes v911-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* ---------- 틈GO 수거 다음의 일: 라벨은 펼치기 시작과 함께 사라진다 ---------- */
+.pull-cloth span { opacity: var(--label, 1); }
+
+/* ---------- 틈GO 작품 소개: 고정 무대 ---------- */
+.tumgo-scroll { position: relative; --beats: 2.4; --beat-tail: 0; height: calc(100svh + (var(--beats) + var(--beat-tail)) * 70svh); }
+.tumgo-sticky { position: sticky; top: 0; height: 100svh; overflow: clip; display: flex; align-items: center; isolation: isolate; }
+.project-tumgo .tumgo-sticky .tumgo-grid {
+  width: 100% !important;
+  max-width: min(2240px, 92vw) !important;
+  height: auto !important;
+  margin-inline: auto !important;
+  padding: 9svh 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 61fr) minmax(0, 39fr) !important;
+  gap: clamp(28px, 3.4vw, 72px) !important;
+  align-items: center !important;
+}
+.project-tumgo .tumgo-sticky .tumgo-art { align-self: center !important; }
+.tumgo-sticky .tumgo-art {
+  width: 100%;
+  max-height: 74svh;
+  aspect-ratio: 16 / 10;
+  justify-self: stretch;
+  z-index: 20;
+}
+.tumgo-sticky .tumgo-col { min-width: 0; }
+.tumgo-sticky .project-heading h2#tumgo-title { font-size: clamp(48px, 5.1vw, 96px) !important; line-height: 1.02; margin-bottom: 16px; }
+.tumgo-sticky .project-aside { font-size: clamp(18px, 1.35vw, 26px) !important; }
+.tumgo-sticky .tumgo-desc { font-size: clamp(14px, .95vw, 18px) !important; max-width: 44ch !important; }
+.tb-progress { margin: 22px 0 8px; font: 500 13px/1 var(--font-display); color: #9fb8ad; letter-spacing: .04em; text-align: right; }
+.tb-progress b { color: #bce7d5; font-weight: 700; }
+.tumgo-sticky .tumgo-beats { position: relative; isolation: isolate; }
+.tb-indicator { position: absolute; left: 0; right: 0; top: 0; height: 0; z-index: -1; border-left: 3px solid #6ee7c0; background: #1f3d35; transition: top .45s cubic-bezier(.6,.02,.2,.8), height .45s cubic-bezier(.6,.02,.2,.8); }
+.tumgo-scroll.is-scroll .tb-row, .tumgo-scroll.is-scroll .tb-row.is-on { background: transparent !important; border-left-color: transparent !important; box-shadow: none !important; }
+.tumgo-scroll.is-scroll .tb-row .tb-name { transition: color .3s ease; }
+.tumgo-scroll.is-scroll .tb-row.is-on { padding-left: 18px !important; }
+.tumgo-scroll.is-scroll .tb-row.is-on .tb-no { background: transparent !important; color: #8ff0cf !important; padding: 0 !important; }
+.tumgo-scroll.is-scroll .tb-row:not(.is-on) .tb-name { color: #c9d4cf; }
+.tumgo-scroll.is-scroll .tb-row.is-on .tb-name { color: #8ff0cf; }
+.tumgo-scroll:not(.is-scroll) .tb-indicator { display: none; }
+.tumgo-sticky .tumgo-specs { margin-top: 18px; font-size: 12px; opacity: .85; }
+.tumgo-sticky .tumgo-actions { margin-top: 18px; }
+/* 스크롤 모드: 장면은 아래에서 위로 닦아 올리며 덮는다 */
+.tumgo-scroll.is-scroll .tumgo-art .stage-layer { opacity: 1 !important; transition: none !important; will-change: clip-path, transform, filter; }
+.tumgo-scroll.is-scroll .tumgo-art .zone-video, .tumgo-scroll.is-scroll .tumgo-art .stage-zones { display: none !important; }
+.tumgo-scroll.is-scroll .stage-caption { display: inline-block; overflow: hidden; }
+.stage-caption.is-swap { animation: v911-cap .55s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes v911-cap { from { opacity: 0; transform: translateY(70%); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0); } }
+
+/* Connect the two stages without a one-pixel seam above the journey photo. */
+#tumgo-journey { --journey-gap: clamp(96px, 14svh, 200px); margin-top: var(--journey-gap); }
+#tumgo-journey::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: var(--journey-gap);
+  background: linear-gradient(var(--night), #0c1117 56%, #171a17);
+  pointer-events: none;
+}
+#tumgo-journey .pull-pin::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: clamp(14px, 2.5svh, 36px);
+  z-index: -1;
+  background: linear-gradient(#171a17, transparent);
+  pointer-events: none;
+}
+
+@media (max-width: 700px) {
+  #tumgo-journey { --journey-gap: clamp(56px, 9svh, 96px); }
+}
+
+@media (max-width: 960px) {
+  .project-tumgo .tumgo-sticky .tumgo-grid { grid-template-columns: minmax(0, 1fr) !important; gap: 14px !important; padding: 4svh var(--pad) 3svh !important; max-width: 100% !important; align-content: center !important; }
+  .tumgo-sticky .tumgo-art { aspect-ratio: 16 / 9; max-height: 38svh; }
+  .tumgo-sticky .project-heading h2#tumgo-title { font-size: clamp(36px, 9vw, 54px) !important; margin-bottom: 6px; }
+  .tumgo-sticky .project-aside { font-size: 16px !important; margin-bottom: 4px; }
+  .tumgo-sticky .tumgo-desc, .tumgo-sticky .tumgo-specs, .tumgo-sticky .case-experience-note { display: none; }
+  .tb-progress { display: none; }
+  .tumgo-scroll.is-scroll .tumgo-beats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; margin-top: 10px; }
+  .tumgo-scroll.is-scroll .tb-row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 9px 8px; min-height: 0; border: 0; text-align: left; }
+  .tumgo-scroll.is-scroll .tb-row .tb-note { display: none; }
+  .tumgo-scroll.is-scroll .tb-row .tb-name { font-size: 13px; line-height: 1.35; }
+  .tumgo-scroll.is-scroll .tb-indicator { top: auto !important; bottom: 0; height: 100% !important; width: calc(100% / 3); right: auto; border-left: 0; border-bottom: 3px solid #6ee7c0; transition: left .45s cubic-bezier(.6,.02,.2,.8); }
+  .tumgo-sticky .tumgo-actions { margin-top: 12px; gap: 8px !important; }
+  .tumgo-sticky .tumgo-actions .btn { min-height: 42px; padding: 10px 14px; font-size: 13px; }
+}
+
+/* ---------- 큰 화면에서 작은 글씨 키우기 ---------- */
+@media (min-width: 2000px) {
+  .portfolio-signature { font-size: clamp(18px, .85vw, 22px); }
+  .portfolio-signature span, .portfolio-links a { font-size: clamp(15px, .62vw, 18px); }
+  .feature-meta, .feature-craft, .portfolio-disclosure { font-size: clamp(15px, .6vw, 17px); }
+  .feature-details, .pull-notes, .pull-skip, .pull-kicker { font-size: clamp(15px, .6vw, 18px); }
+  .feature-actions .btn { font-size: clamp(15px, .62vw, 18px); height: auto; min-height: 52px; }
+  .pull-caption { font-size: clamp(16px, .68vw, 20px); }
+  .pull-actions .btn { font-size: clamp(15px, .62vw, 18px); }
+  .tb-row .tb-note, .tumgo-specs { font-size: clamp(15px, .6vw, 17px) !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tumgo-scroll { height: auto; }
+  .tumgo-sticky { position: relative; height: auto; overflow: visible; }
+  .scene-pull--plate .pull-item { opacity: 1; filter: none; }
+  .scene-pull--plate .pull-item > :is(img, video) { mask-image: none; }
+  .pull-tagline { display: block; }
+}

@@ -531,18 +531,59 @@
 .view-layer{transform:translate(-50%,-50%) translate3d(calc(var(--px,0)*8px),calc(var(--py,0)*6px),0);transition:transform .35s ease-out,opacity .4s ease;}
 @media(hover:none){.view-layer{transform:translate(-50%,-50%)}}
 @media(prefers-reduced-motion:reduce){.view-layer{transform:translate(-50%,-50%)!important}.room-transition{transition:none!important}}
+</style><style>.room-instructions{position:fixed;top:77px;left:24px;right:24px;margin:0;text-align:center;color:#d2ded5;font-size:13px;line-height:1.65;z-index:40;pointer-events:none}.viewport{top:128px}.nav-arrow{display:flex;flex-direction:column;justify-content:center;gap:5px;width:72px;height:64px}.nav-arrow span{font-size:10px}.counter-label{display:inline!important}@media(max-width:600px){.hud{gap:8px}.hud-left{gap:6px}.hud .btn-chip{padding:8px 10px;font-size:12px}.counter-pill{font-size:12px;padding:8px 10px}.counter-label{display:none!important}.room-instructions{top:70px;left:18px;right:18px;font-size:11px}.viewport{top:130px}.nav-arrow--prev{left:12px}.nav-arrow--next{right:12px}.scene-indicator{bottom:38px}}</style><style>
+/* V9.14: 하는 방법 창, 이미지 양끝 가운데 화살표, 완료 창 가로 스크롤 제거 */
+.done-card{overflow-x:hidden!important;overflow-y:auto}
+.done-modal{overflow:hidden}
+.nav-arrow{position:fixed;bottom:auto!important;top:50%;transform:translateY(-50%)!important;width:64px!important;height:64px!important;border-radius:50%!important;z-index:45}
+.nav-arrow span{display:none}
+.howto{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:20px;background:#04080dcc;backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s}
+.howto.is-active{opacity:1;visibility:visible}
+.howto-card{width:min(640px,100%);max-height:92svh;overflow:auto;border-radius:22px;border:1px solid #00ff6655;background:#0d1218;color:#eef5f0;padding:clamp(22px,4vw,36px);box-shadow:0 0 60px -10px #00ff6640}
+.howto-kicker{margin:0;font-size:13px;color:#7dffb0;font-weight:700}
+.howto-title{margin:4px 0 18px;font-size:clamp(26px,4vw,34px);letter-spacing:-.04em}
+.howto-steps{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:14px}
+.howto-steps li{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center;padding:12px;border-radius:14px;background:#ffffff08}
+.hs-vis{position:relative;height:76px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#18202a}
+.hs-vis--find img{width:100%;height:100%;object-fit:cover;opacity:.75}
+.hs-vis--find i{position:absolute;left:58%;top:52%;width:26%;height:30%;border:2px dashed #00ff66;border-radius:8px;box-shadow:0 0 14px #00ff66;animation:hs-glow 1.6s ease-in-out infinite}
+@keyframes hs-glow{50%{box-shadow:0 0 2px #00ff66;opacity:.5}}
+.hs-vis--nav{gap:8px;font-size:12px;color:#b9c7bf;white-space:nowrap}.hs-vis--nav em{font-style:normal;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#0a0e16;border:1px solid #ffffff40;color:#fff;font-size:18px}
+.hs-vis--count strong{padding:8px 14px;border-radius:99px;background:#00ff66;color:#04140a;font-size:18px}
+.hs-txt{display:grid;gap:4px;font-size:15px;line-height:1.6;color:#c7d3cc}.hs-txt b{font-size:17px;color:#fff}
+.howto-start{width:100%;min-height:54px;border:0;border-radius:14px;background:#00ff66;color:#04140a;font-size:17px;font-weight:800;cursor:pointer}
+@media(max-width:600px){.howto-steps li{grid-template-columns:84px 1fr;gap:12px}.hs-vis{height:62px}.hs-txt{font-size:13px}.hs-txt b{font-size:15px}.nav-arrow{width:48px!important;height:48px!important}}
+</style><style>
+/* V9.19 몰입형 원룸: 위에서 내려다본 X-ray 스캔 → 줌인 → 마우스로 둘러보기 */
+.viewport{perspective:1500px;perspective-origin:50% 45%}
+.view-layer{transform-style:preserve-3d;transform:translate(-50%,-50%) rotateX(calc(var(--py,0)*-11deg)) rotateY(calc(var(--px,0)*14deg)) translate3d(calc(var(--px,0)*-26px),calc(var(--py,0)*-18px),0) scale(1.07)!important;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .4s ease!important}
+.view-layer::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at calc(50% + var(--px,0)*60%) calc(45% + var(--py,0)*60%),#ffffff1c,transparent 46%),radial-gradient(ellipse at 50% 50%,transparent 55%,#00000070 100%);mix-blend-mode:soft-light}
+.xray{position:fixed;inset:0;z-index:85;overflow:hidden;background:#04080d;perspective:1400px;opacity:1;transition:opacity .9s ease;pointer-events:none}
+.xray.is-done{opacity:0}
+.xr-stage{position:absolute;inset:0;transform-origin:50% 55%;transition:transform 1.6s cubic-bezier(.6,.02,.2,.98)}
+.xray.is-zoom .xr-stage{transform:rotateX(16deg) scale(1.55) translateY(-2%)}
+.xr-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.xr-real{filter:brightness(.82)}
+.xr-scan{filter:grayscale(1) invert(1) contrast(1.9) brightness(.9);mix-blend-mode:normal;clip-path:inset(0 0 calc(100% - var(--p,0%)) 0)}
+.xr-tint{position:absolute;inset:0;background:linear-gradient(#00ff6618 1px,transparent 1px) 0 0/100% 26px,linear-gradient(90deg,#00ff6618 1px,transparent 1px) 0 0/26px 100%,#00ffaa22;mix-blend-mode:screen;clip-path:inset(0 0 calc(100% - var(--p,0%)) 0)}
+.xr-beam{position:absolute;left:0;right:0;top:var(--p,0%);height:3px;background:#33ff85;box-shadow:0 0 22px 6px #00ff66aa,0 0 90px 24px #00ff6633;transform:translateY(-50%)}
+.xr-label{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);color:#7dffb0;font-size:14px;letter-spacing:.14em;text-shadow:0 0 10px #00ff66;white-space:nowrap}
+.xray.is-fadeback .xr-scan,.xray.is-fadeback .xr-tint{transition:opacity .8s ease;opacity:0}
+.xray.is-fadeback .xr-beam{opacity:0;transition:opacity .4s}
+@media(prefers-reduced-motion:reduce){.view-layer{transform:translate(-50%,-50%)!important}.xray{display:none}}
 </style></head>
 <body><div aria-hidden="true" class="room-transition is-dark" id="room-transition"></div>
 <!-- Minimal HUD Header -->
 <header class="hud">
 <div class="hud-left">
-<a aria-label="메인 포트폴리오로 돌아가기" class="btn-chip" href="index.html#tumgo">
+<a aria-label="체험 나가기, 포트폴리오의 원래 위치로 돌아가기" class="btn-chip js-exit" href="index.html#tumgo">
 <svg fill="none" height="14" viewbox="0 0 16 16" width="14"><path d="M10 3 5 8l5 5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
 <span>나가기</span>
 </a>
-<button aria-label="배경음악 켜기/끄기" aria-pressed="false" class="btn-chip btn-sound" id="btn-sound" type="button">
+<button class="btn-chip" id="btn-howto" type="button" aria-haspopup="dialog"><span aria-hidden="true">?</span><span>하는 방법</span></button>
+<button aria-label="배경음악 켜기" aria-pressed="false" class="btn-chip btn-sound" id="btn-sound" type="button">
 <svg fill="currentColor" height="14" viewbox="0 0 16 16" width="14"><path d="M8 2.5 4.5 5.5H2v5h2.5L8 13.5V2.5zm3.5 3a4 4 0 0 1 0 5M13 3.5a7 7 0 0 1 0 9"></path></svg>
-<span id="sound-label">BGM OFF</span>
+<span id="sound-label">음악 켜기</span>
 </button>
 </div>
 <div class="hud-right">
@@ -554,7 +595,7 @@
 <span class="counter-val"><strong id="count-current">0</strong> / 5</span>
 </div>
 </div>
-</header>
+</header><p class="room-instructions">사진 속 세탁물을 찾아 누르세요. 5개를 모으면 수거 접수가 완료됩니다.</p>
 <!-- Toast Notification -->
 <div aria-live="polite" class="toast-pill" id="toast-pill"></div>
 <!-- Parallax Viewport Stage (5 TUMGO Exclusive Views) -->
@@ -596,25 +637,38 @@
 </div></div>
 <!-- View 5: 101호 문 앞 로봇 수거 최종 클라이맥스 장면 -->
 <div class="view-layer" data-view="4" id="view-4">
-<img alt="전용 가방을 들고 문을 나서는 현우" src="assets/room-view-5.webp"/>
+<img alt="촬영 현장에서 스마트워치의 수거 완료 알림을 보며 웃는 현우" src="assets/v914/room-view-6.webp"/>
 </div>
 </main>
 <div aria-hidden="true" class="cinematic-vignette"></div>
 <!-- Edge Fade Directional Navigation Arrows -->
 <button aria-label="이전 방 각도 보기" class="nav-arrow nav-arrow--prev" id="nav-prev" type="button">
 <svg fill="none" height="24" viewbox="0 0 24 24" width="24"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path></svg>
-</button>
+<span>이전 장면</span></button>
 <button aria-label="다음 방 각도 보기" class="nav-arrow nav-arrow--next" id="nav-next" type="button">
 <svg fill="none" height="24" viewbox="0 0 24 24" width="24"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path></svg>
-</button>
+<span>다음 장면</span></button>
 <!-- Bottom Scene Indicator Dots -->
 <nav aria-label="탐색 장면 선택" class="scene-indicator" id="scene-indicator">
 <button aria-label="원룸 전경" class="dot-step is-on" data-target="0" title="원룸 전경" type="button"></button>
 <button aria-label="세탁기 옆 바구니" class="dot-step" data-target="1" title="세탁기 옆 바구니" type="button"></button>
 <button aria-label="커피 얼룩 셔츠" class="dot-step" data-target="2" title="커피 얼룩 셔츠" type="button"></button>
 <button aria-label="수선·세탁물 준비" class="dot-step" data-target="3" title="수선·세탁물 준비" type="button"></button>
-<button aria-label="문 앞 가방" class="dot-step" data-target="4" title="문 앞 가방" type="button"></button>
+<button aria-label="안심 미소" class="dot-step" data-target="4" title="안심 미소" type="button"></button>
 </nav>
+<section aria-labelledby="howto-title" aria-modal="true" class="howto" id="howto" role="dialog">
+<div class="howto-card">
+<p class="howto-kicker">현우방 체험</p>
+<h2 class="howto-title" id="howto-title">하는 방법</h2>
+<ol class="howto-steps">
+<li><span class="hs-vis hs-vis--find" aria-hidden="true"><img src="assets/room-view-1.webp" alt=""/><i></i></span><span class="hs-txt"><b>1. 빨래를 찾아 누르세요</b>사진 속 옷과 세탁물을 누르면 수거 가방에 담깁니다. 잠시 기다리면 위치가 빛나며 알려 줍니다.</span></li>
+<li><span class="hs-vis hs-vis--nav" aria-hidden="true"><em>‹</em><span>장면</span><em>›</em></span><span class="hs-txt"><b>2. 화살표로 다른 장면으로</b>사진 왼쪽·오른쪽 가운데의 화살표를 누르면 방의 다른 곳을 볼 수 있어요.</span></li>
+<li><span class="hs-vis hs-vis--count" aria-hidden="true"><strong>5 / 5</strong></span><span class="hs-txt"><b>3. 5개를 모으면 완료</b>오른쪽 위 숫자가 5가 되면 수거 접수가 끝납니다.</span></li>
+</ol>
+<button class="howto-start" id="howto-start" type="button">시작하기</button>
+</div>
+</section>
+<div aria-hidden="true" class="xray" id="xray" hidden><div class="xr-stage"><img class="xr-real" src="assets/room-view-1.webp" alt=""/><img class="xr-scan" src="assets/room-view-1.webp" alt=""/><span class="xr-tint"></span><span class="xr-beam"></span></div><p class="xr-label">TUMGO SCAN · 현우의 원룸</p></div>
 <!-- View 5 Completion Modal Overlay -->
 <section aria-labelledby="done-title" aria-modal="true" class="done-modal" id="done-modal" role="dialog">
 <div class="done-card">
@@ -623,13 +677,13 @@
 <h2 class="done-title" id="done-title">문 앞 수거 접수 완료</h2>
 <p class="done-quote">세탁물 4건과 수선 1건을 모두 골랐습니다. 문 앞에 맡기면 다음은 틈GO가.</p>
 <div class="done-actions">
-<a class="btn-return" href="index.html#tumgo">포트폴리오로 돌아가기</a>
+<a class="btn-return js-exit" href="index.html#tumgo">포트폴리오로 돌아가기</a>
 <button class="btn-replay" id="btn-replay" type="button">방 다시 둘러보기</button>
 </div>
 </div>
 </section>
 <!-- Background Music Audio Element -->
-<audio id="room-bgm" loop="" preload="auto" src="assets/audio/room-bgm.mp3"></audio>
+<audio id="room-bgm" loop="" preload="auto" src="assets/audio/room-bgm-tumgo.mp3"></audio>
 <script>
   (() => {
     'use strict';
@@ -642,6 +696,16 @@
     function fitViews(){
       const stage=$('#viewport');
       viewLayers.forEach(layer=>{const img=layer.querySelector('img');if(!img.naturalWidth)return;const scale=Math.min((stage.clientWidth-16)/img.naturalWidth,(stage.clientHeight-16)/img.naturalHeight);layer.style.width=(img.naturalWidth*scale)+'px';layer.style.height=(img.naturalHeight*scale)+'px';});
+      placeArrows();
+    }
+    function placeArrows(){
+      const layer=document.querySelector('.view-layer.is-active')||document.querySelector('.view-layer');const st=document.getElementById('viewport');if(!layer||!st)return;
+      const sr=st.getBoundingClientRect(),w=parseFloat(layer.style.width)||sr.width,h=parseFloat(layer.style.height)||sr.height;
+      const cx=sr.left+sr.width/2,cy=sr.top+sr.height/2,inset=14;
+      const p=document.getElementById('nav-prev'),n=document.getElementById('nav-next');if(!p||!n)return;
+      const aw=p.offsetWidth||64;
+      p.style.left=Math.max(6,cx-w/2+inset)+'px';n.style.left=Math.min(innerWidth-aw-6,cx+w/2-inset-aw)+'px';n.style.right='auto';
+      p.style.top=n.style.top=cy+'px';
     }
     let collectedCount = 0;
     const collectedItems = new Set();
@@ -881,34 +945,46 @@
       scheduleHint();
     });
 
-    // Background Audio Handler
-    let isSoundOn = false;
-    function toggleSound() {
-      isSoundOn = !isSoundOn;
-      btnSound.classList.toggle('is-muted', !isSoundOn);
-      btnSound.setAttribute('aria-pressed', String(isSoundOn));
-      soundLabel.textContent = isSoundOn ? 'BGM ON' : 'BGM OFF';
-      if (audioBgm) {
-        if (isSoundOn) {
-          audioBgm.volume = 0.45;
-          audioBgm.play().catch(() => {});
-        } else {
-          audioBgm.pause();
-        }
-      }
+    // V9.17 배경음악: 들어오면 자동으로 20%까지 페이드 인 (브라우저가 막으면 첫 클릭·키 입력에서 시작)
+    const BGM_VOL=0.2;let isSoundOn=true,fadeRaf=0;
+    function fadeTo(target,ms,done){cancelAnimationFrame(fadeRaf);const v0=audioBgm.volume,t0=performance.now();const step=n=>{const p=Math.min(1,(n-t0)/ms);audioBgm.volume=Math.max(0,Math.min(1,v0+(target-v0)*p));if(p<1)fadeRaf=requestAnimationFrame(step);else if(done)done()};fadeRaf=requestAnimationFrame(step)}
+    function syncSoundUI(){btnSound.classList.toggle('is-muted',!isSoundOn);btnSound.setAttribute('aria-pressed',String(isSoundOn));soundLabel.textContent=isSoundOn?'음악 끄기':'음악 켜기';btnSound.setAttribute('aria-label',isSoundOn?'배경음악 끄기':'배경음악 켜기')}
+    function startBgm(){if(!audioBgm||!isSoundOn||!audioBgm.paused)return Promise.resolve();audioBgm.volume=0;return audioBgm.play().then(()=>fadeTo(BGM_VOL,2600))}
+    function toggleSound(){
+      isSoundOn=!isSoundOn;syncSoundUI();
+      if(!audioBgm)return;
+      if(isSoundOn)startBgm().catch(()=>{});else fadeTo(0,500,()=>audioBgm.pause());
     }
     btnSound.addEventListener('click', toggleSound);
+    syncSoundUI();
+    const startAudioOnce=()=>{startBgm().catch(()=>{});window.removeEventListener('pointerdown',startAudioOnce);window.removeEventListener('keydown',startAudioOnce)};
+    startBgm().catch(()=>{window.addEventListener('pointerdown',startAudioOnce);window.addEventListener('keydown',startAudioOnce)});
 
-    // Initial audio start on user first gesture
-    const startAudioOnce = () => {
-      if (isSoundOn && audioBgm && audioBgm.paused) {
-        audioBgm.volume = 0.45;
-        audioBgm.play().catch(() => {});
-      }
-      window.removeEventListener('pointerdown', startAudioOnce);
-    };
-    window.addEventListener('pointerdown', startAudioOnce);
-
+    // V9.14 나가기: 포트폴리오의 떠났던 위치와 상태로 돌아간다
+    $$('.js-exit').forEach(a=>a.addEventListener('click',e=>{
+      let saved=null;try{saved=sessionStorage.getItem('pf-return')}catch(err){}
+      if(!saved)return;e.preventDefault();try{sessionStorage.setItem('pf-return-now','1')}catch(err){}
+      let fromIndex=false;try{const r=new URL(document.referrer);fromIndex=r.origin===location.origin&&/(index\.html)?$/.test(r.pathname)}catch(err){}
+      if(fromIndex&&history.length>1)history.back();else location.href='index.html?return=1';
+    }));
+    // V9.14 하는 방법 창
+    const howto=$('#howto'),howtoStart=$('#howto-start');
+    const openHowto=()=>{howto.classList.add('is-active');clearTimeout(hintTimer);setTimeout(()=>howtoStart.focus(),50)};
+    // V9.19 X-ray 스캔 → 줌인
+    const xr=$('#xray');let xrPlayed=false;
+    function playXray(){
+      if(xrPlayed||!xr||matchMedia('(prefers-reduced-motion: reduce)').matches)return;xrPlayed=true;
+      xr.hidden=false;const t0=performance.now(),D=1700;
+      const step=n=>{const p=Math.min(1,(n-t0)/D),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;xr.style.setProperty('--p',(e*100).toFixed(2)+'%');if(p<1)requestAnimationFrame(step);else{xr.classList.add('is-fadeback');setTimeout(()=>xr.classList.add('is-zoom'),500);setTimeout(()=>xr.classList.add('is-done'),1700);setTimeout(()=>{xr.hidden=true;showNavs()},2700)}};
+      try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();playScanSound()}catch(e){}
+      requestAnimationFrame(step);
+    }
+    const closeHowto=()=>{howto.classList.remove('is-active');try{sessionStorage.setItem('room-guide-seen','1')}catch(err){}scheduleHint();showNavs();setTimeout(playXray,250)};
+    howtoStart.addEventListener('click',closeHowto);$('#btn-howto').addEventListener('click',openHowto);
+    howto.addEventListener('keydown',e=>{if(e.key==='Escape')closeHowto()});
+    let seenGuide=false;try{seenGuide=!!sessionStorage.getItem('room-guide-seen')}catch(err){}
+    if(!seenGuide)setTimeout(openHowto,500);else setTimeout(playXray,500);
+    window.addEventListener('resize',placeArrows);
     viewLayers.forEach((layer,i)=>layer.inert=i!==0);
     const firstImage=viewLayers[0].querySelector('img');
     const revealRoom=()=>{fitViews();requestAnimationFrame(()=>transition.classList.remove('is-dark'));};

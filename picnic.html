@@ -38,7 +38,7 @@
     .count{position:fixed;z-index:5;left:32px;bottom:28px;font-size:13px;background:var(--paper);padding:8px 12px;box-shadow:0 0 0 3px var(--ink)}
     .count[hidden]{display:none}
     /* gate */
-    .gate{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:color-mix(in oklab,var(--butter) 70%,transparent);transition:opacity .6s var(--ease)}
+    .gate{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:color-mix(in oklab,var(--butter) 28%,transparent);transition:opacity .6s var(--ease)}
     .gate.is-out{opacity:0;pointer-events:none}
     .gate-card{display:grid;gap:22px;justify-items:start;max-width:600px;padding:40px 44px;background:var(--butter-3);letter-spacing:-.015em}
     .gate h1{margin:0;font-weight:700;font-size:52px;line-height:1.15;letter-spacing:-.025em}
@@ -83,7 +83,7 @@
   <canvas id="world" aria-label="1999년 봄 소풍 장면. 드래그해서 둘러보고, 앞에 놓인 반찬통을 눌러 엽니다."></canvas>
 
   <div class="hud">
-    <a class="chip" href="index.html#memory">← 포트폴리오로</a>
+    <a class="chip" href="index.html#memory">← 나가기</a>
     <div class="row"><button type="button" class="chip" id="sound-toggle" aria-pressed="true">소리 끄기</button><button type="button" class="chip" id="open-box">반찬통 열기</button></div>
   </div>
   <p class="hint is-off" id="hint">드래그해서 둘러보세요. 앞에 놓인 반찬통을 누르면 열립니다.</p>
@@ -94,7 +94,7 @@
     <div class="gate-card px">
       <h1 id="gate-title">1999년 봄,<br>소풍 가는 날</h1>
       <p id="gate-text">「반찬통의 왕복」의 첫 장면입니다. 아이가 돗자리에 앉으면, 그 아이의 눈으로 영상을 먼저 보고 반찬통을 엽니다. 쪽지를 읽고, 한 장 남기고 가세요.</p>
-      <div class="row"><button type="button" class="btn" id="enter">소풍 가기</button><a class="link" href="index.html#memory">작품만 보기</a><button type="button" class="link" id="exit-gate">나가기</button></div>
+      <div class="row"><button type="button" class="btn" id="enter">소풍 체험 시작</button><a class="link" href="index.html?play=memory#memory">광고 영상 보기</a><button type="button" class="link" id="exit-gate">나가기</button></div>
     </div>
   </section>
 
@@ -104,7 +104,7 @@
       <p class="note-from" id="note-from">1999년, 엄마가</p>
       <p class="note-text" id="note-text"></p>
       <p class="note-meta" id="note-meta"></p>
-      <div class="row"><button type="button" class="btn" id="next-note">다음 쪽지</button><button type="button" class="link" id="write-note">쪽지 남기기</button><button type="button" class="link" id="close-box">뚜껑 닫기</button><a class="link" href="index.html#memory">포트폴리오로</a></div>
+      <div class="row"><button type="button" class="btn" id="next-note">다음 쪽지</button><button type="button" class="link" id="write-note">쪽지 남기기</button><button type="button" class="link" id="close-box">뚜껑 닫기</button><a class="link" href="index.html#memory">나가기</a></div>
     </div>
     <form id="note-write" hidden style="display:grid;gap:16px">
       <p class="note-from">쪽지 남기기</p>
@@ -141,17 +141,18 @@
   <script src="video-config.js"></script>
   <script src="notes-config.js"></script>
   <script src="notes-db.js"></script>
-  <script src="assets/vendor/three.min.js"></script>
+  <script src="assets/v921/sky-pano.js"></script>
+<script src="assets/vendor/three.min.js"></script>
   <script>
   (()=>{'use strict';const THREE=window.THREE;
   const $=s=>document.querySelector(s);
   const canvas=$('#world');
   const PIX=3;
   const renderer=new THREE.WebGLRenderer({canvas,antialias:false});renderer.setPixelRatio(1);
-  const scene=new THREE.Scene();const SKY=new THREE.Color('#bcd9ef');scene.background=SKY;scene.fog=new THREE.Fog(SKY,26,62);
-  const camera=new THREE.PerspectiveCamera(62,1,.05,200);
-  scene.add(new THREE.HemisphereLight('#fff6e0','#7aa35a',1.15));
-  const sun=new THREE.DirectionalLight('#fff1d2',1.1);sun.position.set(6,10,4);scene.add(sun);
+  const scene=new THREE.Scene();const SKY=new THREE.Color('#d9eefc');scene.background=SKY;scene.fog=new THREE.Fog(SKY,90,560);
+  const camera=new THREE.PerspectiveCamera(62,1,.05,420);
+  scene.add(new THREE.HemisphereLight('#f4faff','#e2cfb4',1.6));
+  const sun=new THREE.DirectionalLight('#fff6e2',1.45);sun.position.set(6,10,4);scene.add(sun);
   const cube=new THREE.BoxGeometry(1,1,1),lam=new THREE.MeshLambertMaterial();
   function blocks(list,parent=scene){const m=new THREE.InstancedMesh(cube,lam,list.length),o=new THREE.Object3D(),c=new THREE.Color();
     list.forEach((b,i)=>{o.position.set(b[0],b[1],b[2]);o.scale.set(b[4]||1,b[5]||1,b[6]||1);o.updateMatrix();m.setMatrixAt(i,o.matrix);m.setColorAt(i,c.set(b[3]))});
@@ -169,7 +170,7 @@
       continue;
     }
     const d=Math.hypot(x,z),path=Math.abs(x-pathX(z))<1.2&&z>-16;
-    const stepH=d>22?Math.floor((d-22)/3.5)*1:0;
+    const stepH=(d>22&&z>0)?Math.min(3,Math.floor((d-22)/3.5)):0;
     const topY=-.5+stepH;
     // 마인크래프트식 흙 블록 단면(잔디 아래 흙층)
     for(let y=-1.5;y<topY;y+=1){
@@ -205,9 +206,8 @@
   blocks(riverDeco);
   // 마인크래프트식 하늘 해 블록
   const sunBlocks=[];
-  vox('#fff59e',18,23,-28,4.2,4.2,4.2,scene);
-  vox('#ffe066',18,23,-28,4.8,4.8,3.6,scene);
-  const hills=[];for(let a=0;a<360;a+=3){const r=40+rnd()*6,h=2+Math.floor(rnd()*6),x=Math.cos(a*Math.PI/180)*r,z=Math.sin(a*Math.PI/180)*r;for(let y=0;y<h;y++)hills.push([Math.round(x),y,Math.round(z),y>h-2?'#8fb4a6':(y>h-3?'#7aa596':'#8b5a36'),3,1,3])}blocks(hills);
+  [['#fffbd6',4.2,4.2,4.2],['#ffe680',4.8,4.8,3.6]].forEach(([c,a,b,d])=>{const m=new THREE.Mesh(cube,new THREE.MeshBasicMaterial({color:c,fog:false}));m.position.set(18,23,-28);m.scale.set(a,b,d);scene.add(m)});
+  const hills=[];for(let a=20;a<160;a+=3){const r=40+rnd()*6,h=2+Math.floor(rnd()*6),x=Math.cos(a*Math.PI/180)*r,z=Math.sin(a*Math.PI/180)*r;for(let y=0;y<h;y++)hills.push([Math.round(x),y,Math.round(z),y>h-2?'#8fb4a6':(y>h-3?'#7aa596':'#8b5a36'),3,1,3])}blocks(hills);
   const mat=[];for(let x=-4;x<=3;x++)for(let z=-3;z<=4;z++)mat.push([x+.5,0,z+.5,(x+z)&1?'#f4efe4':'#d9534a',1,.08,1]);blocks(mat);
   // 들판 복셀 잔디·민들레·양귀비·튤립 블록 디테일
   const flora=[];
@@ -229,9 +229,94 @@
   }
   blocks(flora);
   const trees=[];
-  function tree(tx,tz,h){for(let y=0;y<h;y++)trees.push([tx,y,tz,'#7a4e33']);for(let x=-2;x<=2;x++)for(let y=0;y<3;y++)for(let z=-2;z<=2;z++){if(Math.abs(x)+Math.abs(z)+y*.6>3.6||rnd()<.18)continue;trees.push([tx+x,h+y,tz+z,pick(['#f6b8c8','#f9c9d6','#f2a7bb','#fde0e8'])])}}
+  function tree(tx,tz,h){for(let y=0;y<h;y++)trees.push([tx,y,tz,'#7a4e33']);for(let x=-2;x<=2;x++)for(let y=0;y<3;y++)for(let z=-2;z<=2;z++){if(Math.abs(x)+Math.abs(z)+y*.6>3.6||rnd()<.18)continue;trees.push([tx+x,h+y,tz+z,pick(['#ffb0c9','#ffc4d6','#ff9dbd','#ffdbe7'])])}}
   [[-8,-7,5],[7,-10,6],[-13,4,5],[12,2,5],[2,-14,6],[-5,12,5],[10,11,4],[-15,-12,6],[16,-15,5],[-3,-11,5]].forEach(t=>tree(...t));blocks(trees);
-  const clouds=new THREE.Group();scene.add(clouds);{const l=[];for(let k=0;k<9;k++){const cx=(rnd()-.5)*70,cz=(rnd()-.5)*70,cy=16+rnd()*5;for(let i=0;i<10;i++)l.push([cx+Math.floor(rnd()*6),cy+Math.floor(rnd()*2),cz+Math.floor(rnd()*3),'#ffffff',2,1,2])}blocks(l,clouds)}
+  // ---- V9.21: 맑은 하늘(솜사탕 구름 파노라마), 강 건너 1999년 한국 동네, 마인크래프트 디테일 ----
+  const clouds=new THREE.Group();scene.add(clouds);
+  const skyDome=new THREE.Mesh(new THREE.SphereGeometry(230,48,24),new THREE.MeshBasicMaterial({color:'#bfe2fb',side:THREE.BackSide,fog:false,depthWrite:false}));
+  skyDome.renderOrder=-10;scene.add(skyDome);
+  new THREE.TextureLoader().load(window.__SKY_PANO||'assets/v921/sky-pano.webp',tx=>{tx.colorSpace=THREE.SRGBColorSpace;tx.minFilter=THREE.LinearFilter;tx.magFilter=THREE.LinearFilter;tx.generateMipmaps=false;skyDome.material.map=tx;skyDome.material.color.set('#ffffff');skyDome.material.needsUpdate=true});
+  // 파노라마의 밝은 해 자리(u .40)를 복셀 해 방향에 맞춘다
+  {const ug=.40*Math.PI*2,gx=-Math.cos(ug),gz=Math.sin(ug);skyDome.rotation.y=Math.atan2(gz,gx)-Math.atan2(-28,18)}
+  // 블록마다 16×16 픽셀 결 (마인크래프트 텍스처 느낌)
+  {const c=document.createElement('canvas');c.width=c.height=16;const g=c.getContext('2d');
+   for(let y=0;y<16;y++)for(let x=0;x<16;x++){const v=Math.round(224+rnd()*31-(x===0||y===0?12:0)-(x===15||y===15?6:0));g.fillStyle=`rgb(${v},${v},${v})`;g.fillRect(x,y,1,1)}
+   const t=new THREE.CanvasTexture(c);t.magFilter=THREE.NearestFilter;t.minFilter=THREE.NearestFilter;t.generateMipmaps=false;t.colorSpace=THREE.SRGBColorSpace;lam.map=t;lam.needsUpdate=true}
+  // 멀리까지 이어지는 땅과 강
+  {const flat=(w,d,x,y,z,c)=>{const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),new THREE.MeshLambertMaterial({color:c}));m.rotation.x=-Math.PI/2;m.position.set(x,y,z);scene.add(m);return m};
+   flat(520,256,0,-.02,-16+128,'#86bf58');flat(520,240,0,-.02,-21-120,'#93bd66');
+   flat(520,5,0,-.42,-18.5,'#6fb3e4');flat(520,1.2,0,-.2,-15.6,'#c9b98f');flat(520,1.2,0,-.2,-21.4,'#c9b98f');
+   flat(520,20,0,.02,-45,'#c4c0b0');flat(520,2,0,.03,-34.6,'#8f8c84')}
+  const city=[];
+  const B=(x,y,z,c,sx,sy,sz)=>city.push([x,y,z,c,sx,sy,sz]);
+  // 아파트 (정면이 강 쪽 +z를 본다)
+  function apt(x,z,floors,w,d,body,stripe){
+    const h=floors*1.1;B(x,h/2-.5,z,body,w,h,d);
+    for(let f=0;f<floors;f++){const y=f*1.1+.15;
+      B(x,y-.32,z+d/2+.08,'#f4f1ea',w-.2,.12,.16);
+      for(let wx=-w/2+.9;wx<=w/2-.6;wx+=1.3){B(x+wx,y,z+d/2+.04,rnd()<.12?'#ffe7a8':pick(['#5b7a99','#4f6d8c','#6a88a6']),.8,.55,.06)}
+      for(let wz=-d/2+.9;wz<=d/2-.6;wz+=1.6){B(x+w/2+.03,y,z+wz,'#5b7a99',.06,.5,.7);B(x-w/2-.03,y,z+wz,'#5b7a99',.06,.5,.7)}}
+    B(x,h-.4,z+d/2+.05,stripe,w,.35,.06);
+    B(x-w/2+.9,h-.5+.9,z-d/4,'#d9d4c8',1.6,1.8,1.4);
+    B(x+w/2-1.5,h-.5+.5,z,'#e9e6dc',1,.8,1);
+    // 옆면 큰 색 띠 (그 시절 단지 표시)
+    B(x+w/2+.05,h*.55,z,stripe,.06,h*.5,1.2);
+  }
+  // 빨간 벽돌 빌라 + 옥상 초록 방수페인트 + 물탱크
+  function villa(x,z,floors,w,d){
+    const h=floors*1;B(x,h/2-.5,z,pick(['#b5654a','#a85a40','#c27458','#9c5a44']),w,h,d);
+    B(x,h-.48,z,'#5fae8a',w-.15,.06,d-.15);
+    B(x+w/2-.7,h+.15,z-d/2+.7,'#4f9a5a',.8,.9,.8);
+    for(let f=0;f<floors;f++)for(let wx=-w/2+.8;wx<=w/2-.6;wx+=1.4)B(x+wx,f+.05,z+d/2+.03,'#3e5266',.7,.45,.06);
+  }
+  // 상가: 1층 가게 간판 블록
+  function shop(x,z,w,d,floors){
+    const h=floors*1.05;B(x,h/2-.5,z,pick(['#e8e1cf','#d8d2c2','#efe9da']),w,h,d);
+    B(x,.65,z+d/2+.12,pick(['#d9453a','#2f6fb3','#f2c43a','#2e9a63','#e6772e']),w-.3,.6,.12);
+    B(x,-.05,z+d/2+.05,'#3a4b58',w-.6,.75,.05);
+    for(let f=1;f<floors;f++)B(x,f*1.05,z+d/2+.03,'#5b7a99',w-.8,.5,.05);
+  }
+  // 강 건너 가까운 줄: 빌라와 상가
+  for(let x=-66;x<=66;x+=8.5){const r=rnd();const z=-40-rnd()*5;if(r<.2)continue;if(r<.62)villa(x,z,3+Math.floor(rnd()*2),4.5,4);else shop(x,z,5,4,2+Math.floor(rnd()*2))}
+  // 동네 사이 가로수
+  for(let x=-70;x<=70;x+=5){if(rnd()<.45)continue;const z=-35.5;B(x,.6,z,'#6e4a2c',.3,1.6,.3);B(x,1.9,z,pick(['#5e9e3c','#4f8f33','#6aab45']),1.6,1.4,1.6)}
+  // 그 뒤로 아파트 단지
+  [[-70,-84,12],[-46,-90,15],[-22,-82,13],[4,-94,17],[30,-86,14],[56,-92,12],[82,-86,13]].forEach(([x,z,f],i)=>apt(x,z,f,i%3===1?12:9,4.4,pick(['#efe8d8','#e9e4d8','#f2ede2']),pick(['#5b8fc7','#d9534a','#4f9a5a','#e3a33b'])));
+  // 더 멀리 높은 아파트
+  [[-60,-122,20],[-14,-128,23],[34,-124,21],[78,-130,19]].forEach(([x,z,f])=>apt(x,z,f,10,5,'#e4e2dc','#8fa9c4'));
+  // 교회 첨탑과 빨간 십자가
+  B(-34,3.5,-52,'#ece6d6',3.4,8,4.4);B(-34,8.6,-52,'#ece6d6',1.4,3,1.4);B(-34,11.2,-52,'#e03a33',.25,2.2,.25);B(-34,11.6,-52,'#e03a33',1.1,.25,.25);
+  // 오른쪽 옆: 낮은 동네
+  for(let z=-26;z<=26;z+=6){villa(58+rnd()*6,z,2+Math.floor(rnd()*3),4,4.5)}
+  for(let z=-24;z<=24;z+=7){shop(-60-rnd()*5,z,5,4.5,2+Math.floor(rnd()*2))}
+  // 뒤쪽 멀리 산과 전망 타워
+  const ridge=(cx,cz,len,peak,col,axis)=>{for(let s=-len;s<=len;s+=4){const hgt=Math.max(2,peak*(1-Math.pow(s/len,2))*(.75+rnd()*.35));for(let y=0;y<hgt;y+=4){const k=1-y/hgt;const wdt=4+k*10;axis==='x'?B(cx+s,y+1.5,cz,col,4,4,wdt):B(cx,y+1.5,cz+s,col,wdt,4,4)}}};
+  ridge(0,-170,190,52,'#a9c6bd','x');ridge(-70,-150,70,30,'#9dbcaa','x');ridge(80,-152,60,28,'#9dbcaa','x');
+  ridge(0,150,150,36,'#a3c1b0','x');ridge(-150,0,120,30,'#a3c1b0','z');ridge(150,0,120,28,'#a3c1b0','z');
+  B(24,40,148,'#cfd3d6',1.4,16,1.4);B(24,50,148,'#f4f4f2',3.6,2.2,3.6);B(24,52.6,148,'#d9534a',.5,4,.5);
+  blocks(city);
+  // 정자: 기둥은 붉게, 지붕은 짙은 기와
+  {const P=[],px=-17,pz=7;
+   P.push([px,.1,pz,'#bdb5a3',5.6,.4,5.6]);
+   [[-2.2,-2.2],[2.2,-2.2],[-2.2,2.2],[2.2,2.2],[0,-2.2],[0,2.2],[-2.2,0],[2.2,0]].forEach(([dx,dz])=>P.push([px+dx,1.2,pz+dz,'#b8432f',.32,2.6,.32]));
+   P.push([px,2.6,pz,'#3f8a6b',5,.24,5]);P.push([px,2.85,pz,'#4b4f55',6.6,.26,6.6]);P.push([px,3.15,pz,'#5a5f66',5.4,.34,5.4]);P.push([px,3.5,pz,'#4b4f55',3.8,.34,3.8]);P.push([px,3.85,pz,'#5a5f66',1.8,.36,1.8]);
+   [[-3.2,-3.2],[3.2,-3.2],[-3.2,3.2],[3.2,3.2]].forEach(([dx,dz])=>P.push([px+dx,3.05,pz+dz,'#4b4f55',.6,.3,.6]));
+   P.push([px,.38,pz,'#a5703f',4.4,.16,4.4]);
+   blocks(P)}
+  // 초록 잎 나무, 이끼 낀 돌, 키 큰 풀
+  {const T=[];
+   const oak=(tx,tz,h)=>{for(let y=0;y<h;y++)T.push([tx,y,tz,'#6e4a2c']);for(let x=-2;x<=2;x++)for(let y=0;y<3;y++)for(let z=-2;z<=2;z++){if(Math.abs(x)+Math.abs(z)+y*.7>3.4||rnd()<.15)continue;T.push([tx+x,h-1+y,tz+z,pick(['#5e9e3c','#4f8f33','#6aab45','#579639'])])}};
+   [[-19,-3,5],[17,7,5],[-9,17,4],[14,-5,4],[-21,15,5],[19,16,4]].forEach(t=>oak(...t));
+   [[-6,8],[9,-3],[-12,-14],[6,15],[-16,-4]].forEach(([x,z])=>{for(let i=0;i<4;i++)T.push([x+(i%2)*.8,-.2+Math.floor(i/2)*.6,z+(i>1?.4:0),pick(['#8d8f91','#7b7e80','#9a9c9e','#6f8a5a']),.8,.6,.8])});
+   for(let i=0;i<60;i++){const x=Math.round((rnd()-.5)*40),z=Math.round((rnd()-.5)*36);if(z<-14&&z>-23)continue;if(x>=-6&&x<=5&&z>=-5&&z<=6)continue;if(Math.abs(x-pathX(z))<2&&z>-16)continue;if(Math.hypot(x,z)>21)continue;
+     T.push([x+.2,.05,z,'#5aa13a',.08,.5,.08],[x-.15,.0,z+.1,'#4e9133',.08,.4,.08],[x,.0,z-.18,'#66b046',.08,.45,.08])}
+   blocks(T)}
+  // 하늘에 뜬 방패연과 실
+  const kite=new THREE.Group();kite.position.set(-7,13,-12);scene.add(kite);
+  vox('#fbf7ec',0,0,0,1.3,1.7,.04,kite);vox('#d9453a',0,.1,.03,.6,.6,.02,kite);vox('#2f6fb3',0,-.62,.03,1.3,.22,.02,kite);vox('#f2c43a',0,.75,.03,1.3,.2,.02,kite);
+  const tailG=new THREE.Group();tailG.position.y=-.85;kite.add(tailG);for(let i=0;i<5;i++)vox(i%2?'#d9453a':'#f2c43a',0,-i*.38,0,.14,.34,.02,tailG);
+  const kiteLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),new THREE.LineBasicMaterial({color:'#f4efe4',transparent:true,opacity:.7}));scene.add(kiteLine);
+  const kiteAnchor=new THREE.Vector3(-17,1.2,7);
   // 돗자리 위 소품 + 라탄 피크닉 바구니 + 벗어둔 운동화
   blocks([
     [1.7,.25,-.5,'#4f8fcf',.22,.42,.22],[1.7,.5,-.5,'#f4efe4',.18,.08,.18],
@@ -422,7 +507,8 @@
   $('#copy-link').addEventListener('click',async()=>{if(!lastId)return;const u=DB.shareUrl('picnic.html',lastId);try{await navigator.clipboard.writeText(u);$('#copy-link').textContent='복사됨'}catch(err){$('#done-state').textContent=u}setTimeout(()=>$('#copy-link').textContent='링크 복사',1800)});
 
   const dis=$('#dissolve');for(let i=0;i<24*14;i++){const c=document.createElement('i');c.style.transitionDelay=`${Math.random()*600}ms`;dis.append(c)}
-  function navWithDissolve(url,useBack=false){
+  function exitTarget(url){let saved=null;try{saved=sessionStorage.getItem('pf-return')}catch(e){}if(saved){try{sessionStorage.setItem('pf-return-now','1')}catch(e){}}if(!saved||/play=/.test(url))return {url,back:false};let fromIndex=false;try{const r=new URL(document.referrer);fromIndex=r.origin===location.origin&&/(index\.html)?$/.test(r.pathname)}catch(e){}return {url:'index.html?return=1',back:fromIndex}}
+  function navWithDissolve(url,useBack=false){const t=exitTarget(url);url=t.url;useBack=useBack||t.back;
     try{startAudio();blip(660);blip(880,.08)}catch(e){}
     dis.classList.add('is-on');
     setTimeout(()=>{
@@ -473,7 +559,9 @@
     if(paper.visible){paperT=Math.min(1,paperT+dt*1.4);const from=new THREE.Vector3(0,.5,-.15),to=new THREE.Vector3(0,-.05,-.6).applyQuaternion(camera.quaternion).add(camera.position);
       paper.position.lerpVectors(from,to,1-Math.pow(1-paperT,3));paper.quaternion.copy(camera.quaternion);paper.rotateZ((1-paperT)*.6)}
     for(let i=0;i<N;i++){pp[i*3+1]-=sp[i]*dt*.6;pp[i*3]+=Math.sin(t*.7+i)*dt*.2;if(pp[i*3+1]<0)pp[i*3+1]=12}
-    pg.attributes.position.needsUpdate=true;clouds.position.x=Math.sin(t*.02)*6;
+    pg.attributes.position.needsUpdate=true;skyDome.position.copy(camera.position);skyDome.rotation.y+=dt*.0035;
+    kite.position.set(-7+Math.sin(t*.4)*1.2,13+Math.sin(t*.7)*.6,-12+Math.cos(t*.33)*.8);kite.rotation.z=Math.sin(t*.9)*.18;kite.rotation.y=Math.sin(t*.3)*.25;tailG.rotation.z=Math.sin(t*2.4)*.35;
+    {const a=kiteLine.geometry.attributes.position;a.setXYZ(0,kiteAnchor.x,kiteAnchor.y,kiteAnchor.z);a.setXYZ(1,kite.position.x,kite.position.y-.8,kite.position.z);a.needsUpdate=true}
     butterflies.forEach(b=>{
       const a=t*1.6+b.ph;
       b.g.position.set(b.x0+Math.cos(a)*.8,b.y0+Math.sin(a*2.2)*.22,b.z0+Math.sin(a)*.8);

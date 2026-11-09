@@ -80,8 +80,7 @@ button:focus-visible,a:focus-visible{outline:2px solid currentColor!important;ou
 .project-memory .feature-art{max-height:none!important}
 .process .process-heading,.process .process-side,.process .process-figures{grid-area:auto!important;width:100%!important}
 .process .process-heading{order:0}.process .process-figures{order:1}.process .process-side{order:2}
-.era-counter{height:140svh!important;min-height:900px}.era-sticky{min-height:0!important}
-@media(max-width:1100px){.js .film-index{opacity:1!important;pointer-events:auto!important;transform:none!important}.era-counter{min-height:720px}}
+@media(max-width:1100px){.js .film-index{opacity:1!important;pointer-events:auto!important;transform:none!important}}
 
 /* The next service panel fills upward over the previous one. */
 .tj-card{clip-path:inset(100% 0 0 0);transition:clip-path .65s cubic-bezier(.25,0,.25,1),transform .65s cubic-bezier(.25,0,.25,1)}

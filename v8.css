@@ -943,22 +943,6 @@ html{font-size:clamp(14px,.8333vw,20px)}
     display:none !important;
   }
 }
-
-/* 7. Viens-là 스타일 1999 → 2026 스크롤 연도 카운터 섹션 (#era-bridge) */
-.era-counter{
-  position:relative;
-  height:230vh;
-  background:linear-gradient(180deg,#12161f 0%,#1a1814 55%,#231d14 100%);
-  color:oklch(96% .01 90);
-}
-.era-sticky{
-  position:sticky;
-  top:var(--header-h,85px);
-  height:var(--screen);
-  display:flex;
-  align-items:center;
-  overflow:hidden;
-}
 .era-inner{
   width:100%;
   display:grid;
@@ -1081,8 +1065,6 @@ html{font-size:clamp(14px,.8333vw,20px)}
   background:linear-gradient(90deg,var(--tomato),var(--butter));
   transition:width .1s linear;
 }
-.era-counter .explore-link{color:oklch(96% .01 90)}
-.era-counter .round-arrow{background:oklch(100% 0 0 / .12)}
 
 /* 9. Cartier — Le Chœur des Pierres 스타일 스크롤 스레드 & 마스크 확장 연출 */
 .cartier-thread{
@@ -1122,8 +1104,6 @@ html{font-size:clamp(14px,.8333vw,20px)}
 }
 
 @media(max-width:1100px){
-  .era-counter{height:auto}
-  .era-sticky{position:relative;top:auto;height:auto;padding-block:var(--space-2xl)}
   .era-main{grid-template-columns:1fr}
   .cartier-thread{display:none}
 }
@@ -1255,14 +1235,6 @@ html{font-size:clamp(14px,.8333vw,20px)}
   border-radius:inherit;
   background:linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 40%, rgba(255,255,255,0.02) 100%);
   opacity:0.6;
-}
-
-/* Era Counter 2026 Release Finish */
-.era-counter.is-complete .era-year{
-  text-shadow:0 0 35px oklch(85% .15 75 / .6);
-}
-.era-counter.is-complete .era-sticky{
-  border-bottom:1px solid oklch(75% .14 75 / .4);
 }
 
 

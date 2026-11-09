@@ -1,0 +1,87 @@
+/* V9.15 — 열린 작품 패널을 첫 화면 작품 소개와 같은 글꼴 체계로, 체험 버튼·전환, 하는 방법 화살표 */
+
+/* ---------- 음악 조절 영역 삭제 ---------- */
+.optional-play .play-sound { display: none !important; }
+
+/* ---------- 하는 방법: 위로 붙이고, 카드 옆 화살표, 버튼 간격 ---------- */
+.optional-play[open] > summary.pe-entry { margin-bottom: 14px; }
+.pe-guide { margin-top: 0; }
+.pe-track { overflow: visible; }
+.pe-slide { border-radius: 20px; }
+.pe-side {
+  position: absolute; top: 50%; z-index: 6; width: 60px; height: 60px; margin-top: -30px; border-radius: 50%; border: 0; cursor: pointer;
+  display: grid; place-items: center; background: #1d2a24; color: #fff4d8; font-size: 24px; box-shadow: 0 10px 24px #0005;
+  transition: transform .25s ease, background .25s ease;
+}
+.pe-side--next { right: -30px; animation: pe-nudge-r 1.8s ease-in-out infinite; }
+.pe-side--prev { left: -30px; animation: pe-nudge-l 1.8s ease-in-out infinite; }
+.pe-side:hover { background: #8ff0cf; color: #0f2a22; }
+.pe-side[hidden] { display: none; }
+@keyframes pe-nudge-r { 50% { transform: translateX(5px); } }
+@keyframes pe-nudge-l { 50% { transform: translateX(-5px); } }
+.pe-controls { margin-top: 32px; }
+.pe-controls .pe-dots { margin-right: auto; }
+
+/* ---------- 조각 카드: 글씨 가운데, 더 크게 ---------- */
+.vw-label { text-align: center !important; justify-content: center; font-size: clamp(17px, 1.45vw, 25px) !important; padding: 10px 12px !important; }
+
+/* ---------- 열린 작품 패널: 첫 화면 작품 소개와 같은 글꼴·크기 체계 ---------- */
+.vu-panel, .vu-panel.row-butter, .vu-panel.row-night {
+  align-items: center !important; justify-content: center !important; text-align: left !important; gap: 0 !important;
+  padding: clamp(28px, 4vw, 72px) clamp(24px, 4vw, 72px) !important;
+}
+.vu-panel > * { width: min(100%, 640px) !important; max-width: 640px !important; margin-inline: auto !important; }
+.vu-media { margin: 0 auto !important; align-self: center !important; border-radius: 10px !important; aspect-ratio: 16 / 9 !important; flex: none !important; }
+.vu-media::after { display: none !important; }
+.vu-title {
+  margin: clamp(18px, 2.4vh, 28px) 0 10px !important; white-space: normal !important; text-align: left !important;
+  font: 700 clamp(30px, 2.8vw, 48px)/1.12 var(--font-display) !important; letter-spacing: -.05em !important;
+}
+.vu-panel.row-butter .vu-title { color: #3b2414 !important; }
+.vu-panel.row-night .vu-title { color: #bce7d5 !important; }
+.vu-line {
+  max-width: none !important; margin: 0 0 22px !important; text-align: left !important;
+  font: 400 clamp(15px, 1.05vw, 18px)/1.65 var(--font-display) !important; letter-spacing: -.01em !important;
+}
+.vu-panel.row-butter .vu-line { color: #4a3a28 !important; }
+.vu-panel.row-night .vu-line { color: #d6e4dc !important; }
+.vu-actions { justify-content: flex-start !important; align-items: center !important; gap: 12px 14px !important; }
+.vu-actions .btn, .vu-actions .vu-again { font-family: var(--font-display) !important; letter-spacing: -.01em; }
+.vu-actions .btn--secondary:not(.vu-film) { background: transparent !important; box-shadow: none !important; padding-inline: 4px !important; color: inherit !important; font-size: 14px !important; }
+.vu-actions .vu-again { order: 9 !important; font-size: 14px !important; color: inherit !important; opacity: .7; padding: 0 4px !important; }
+.vu-panel.row-night .vu-again { order: 9 !important; }
+.vu-actions .vu-film { font-size: 14px !important; min-height: 48px !important; padding: 0 18px !important; border-radius: 999px !important; }
+
+/* 체험 버튼: 화살표와 큰 글씨, 반짝임 */
+.vu-actions .vu-try {
+  display: inline-flex !important; grid-template: none !important; align-items: center; gap: 14px;
+  min-height: 60px !important; padding: 0 26px 0 28px !important; border-radius: 999px !important; overflow: hidden; isolation: isolate;
+}
+.vu-try-label { font: 750 clamp(18px, 1.4vw, 23px)/1 var(--font-display) !important; letter-spacing: -.03em; }
+.vu-try-arrow { font-size: 26px !important; animation: vu-arrow 1.4s ease-in-out infinite; }
+.vu-try::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, transparent 35%, #ffffff66 50%, transparent 65%); transform: translateX(-120%); animation: vu-shine 3s ease-in-out infinite 1s; }
+@keyframes vu-arrow { 50% { transform: translateX(6px); } }
+@keyframes vu-shine { 0% { transform: translateX(-120%); } 40%, 100% { transform: translateX(120%); } }
+
+/* ---------- 체험 페이지로 넘어가는 전환 ---------- */
+.go-overlay { position: fixed; inset: 0; z-index: 9999; pointer-events: all; }
+.go-box { position: fixed; background: #f2dfad; border-radius: 30px; transition: left .75s cubic-bezier(.7,0,.2,1), top .75s cubic-bezier(.7,0,.2,1), width .75s cubic-bezier(.7,0,.2,1), height .75s cubic-bezier(.7,0,.2,1), border-radius .75s ease; }
+.go-box::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, #0000 0 6px, #3b241410 6px 7px), repeating-linear-gradient(90deg, #0000 0 6px, #3b241410 6px 7px); border-radius: inherit; }
+.go-scan { position: fixed; inset: 0; background: #070b10; clip-path: inset(0 0 100% 0); }
+.go-scan.is-run { animation: go-scan-fill 1.1s cubic-bezier(.6,0,.3,1) forwards; }
+.go-scan::before { content: ""; position: absolute; inset: 0; background: linear-gradient(#00ff6612 1px, transparent 1px) 0 0 / 100% 22px, linear-gradient(90deg, #00ff6612 1px, transparent 1px) 0 0 / 22px 100%; }
+.go-beam { position: fixed; left: 0; right: 0; top: 0; height: 4px; background: #33ff85; box-shadow: 0 0 24px 6px #00ff66aa, 0 0 80px 20px #00ff6640; transform: translateY(-10px); }
+.go-beam.is-run { animation: go-beam 1.1s cubic-bezier(.6,0,.3,1) forwards; }
+.go-beam span { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); color: #7dffb0; font: 700 14px/1 var(--font-display); letter-spacing: .08em; white-space: nowrap; text-shadow: 0 0 10px #00ff66; }
+@keyframes go-scan-fill { to { clip-path: inset(0 0 0 0); } }
+@keyframes go-beam { to { transform: translateY(100vh); } }
+
+@media (max-width: 760px) {
+  .pe-side { width: 48px; height: 48px; margin-top: -24px; font-size: 20px; }
+  .pe-side--next { right: -10px; } .pe-side--prev { left: -10px; }
+  .vu-panel > * { width: 100% !important; }
+  .vu-try-label { font-size: 17px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pe-side, .vu-try-arrow, .vu-try::after { animation: none !important; }
+}
