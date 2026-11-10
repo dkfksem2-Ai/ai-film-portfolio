@@ -13,6 +13,7 @@
   rows:[...intro.querySelectorAll('[data-tumgo-beat]')],bar:intro.querySelector('.tb-indicator'),count:intro.querySelector('.tb-progress b'),
   caps:['계단에서 처음 만난 로봇','밀린 빨래 앞의 현우','문 앞 수거'],cur:-1,uShown:null
  };
+ const leadOf=el=>matchMedia('(min-width: 961px)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches?(parseFloat(el.dataset.lead)||0):0;
  const OFF=.6;const introTail=()=>{const v=parseFloat(getComputedStyle(I.el).getPropertyValue('--beat-tail'));return isNaN(v)?0:v};
  const introTotal=()=>I.layers.length-OFF+introTail();
  const introLastHold=total=>(I.layers.length-.5+total)/2;
@@ -30,8 +31,8 @@
   if(!I)return false;
   if(reduce.matches){I.el.classList.remove('is-scroll');I.uShown=null;return false}
   I.el.classList.add('is-scroll');I.art.classList.add('is-moving');
-  const r=I.el.getBoundingClientRect(),span=Math.max(1,I.el.offsetHeight-I.sticky.offsetHeight);
-  const uTarget=clamp(-r.top/span)*introTotal(),delta=uTarget-(I.uShown??uTarget);
+  const r=I.el.getBoundingClientRect(),ld=leadOf(I.el),span=Math.max(1,I.el.offsetHeight-I.sticky.offsetHeight-ld);
+  const uTarget=clamp((-r.top-ld)/span)*introTotal(),delta=uTarget-(I.uShown??uTarget);
   const following=r.top<I.sticky.offsetHeight&&r.bottom>0&&!document.hidden&&Math.abs(delta)>.001;
   const u=I.uShown=following?I.uShown+delta*(mobile.matches ? .14 : .10):uTarget,n=I.layers.length;
   let cur=0,glass=0,sweep=-1;
@@ -62,7 +63,7 @@
    e.stopPropagation();e.preventDefault();
    const k=Number(row.dataset.tumgoBeat),total=introTotal();
    const hold=k===0?0:k+.5-OFF;
-   glide(stageTop(I.el)+hold/total*(I.el.offsetHeight-I.sticky.offsetHeight),620);
+   const ld=leadOf(I.el);glide(stageTop(I.el)+ld+hold/total*(I.el.offsetHeight-I.sticky.offsetHeight-ld),620);
   },true);
  }
 
@@ -71,10 +72,10 @@
  const snapStages=[];
  document.querySelectorAll('.scene-pull').forEach(sec=>{
   const pin=sec.querySelector('.pull-pin'),n=sec.querySelectorAll('.pull-item').length,plate=sec.dataset.kind==='plate';
-  snapStages.push({el:sec,span:()=>Math.max(1,sec.offsetHeight-pin.offsetHeight),total:()=>n+(parseFloat(getComputedStyle(sec).getPropertyValue('--scene-tail'))||.6),
+  snapStages.push({el:sec,lead:()=>leadOf(sec),span:()=>Math.max(1,sec.offsetHeight-pin.offsetHeight-leadOf(sec)),total:()=>n+(parseFloat(getComputedStyle(sec).getPropertyValue('--scene-tail'))||.6),
    holds:t=>{const h=[0];for(let i=0;i<n;i++)h.push(i+.75);if(plate&&t-n>=1.5){h.push(n+.6,n+1,n+1.4)}else if(plate&&t-n>=1)h.push(n+.85);h.push(t);return h}});
  });
- if(I)snapStages.push({el:I.el,span:()=>Math.max(1,I.el.offsetHeight-I.sticky.offsetHeight),total:introTotal,lim:.8,holds:t=>[0,1.5-OFF,2.5-OFF,t]});
+ if(I)snapStages.push({el:I.el,lead:()=>leadOf(I.el),span:()=>Math.max(1,I.el.offsetHeight-I.sticky.offsetHeight-leadOf(I.el)),total:introTotal,lim:.8,holds:t=>[0,1.5-OFF,2.5-OFF,t],free:u=>introTail()>0&&u>2.5-OFF+.05});   // 03 수거 뒤 여유 구간은 붙잡지 않는다
 
  const snapDelay=280;
  let anim=null,timer=0,touching=false,settled=-Infinity;
@@ -89,9 +90,9 @@
   if(performance.now()-settled<300)return;
   if(window.__noSnap||reduce.matches||touching||anim||document.querySelector('dialog[open]'))return;
   for(const s of snapStages){
-   const top=stageTop(s.el),span=s.span(),total=s.total(),pos=scrollY-top;
+   const top=stageTop(s.el)+(s.lead?s.lead():0),span=s.span(),total=s.total(),pos=scrollY-top;
    if(pos<=1||pos>=span-1)continue;
-   const u=pos/span*total,hs=s.holds(total);let best=null;
+   const u=pos/span*total;if(s.free&&s.free(u))return;const hs=s.holds(total);let best=null;
    const ahead=hs.filter(h=>dir>0?h>=u-.03:h<=u+.03);
    for(const h of (ahead.length?ahead:hs))if(best===null||Math.abs(h-u)<Math.abs(best-u))best=h;
    const y=top+best/total*span,distance=Math.abs(y-scrollY),limit=span/total*(s.lim||.4);

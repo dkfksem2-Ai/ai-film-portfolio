@@ -1,0 +1,151 @@
+/* V9.25 — 반찬통 장면(따뜻한 배경·물번짐 사진), 틈GO 밤 인트로, 구간 사이 그라데이션 */
+
+/* ================= 1·2. 반찬통의 왕복: 따뜻하고 포근한 한 장면 ================= */
+.cl .cl-memory {
+  --warm: #f1dfbf;
+  background:
+    radial-gradient(60% 55% at 18% 22%, #f8ead0 0%, transparent 70%),
+    radial-gradient(45% 50% at 86% 78%, #ecc9a2aa 0%, transparent 72%),
+    radial-gradient(40% 45% at 72% 14%, #cfe3d955 0%, transparent 70%),
+    linear-gradient(180deg, #f1dfbf 0%, #f3e4c8 55%, #efd9b6 100%);
+  isolation: isolate;
+}
+/* 종이 결 */
+.cl .cl-memory::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: var(--grain); opacity: .16; mix-blend-mode: multiply; }
+.cl-memory .cl-collage > * { z-index: 2; }
+
+@media (min-width: 761px) {
+  .cl .cl-memory .p1 { left: 3% !important; top: 5% !important; width: 26% !important; aspect-ratio: 16 / 10 !important; }
+  .cl .cl-memory .p2 { left: 33% !important; top: 0 !important; width: 15% !important; aspect-ratio: 4 / 5 !important; }
+  .cl .cl-memory .p3 { left: 58% !important; top: 2% !important; width: 36% !important; aspect-ratio: 16 / 10 !important; }
+  .cl .cl-memory .p5 { left: 4% !important; top: 57% !important; width: 21% !important; aspect-ratio: 4 / 3 !important; }
+  .cl .cl-memory .p4 { left: 78% !important; top: 54% !important; width: 17% !important; aspect-ratio: 4 / 5 !important; }
+  .cl .cl-memory .cl-title { left: 30% !important; top: 46% !important; font-size: clamp(60px, 7.6vw, 205px) !important; }
+  .cl-memory .cl-sub { left: 30% !important; top: calc(46% + 2.24 * clamp(60px, 7.6vw, 205px) + 26px) !important; }
+  .cl-memory .cl-cta { left: 30% !important; top: calc(46% + 2.24 * clamp(60px, 7.6vw, 205px) + 26px + 2.4em + clamp(16px, 1.25vw, 30px)) !important; }
+  .cl-memory .cl-no.b { right: 1% !important; bottom: 2% !important; }
+}
+/* 사진 가장자리: 네모가 아니라 물이 번지듯 부드럽게 사라진다 */
+.cl-memory .cl-ph {
+  background: none !important; overflow: visible !important;
+  -webkit-mask-image: url(assets/v925/mask-0.webp); mask-image: url(assets/v925/mask-0.webp);
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+.cl-memory .p2, .cl-memory .p4 { -webkit-mask-image: url(assets/v925/mask-1.webp); mask-image: url(assets/v925/mask-1.webp); }
+.cl-memory .p3 { -webkit-mask-image: url(assets/v925/mask-2.webp); mask-image: url(assets/v925/mask-2.webp); }
+.cl-memory .cl-ph img { filter: saturate(1.04) contrast(1.02); }
+.cl-memory .cl-ph figcaption { left: 13% !important; top: 14% !important; background: #0f2f2ed9 !important; }
+
+/* 휴대폰: 같은 따뜻한 배경, 사진은 두 줄 그리드 */
+
+/* ================= 3. 틈GO 밤 인트로 ================= */
+.tgn { position: relative; height: calc(100svh + var(--tgn-len, 1500px)); background: #070a14; color: #f2f5f7; }
+.tgn-pin { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; }
+.tgn-bg {
+  --hx: 47%; --hy: 92%; --hh: 27%;   /* 주인공 위치: 계단 가운데 빛이 고인 자리, 발끝 = 그림 높이의 92% */
+  position: absolute; left: 50%; top: 0; width: max(100vw, 120svh); aspect-ratio: 2 / 3; z-index: 0; will-change: transform;
+}
+.tgn-bg-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.tgn-bg::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(70% 45% at 50% 80%, transparent 30%, #04060dcc 100%); opacity: var(--dim, 0); }
+/* 이미지가 아직 없을 때: 단순한 밤하늘 색 */
+.tgn-bg.is-empty .tgn-bg-img { visibility: hidden; }
+.tgn-bg.is-empty { background: linear-gradient(180deg, #04060f 0%, #0b1430 38%, #1b2448 62%, #2b2440 74%, #15171f 76%, #1d2129 100%); }
+.tgn-hero {
+  position: absolute; z-index: 2; left: var(--hx); bottom: calc(100% - var(--hy)); height: var(--hh); width: auto;
+  translate: -50% 0; opacity: 0; pointer-events: none;
+}
+.tgn-lines { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; overflow: visible; }
+.tgn-lines line { stroke: #8ff0cf; stroke-width: 1.2; stroke-opacity: .75; }
+.tgn-lines circle { fill: #8ff0cf; transition: opacity .3s; }
+
+.tgn-cap {
+  position: absolute; z-index: 5; left: 50%; transform: translateX(-50%); margin: 0; opacity: 0; white-space: nowrap;
+  font: 500 clamp(17px, 1.5vw, 28px)/1.4 var(--tg-font); letter-spacing: -.02em; color: #f2f5f7; text-shadow: 0 2px 18px #000a;
+}
+.tgn-cap--a { top: 30%; }
+.tgn-cap--b { top: 9%; }
+.tgn-scroll { position: absolute; z-index: 5; left: 50%; bottom: 28px; transform: translateX(-50%); font: 400 13px/1 var(--tg-font); color: #b9c2cb; letter-spacing: .08em; }
+.tgn-scroll::after { content: ""; display: block; width: 1px; height: 36px; margin: 10px auto 0; background: currentColor; animation: cl-cue 1.8s ease-in-out infinite; transform-origin: top; }
+
+.tgn-ph {
+  position: absolute; z-index: 4; left: var(--x); top: var(--y); width: var(--w); margin: 0; opacity: 0;
+  will-change: transform, opacity;
+}
+.tgn-ph img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; box-shadow: 0 18px 40px -14px #000c; }
+.tgn-ph[data-a="leg"] img, .tgn-ph[data-a="foot"] img { aspect-ratio: 4 / 5; }
+.tgn-ph[data-a="bag"] img { aspect-ratio: 1 / 1; background: #e9ecea; object-fit: contain; }
+.tgn-ph figcaption {
+  margin-top: 8px; font: 500 clamp(12px, .85vw, 15px)/1.35 var(--tg-font); color: #e6ece9; letter-spacing: -.01em;
+  display: inline-block; padding: 4px 8px; background: #0b111acc; border-left: 2px solid #22c55e;
+}
+
+.tgn-copy { position: absolute; z-index: 6; right: 6%; bottom: 9%; width: min(30%, 520px); opacity: 0; }
+.tgn-label { display: block; font: 400 clamp(12px, .85vw, 15px)/1 var(--tg-font); color: #b9c2cb; margin-bottom: 10px; }
+.tgn-title { margin: 0; font: 700 clamp(72px, 8.4vw, 220px)/.95 var(--tg-font) !important; letter-spacing: -.05em; color: #f2f5f7 !important; padding: .06em 0 .1em; }
+.tgn-title .tg-go { color: #22c55e; font-weight: 700; }
+.tgn-sub { margin: 14px 0 22px; font: 400 clamp(15px, 1.15vw, 22px)/1.45 var(--tg-font); color: #b9c2cb; }
+.tgn-sub b { color: #f2f5f7; font-weight: 700; }
+.tgn-cta { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.tgn-btn { background: #22c55e !important; color: #061a10 !important; font-family: var(--tg-font) !important; font-weight: 700; }
+.tgn-btn:hover { background: #f2f5f7 !important; }
+.tgn-link { color: #b9c2cb; text-decoration: none; font: 400 clamp(14px, 1vw, 18px)/1 var(--tg-font); }
+.tgn-link:hover { color: #22c55e; }
+
+@media (max-width: 760px) {
+  .tgn-ph { --w: 30% !important; }
+  .tgn-ph figcaption { font-size: 10.5px; padding: 3px 6px; }
+  .tgn-ph[data-a="head"] { --x: 4% !important; --y: 7% !important; }
+  .tgn-ph[data-a="bag"] { --x: 66% !important; --y: 7% !important; --w: 26% !important; }
+  .tgn-ph[data-a="hand"] { --x: 3% !important; --y: 33% !important; }
+  .tgn-ph[data-a="foot"] { --x: 68% !important; --y: 30% !important; --w: 26% !important; }
+  .tgn-ph[data-a="leg"] { display: none; }
+  .tgn-copy { left: 6%; right: 6%; width: auto; bottom: 6%; padding: 18px; background: linear-gradient(180deg, transparent, #070a14e6 30%); }
+  .tgn-title { font-size: clamp(60px, 18vw, 90px) !important; }
+  .tgn-cap { white-space: normal; width: 86%; text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) { .tgn-scroll::after { animation: none; } }
+
+/* ================= 4. 둥근 모서리 없애기 ================= */
+#tumgo-intro, #tumgo-intro *:not(.tb-big-n):not(button):not(.btn) { border-radius: 0 !important; }
+#tumgo-journey .pull-art, #tumgo-journey .pull-stage, #process .pr-bg, #process .pr-bg * { border-radius: 0 !important; }
+
+/* ================= 4. 구간 사이: 딱 끊기지 않게 색이 이어진다 ================= */
+.seam { position: relative; height: 0; z-index: 60; pointer-events: none; }
+.seam::before {
+  content: ""; position: absolute; left: 0; right: 0; top: calc(var(--h) / -2); height: var(--h);
+  background: linear-gradient(180deg, transparent 0%, var(--a) 34%, var(--b) 66%, transparent 100%);
+}
+.seam--down::before { top: 0; background: linear-gradient(180deg, var(--a) 0%, color-mix(in oklab, var(--a) 40%, var(--b)) 35%, transparent 100%); }
+/* 틈GO 영상 단계: 그림 위·아래 끝이 딱 끊기지 않게 */
+.tumgo-sticky .tumgo-art {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 13%, #000 85%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 13%, #000 85%, transparent 100%);
+}
+.tumgo-sticky { background: #0a0d14; }
+@media (max-width: 760px) {
+  .cl-memory .cl-sub { white-space: normal !important; left: auto !important; width: auto !important; max-width: 100% !important; }
+  .cl-memory { padding-bottom: 72px !important; }
+  .cl .cl-memory .cl-title { margin-bottom: 22px !important; }
+  .cl-disclosure { padding-top: 8px; }
+}
+@media (max-width: 760px) { .cl-memory .cl-collage { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; } .cl-memory .cl-collage > * { min-width: 0; } }
+@media (max-width: 760px) { .seam--down::before { height: 64px; } .cl .cl-memory { padding-top: 96px !important; } }
+
+/* V9.26 — 꺼진 가로등 그림(깜빡임용), 발밑 그림자 */
+.tgn-bg-off { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; z-index: 1; opacity: 1; pointer-events: none; }
+.tgn-bg.is-empty .tgn-bg-off { display: none; }
+.tgn-bg::after { z-index: 1; }
+.tgn-shadow {
+  position: absolute; z-index: 2; left: var(--hx); top: calc(var(--hy) - .6%); width: calc(var(--hh) * .55); height: 1.6%;
+  translate: -50% -50%; border-radius: 50%; background: radial-gradient(closest-side, #000a, transparent); opacity: var(--hs, 0); pointer-events: none;
+}
+.tgn-hero { z-index: 3; }
+@media (max-width: 760px) {
+  .tgn-ph { --w: 25% !important; }
+  .tgn-ph[data-a="head"] { --x: 2% !important; --y: 6% !important; }
+  .tgn-ph[data-a="phone"] { --x: 73% !important; --y: 6% !important; --w: 25% !important; }
+  .tgn-ph[data-a="chest"] { --x: 2% !important; --y: 36% !important; }
+  .tgn-ph[data-a="foot"] { --x: 75% !important; --y: 33% !important; --w: 23% !important; }
+  .tgn-ph[data-a="knee"] { display: none; }
+  .tgn-cap--b { top: auto; bottom: 16%; }
+}

@@ -1,0 +1,32 @@
+/* V9.29 — 03 수거 → 수거 이후 과정: 문틈 빛 + 비네팅 + 천천히 줌인(약한 크로마·렌즈 플레어) */
+@media (min-width: 961px) and (prefers-reduced-motion: no-preference) {
+  #tumgo-intro { --beat-tail: .8 !important; }   /* 전환이 길어진 만큼 03 수거에서 머무는 구간도 늘린다(휠 세 칸) */
+  #tumgo-journey { margin-top: calc(-100svh - 500px) !important; height: calc(100svh + 700px + (var(--scene-count) + var(--scene-tail)) * 110svh) !important; }
+}
+/* 바깥은 어둠으로 닫히고 문틈 둘레만 남는다 */
+.tg-door .tg-vig {
+  position: absolute; inset: 0; opacity: var(--vig, 0);
+  background: radial-gradient(ellipse var(--vw, 70vw) 78vh at var(--x, 50%) var(--y, 50%), transparent 0%, transparent 18%, #05070bcc 55%, #030406 100%);
+}
+/* 문틈의 빛: 가늘고 차갑게, 은은하게 숨 쉬듯 */
+.tg-door i {
+  background: linear-gradient(90deg, transparent 0%, #bfe4ff 28%, #f6fbff 50%, #bfe4ff 72%, transparent 100%) !important;
+  box-shadow: 0 0 calc(var(--glow, 0) * 18px) calc(var(--glow, 0) * 3px) #a9dcffee, 0 0 calc(var(--glow, 0) * 70px) calc(var(--glow, 0) * 14px) #6fb8ff99, 0 0 calc(var(--glow, 0) * 200px) calc(var(--glow, 0) * 30px) #3d8fff40 !important;
+  filter: none !important;
+}
+/* 렌즈 플레어: 가로로 길게 번지는 빛줄기와 둥근 잔상 */
+.tg-flare { position: absolute; inset: 0; opacity: var(--flare, 0); mix-blend-mode: screen; text-decoration: none; }
+.tg-flare::before {
+  content: ""; position: absolute; left: 0; right: 0; top: var(--y, 50%); height: 3px; translate: 0 -50%;
+  background: linear-gradient(90deg, transparent, #4aa3ff55 25%, #dff2ff 50%, #4aa3ff55 75%, transparent); filter: blur(1px);
+  box-shadow: 0 0 22px 4px #4aa3ff44;
+}
+.tg-flare u { position: absolute; border-radius: 50%; translate: -50% -50%; text-decoration: none; }
+.tg-flare u:nth-child(1) { left: calc(var(--x, 50%) - 18vw); top: calc(var(--y, 50%) + 9vh); width: 9vw; height: 9vw; background: radial-gradient(circle, #6fd3ff22 0%, #6fd3ff10 55%, transparent 70%); border: 1px solid #8fdcff22; }
+.tg-flare u:nth-child(2) { left: calc(var(--x, 50%) - 32vw); top: calc(var(--y, 50%) + 16vh); width: 4vw; height: 4vw; background: radial-gradient(circle, #b38cff2e 0%, transparent 70%); }
+.tg-flare u:nth-child(3) { left: var(--x, 50%); top: var(--y, 50%); width: 26vw; height: 26vw; background: radial-gradient(circle, #cfe9ff30 0%, #6fb8ff12 35%, transparent 65%); }
+/* 문틈 속으로 들어가면 빛이 문틈에서부터 바깥으로 번져 화면을 채운다 */
+.tg-door::after {
+  opacity: calc(var(--white, 0) * 4) !important;
+  background: radial-gradient(ellipse calc(var(--white, 0) * 150vw + 1vw) calc(var(--white, 0) * 80vh + 60vh) at var(--x, 50%) var(--y, 50%), #ffffff 0%, #eef7ff 45%, #cfe6f8cc 62%, transparent 75%) !important;
+}

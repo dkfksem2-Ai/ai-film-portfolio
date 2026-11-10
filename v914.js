@@ -1,35 +1,10 @@
 /* V9.14 — 장면 조각 담기 '하는 방법' 슬라이드, 체험 페이지에서 돌아오면 떠났던 위치와 상태 복원 */
 (()=>{
  'use strict';
- const pg=document.getElementById('playground');if(!pg)return;
- const guide=document.getElementById('pe-guide');
+ // V9.24: 게임은 첫 화면(#hx)에 있다. '게임 시작하기'를 누른 상태를 open으로 저장한다.
+ const hx=document.getElementById('hx');if(!hx)return;
  const ss={get:k=>{try{return sessionStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{sessionStorage.setItem(k,v)}catch(e){}},del:k=>{try{sessionStorage.removeItem(k)}catch(e){}}};
-
- /* ---------- 하는 방법 슬라이드 ---------- */
- const slides=[...guide.querySelectorAll('.pe-slide')],dots=[...guide.querySelectorAll('.pe-dot')];
- const prev=guide.querySelector('.pe-side--prev'),next=guide.querySelector('.pe-side--next'),startBtn=guide.querySelector('.pe-start');
- let idx=0;
- function show(i){
-  idx=Math.max(0,Math.min(slides.length-1,i));
-  slides.forEach((s,k)=>{s.classList.toggle('is-on',k===idx);s.classList.toggle('is-left',k<idx);s.setAttribute('aria-hidden',String(k!==idx))});
-  dots.forEach((d,k)=>{d.classList.toggle('is-on',k===idx);d.setAttribute('aria-current',String(k===idx))});
-  prev.hidden=idx===0;next.hidden=idx===slides.length-1;
-  startBtn.classList.toggle('is-ready',idx===slides.length-1);
- }
- prev.addEventListener('click',()=>show(idx-1));next.addEventListener('click',()=>show(idx+1));
- dots.forEach((d,k)=>d.addEventListener('click',()=>show(k)));
- guide.addEventListener('keydown',e=>{if(e.key==='ArrowRight')show(idx+1);if(e.key==='ArrowLeft')show(idx-1)});
- let sx=null;const track=guide.querySelector('.pe-track');
- track.addEventListener('pointerdown',e=>{sx=e.clientX},{passive:true});
- track.addEventListener('pointerup',e=>{if(sx==null)return;const dx=e.clientX-sx;sx=null;if(Math.abs(dx)>40)show(idx+(dx<0?1:-1))},{passive:true});
- function startGame(){
-  pg.classList.remove('is-guide');ss.set('pf-guide-seen','1');
-  requestAnimationFrame(()=>{dispatchEvent(new Event('resize'));document.getElementById('play-stage')?.scrollIntoView({behavior:'smooth',block:'start'})});
- }
- startBtn.addEventListener('click',startGame);guide.querySelector('.pe-skip').addEventListener('click',startGame);
- document.querySelector('.pe-reopen')?.addEventListener('click',()=>{pg.classList.add('is-guide');show(0);guide.scrollIntoView({behavior:'smooth',block:'center'})});
- if(ss.get('pf-guide-seen'))pg.classList.remove('is-guide');
- show(0);
+ const pg={get open(){return hx.classList.contains('is-playing')},set open(v){if(!v)return;if(window.__hxPlay)window.__hxPlay(true);else window.__hxPlayPending=true},classList:{remove(){},add(){}}};
 
  /* ---------- 체험 페이지로 떠날 때 상태 저장 ---------- */
  document.addEventListener('click',e=>{

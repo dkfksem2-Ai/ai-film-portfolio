@@ -7,8 +7,8 @@
 @media (max-width: 760px) { .ab .ab-contact { flex-wrap: wrap; } }
 @media (min-width: 761px) {
 /* 소개 문장·버튼을 % 대신 제목 크기에 맞춰 둔다 → 낮고 넓은 화면(1366×768 등)에서도 '왕복'과 겹치지 않게 */
-.cl-memory .cl-sub { top: calc(37% + 2.24 * clamp(64px, 8.3vw, 220px) + 14px) !important; }
-.cl-memory .cl-cta { top: calc(37% + 2.24 * clamp(64px, 8.3vw, 220px) + 14px + 2.6em + clamp(16px, 1.25vw, 30px)) !important; }
+.cl-memory .cl-sub { top: calc(37% + 2.24 * clamp(64px, 8.3vw, 220px) + 24px) !important; }
+.cl-memory .cl-cta { top: calc(37% + 2.24 * clamp(64px, 8.3vw, 220px) + 24px + 2.6em + clamp(16px, 1.25vw, 30px)) !important; }
 .cl-tumgo .cl-sub { top: calc(40% + 1.12 * clamp(80px, 12vw, 320px) + 24px) !important; }
 /* 낮고 넓은 화면에서 사진이 제목·표기에 닿지 않게 */
 .cl-memory .p2 { width: 16% !important; aspect-ratio: 1 / 1 !important; }

@@ -20,7 +20,9 @@
    const r=count.getBoundingClientRect(),H=innerHeight,mobile=innerWidth<=760;
    const visible=(mobile||count.classList.contains('is-on'))&&r.top<H*.8&&r.bottom>H*.15;
    if(visible&&!played){played=true;play()}
-   else if(!visible&&played){played=false;cancelAnimationFrame(raf);show(0)}
+   // 다음 단계로 넘어가거나 아래로 지나갈 때는 19컷·42컷을 그대로 둔 채 사라진다.
+   // 위로 다시 올라가 이 구간 앞으로 돌아갔을 때만 0으로 되돌려 다음에 다시 센다.
+   else if(!visible&&played&&sec.getBoundingClientRect().top>H*.6){played=false;cancelAnimationFrame(raf);show(0)}
   }
   show(0);
   let t=false;addEventListener('scroll',()=>{if(!t){t=true;requestAnimationFrame(()=>{t=false;check()})}},{passive:true});

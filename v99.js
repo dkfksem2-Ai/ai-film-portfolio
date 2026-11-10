@@ -3,6 +3,7 @@
  'use strict';
  const reduce=matchMedia('(prefers-reduced-motion: reduce)'),mobile=matchMedia('(max-width: 960px)'),clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t,ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
  document.querySelectorAll('.vh-word').forEach(b=>{const w=(window.WORKS||[]).find(w=>w.id===b.dataset.film);const label=`${b.dataset.word}, ${w?.title||''} 제작 이야기로 이동. 끌거나 Enter로 담기`;b.title=label;b.setAttribute('aria-label',label)});
+ const leadOf=el=>matchMedia('(min-width: 961px)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches?(parseFloat(el.dataset.lead)||0):0;
  const stages=[...document.querySelectorAll('.scene-pull')].map(sec=>({sec,pin:sec.querySelector('.pull-pin'),backdrop:sec.querySelector('.pull-background'),copy:sec.querySelector('.pull-copy'),items:[...sec.querySelectorAll('.pull-item')],seats:[...sec.querySelectorAll('.pull-seats i')],cap:sec.querySelector('.pull-caption'),read:sec.querySelector('.pull-readout'),kind:sec.dataset.kind,rest:[],front:null}));
  function stop(s){s.items.forEach(it=>{const v=it.querySelector('video');v.pause();it.classList.remove('is-playing')})}
  function measure(s){
@@ -53,9 +54,9 @@
  function frame(s){
   if(reduce.matches){stop(s);s.uShown=null;s.sec.dataset.mode='static';return false}
   if(!s.front)measure(s);
-  const r=s.sec.getBoundingClientRect(),span=Math.max(1,s.sec.offsetHeight-s.pin.offsetHeight),tail=Number(getComputedStyle(s.sec).getPropertyValue('--scene-tail'))||.6;
+  const r=s.sec.getBoundingClientRect(),ld=leadOf(s.sec),span=Math.max(1,s.sec.offsetHeight-s.pin.offsetHeight-ld),tail=Number(getComputedStyle(s.sec).getPropertyValue('--scene-tail'))||.6;
   const onScreen=r.top<s.pin.offsetHeight&&r.bottom>0;
-  const uTarget=clamp(-r.top/span)*(s.items.length+tail),delta=uTarget-(s.uShown??uTarget);
+  const uTarget=clamp((-r.top-ld)/span)*(s.items.length+tail),delta=uTarget-(s.uShown??uTarget);
   const following=onScreen&&!document.hidden&&Math.abs(delta)>.001;
   const u=s.uShown=following?s.uShown+delta*(mobile.matches ? .14 : .10):uTarget;
   const cur=Math.min(s.items.length-1,Math.floor(u)),loc=clamp((u-cur)/.5),shown=u-cur>=.5;

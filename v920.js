@@ -3,7 +3,7 @@
  'use strict';
  const cl=document.querySelector('.cl');
  if(cl){
-  const zones=[['.cl-hero','#141414'],['.cl-memory','#eef4f2'],['.cl-tumgo','#10141a']].map(([s,c])=>[cl.querySelector(s),c]).filter(z=>z[0]);
+  const zones=[['.cl-hero','#101214'],['.cl-memory','#f1dfbf']].map(([s,c])=>[cl.querySelector(s),c]).filter(z=>z[0]);
   function grad(){
    const H=cl.offsetHeight,top=cl.getBoundingClientRect().top+scrollY,blend=Math.min(innerHeight*.35,260),stops=[];
    zones.forEach(([el,c],i)=>{const a=el.getBoundingClientRect().top+scrollY-top,b=a+el.offsetHeight;

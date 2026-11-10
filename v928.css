@@ -1,0 +1,26 @@
+/* V9.28 — 넓은 화면 주인공 크기, 03 수거 뒤 여유, 문틈 빛 전환, 바로가기 어둠 장막 */
+
+/* 넓은 화면에서도 주인공 머리가 잘리지 않게: 배경 비율이 아니라 화면 높이 기준으로 크기 제한 */
+.tgn-hero { height: min(var(--hh), 62svh) !important; }
+.tgn-shadow { width: calc(min(var(--hh), 62svh) * .55) !important; }
+
+@media (min-width: 961px) and (prefers-reduced-motion: no-preference) {
+  /* 03 수거가 나온 뒤 휠 세 칸쯤 머문 다음 넘어간다 */
+  #tumgo-intro { --beat-tail: .48 !important; }
+}
+
+/* 문틈에서 새어 나오는 차가운 빛 */
+.tg-door { position: fixed; inset: 0; z-index: 86; pointer-events: none; opacity: 0; }
+.tg-door i {
+  position: absolute; left: var(--x, 50%); top: var(--top, 0); bottom: var(--bot, 0); width: var(--w, 2px); translate: -50% 0;
+  background: linear-gradient(90deg, transparent 0%, #cfe9ff 30%, #f4fbff 50%, #cfe9ff 70%, transparent 100%);
+  box-shadow: 0 0 calc(var(--glow, 0) * 40px) calc(var(--glow, 0) * 10px) #9fd4ffcc, 0 0 calc(var(--glow, 0) * 160px) calc(var(--glow, 0) * 40px) #6fb8ff88;
+  filter: blur(calc(var(--glow, 0) * 1.5px));
+}
+.tg-door::after { content: ""; position: absolute; inset: 0; background: #eaf6ff; opacity: var(--white, 0); }
+
+/* 바로가기: 왼쪽에서 오른쪽으로 드리우는 어둠 장막 */
+.pf-curtain { position: fixed; inset: 0; z-index: 9998; pointer-events: none; background: #0b0d10; transform: scaleX(0); transform-origin: left center; }
+.pf-curtain.is-in { pointer-events: all; transition: transform .5s cubic-bezier(.7, 0, .3, 1); transform: scaleX(1); }
+.pf-curtain.is-out { transform-origin: right center; transition: transform .5s cubic-bezier(.7, 0, .3, 1); transform: scaleX(0); }
+.pf-curtain::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 2px; background: #22c55e; box-shadow: 0 0 18px #22c55e; opacity: .8; }

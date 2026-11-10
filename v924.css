@@ -1,0 +1,89 @@
+/* V9.24 — 첫 화면: 계속 떠다니는 장면 조각(배경) + 가운데 갈림길(게임 시작하기 / 작품 바로 보기) */
+.hx { position: relative; min-height: 100svh; height: 100svh; padding: 0 !important; display: block !important; overflow: hidden; background: #101214; }
+.hx > #play-stage { position: absolute !important; inset: 0; min-height: 0 !important; height: 100% !important; margin: 0 !important; z-index: 1; }
+.hx .play-sound { display: none !important; }
+
+/* 갈림길: 조각들 위로 어둡게 깔린 가운데 */
+.hx-gate {
+  position: absolute; inset: 0; z-index: 10; display: grid; place-content: center; justify-items: center; text-align: center;
+  padding: 90px 24px 150px; gap: clamp(20px, 3.2vh, 34px);
+  background: radial-gradient(ellipse 46% 52% at 50% 46%, #0d0f12f0 0%, #0d0f12c8 46%, #0d0f1250 74%, transparent 100%);
+  transition: opacity .55s ease, visibility .55s;
+}
+.hx.is-playing .hx-gate { opacity: 0; visibility: hidden; pointer-events: none; }
+.hx-gate .cl-hero-in { position: relative; z-index: 1; }
+.hx-gate .cl-hero-title { font-size: clamp(46px, 6.4vw, 170px) !important; }
+.hx-gate .cl-hero-lede { margin-top: clamp(16px, 2vh, 26px) !important; color: #c9d1cf; font-size: clamp(15px, 1.15vw, 24px) !important; }
+
+/* 무엇이 열리는지 */
+.hx-route { list-style: none; margin: 0; padding: 0; display: flex; gap: clamp(10px, 1.2vw, 20px); flex-wrap: wrap; justify-content: center; }
+.hx-r { display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px 12px; border: 1px solid #ffffff26; background: #0d0f12a8; color: #c9d1cf; font: 400 clamp(13px, .9vw, 17px)/1.3 var(--ll-body); }
+.hx-r i { width: 14px; height: 18px; border-radius: 3px; flex: none; }
+.hx-r--memory i { background: #f2dfad; }
+.hx-r--tumgo i { background: #22c55e; }
+.hx-r b { font-weight: 600; color: #f4f8f7; }
+.hx-r strong { font-weight: 700; color: #f4f8f7; padding-left: 10px; border-left: 1px solid #ffffff33; }
+.hx-r--memory strong { color: #f2dfad; }
+.hx-r--tumgo strong { color: #6ee7a0; }
+
+/* 두 버튼 */
+.hx-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; align-items: center; }
+.hx-play {
+  appearance: none; border: 0; cursor: pointer; position: relative; overflow: hidden; isolation: isolate;
+  padding: 20px 40px; border-radius: 999px; background: #f4f8f7; color: #0f2f2e;
+  font: 700 clamp(17px, 1.25vw, 24px)/1 var(--ll-body); letter-spacing: -.02em;
+  box-shadow: 0 0 0 0 #f4f8f766; animation: hx-pulse 2.4s ease-out infinite;
+}
+.hx-play::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(105deg, transparent 35%, #22c55e55 50%, transparent 65%); transform: translateX(-120%); animation: vu-shine 3.2s ease-in-out infinite 1.2s; }
+.hx-play:hover, .hx-play:focus-visible { background: #fff; transform: translateY(-1px); }
+@keyframes hx-pulse { 0% { box-shadow: 0 0 0 0 #f4f8f755; } 70%, 100% { box-shadow: 0 0 0 18px #f4f8f700; } }
+.hx-skip { color: #e8e6e3; text-decoration: none; font: 500 clamp(15px, 1.05vw, 20px)/1 var(--ll-body); padding: 18px 22px; border: 1px solid #ffffff40; border-radius: 999px; transition: background .25s, border-color .25s; }
+.hx-skip:hover, .hx-skip:focus-visible { background: #ffffff14; border-color: #ffffff80; }
+
+/* 게임 중 위쪽 막대 */
+.hx-bar {
+  position: absolute; z-index: 12; left: 50%; top: clamp(14px, 2.2vh, 26px); transform: translateX(-50%);
+  display: flex; align-items: center; gap: 18px; padding: 10px 10px 10px 20px; border-radius: 999px;
+  background: #0d0f12d9; border: 1px solid #ffffff22; backdrop-filter: blur(8px); width: max-content; max-width: calc(100% - 32px);
+}
+.hx-bar[hidden] { display: none; }
+.hx-bar-hint { margin: 0; color: #c9d1cf; font: 400 clamp(13px, .9vw, 16px)/1.35 var(--ll-body); }
+.hx-bar-hint b { color: #f4f8f7; font-weight: 600; }
+.hx-bar-act { display: flex; gap: 8px; flex: none; }
+.hx-back { appearance: none; cursor: pointer; border: 1px solid #ffffff40; background: transparent; color: #e8e6e3; border-radius: 999px; padding: 10px 16px; font: 500 14px/1 var(--ll-body); }
+.hx-back:hover, .hx-back:focus-visible { background: #ffffff14; }
+.hx-skip--bar { padding: 10px 16px; font-size: 14px; background: #f4f8f7; color: #0f2f2e; border-color: transparent; }
+.hx-skip--bar:hover, .hx-skip--bar:focus-visible { background: #fff; }
+
+/* 처음에는 조각이 배경처럼 흐리게 떠다닌다 */
+.hx #vh-words { transition: opacity .6s ease, filter .6s ease; }
+.hx:not(.is-playing) #vh-words { opacity: .58; filter: saturate(.85) blur(1px); }
+.hx:not(.is-playing) #vh-bins { opacity: .9; }
+
+/* 그릇: 다 담으면 무엇이 열리는지 */
+.hx-dest { display: block; margin-top: 6px; font: 400 12px/1.3 var(--ll-body); color: #aab4b1; white-space: nowrap; }
+.hx-dest b { color: #f4f8f7; font-weight: 600; }
+
+@media (max-width: 760px) {
+  .hx-gate { padding: 70px 16px 170px; background: radial-gradient(ellipse 90% 50% at 50% 44%, #0d0f12f2 0%, #0d0f12c8 55%, #0d0f1240 85%, transparent 100%); }
+  .hx-gate .cl-hero-title { font-size: clamp(40px, 12vw, 64px) !important; }
+  .hx-route { flex-direction: column; align-items: stretch; width: min(100%, 360px); }
+  .hx-r { justify-content: space-between; }
+  .hx-play { padding: 18px 30px; }
+  .hx-bar { flex-direction: column; align-items: stretch; border-radius: 18px; padding: 12px; gap: 10px; text-align: center; }
+  .hx-bar-act { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hx-play, .hx-play::after { animation: none; }
+}
+
+/* 그릇 아래 안내까지 화면 안에, 게임 막대 아래로 조각이 들어가지 않게 */
+.hx #play-stage .vh-words { top: 78px !important; bottom: 300px !important; }
+.hx #play-stage .vh-bins { bottom: 34px !important; height: 270px !important; }
+.hx #play-stage :is(.bin-visual, .bin-img) { height: 180px !important; }
+@media (max-width: 760px) {
+  .hx #play-stage .vh-words { top: 132px !important; bottom: 236px !important; }
+  .hx #play-stage .vh-bins { bottom: 26px !important; height: 200px !important; }
+  .hx #play-stage :is(.bin-visual, .bin-img) { height: 112px !important; }
+  .hx-dest { font-size: 11px; white-space: normal; }
+}
