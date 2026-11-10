@@ -7,8 +7,8 @@
   const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.classList.add('js');
   const projectData = {
-    memory: {name:'반찬통의 왕복', number:'FILM 01 / THE RETURN',cuts: MEMORY_CUTS, duration:82.8, color:'#96a7c6', note:'1999 도트 → 2007 3D → 2026 실사. 시대가 바뀌는 시점에 같은 반찬통의 위치와 동작을 연결하고, 잠금 소리도 칩튠에서 실제 음향으로 성장하도록 설계했습니다.'},
-    tumgo: {name:'틈GO (TUMGO)', number:'FILM 02 / TUMGO',cuts:TUMGO_CUTS,duration:62.04,color:'#a8e7b8',note:'서울의 야간 계단, 현관, 4족 서비스 로봇. 캐릭터와 공간을 반복 검증하며 기계적 보행, QR 스캔, 가방 적재를 장면별로 구성했습니다.'}
+    memory: {name:'반찬통의 왕복', number:'FILM 01 / THE RETURN',cuts: MEMORY_CUTS, duration:82.8, color:'#96a7c6', note:'1999 도트 → 2007 3D → 2026 실사. 시대가 바뀌어도 반찬통은 화면의 같은 자리에 두었고, 잠그는 소리는 칩튠에서 실제 녹음으로 바꿔 갔습니다.'},
+    tumgo: {name:'틈GO (TUMGO)', number:'FILM 02 / TUMGO',cuts:TUMGO_CUTS,duration:62.04,color:'#a8e7b8',note:'서울의 야간 계단, 현관, 4족 서비스 로봇. 인물과 장소가 컷마다 달라지지 않는지 계속 확인했고, 로봇의 걸음, QR 스캔, 가방 싣기는 컷을 나눠 만들었습니다.'}
   };
   let currentFilm='memory', currentCut=0;
   // Public film URLs are configured in video-config.js (never put a Blob token here).
@@ -198,7 +198,7 @@
       number:'첫 번째 작품', next:'tumgo', nextLabel:'틈GO 광고 영상 보기',
       poster:'assets/memory-cover.webp',
       logline:'엄마가 채워 보내던 반찬통이, 27년 만에 아들의 손으로 채워져 돌아온다.',
-      synopsis:'1999년의 도트, 2007년의 3D, 2026년의 실사. 시대마다 그림의 결이 바뀌는 동안 같은 반찬통이 엄마에게서 아들로, 다시 엄마에게로 건너간다.',
+      synopsis:'1999년은 도트, 2007년은 3D, 2026년은 실사로 만들었다. 그림은 바뀌어도 반찬통은 같은 통이다. 엄마가 채우던 그 통을 마지막에는 아들이 채워서 돌려준다.',
       meta:[['형식','브랜드 필름 (락앤락 비공식, 교육용)'],['러닝타임','1분 23초'],['제작','2026, 기획·연출·편집 정재환'],['기획 보조','ChatGPT, Claude'],['이미지','GPT Image (컷별 시작·끝 프레임, 도트 원화)'],['영상','Seedance 2.5'],['소리','ElevenLabs v3 (대사·나레이션), Suno (음악), Mirelo, MMAudio·ComfyUI (효과음)'],['편집·합성','After Effects (도트 애니메이션, 전환, 타이포), Photoshop (도트 원화 정리), Premiere Pro (편집, 색, 믹스)']],
       chapters:[['고지',0,3],['1999 기억',3,19.2],['전환',19.2,26.5],['2007 성장',26.5,47.6],['전환',47.6,50.4],['2026 현실',50.4,75.6],['엔딩',75.6,82.8]]
     },
@@ -206,7 +206,7 @@
       number:'두 번째 작품', next:'memory', nextLabel:'반찬통의 왕복 광고 영상 보기',
       poster:'assets/tumgo-cover.webp',
       logline:'문 앞에 두세요. 나머지는 틈GO가.',
-      synopsis:'늦은 퇴근길 계단에서 처음 마주친 배송 로봇. 밀린 빨래와 수선을 문 앞에서 맡기고 돌려받는, 가까운 미래의 생활 서비스를 실사형 AI 영상으로 그렸다.',
+      synopsis:'늦은 퇴근길 계단에서 처음 마주친 배송 로봇. 빨래와 수선할 옷을 문 앞에 내놓으면 로봇이 가져갔다가 다시 가져다주는 가상의 서비스 광고다.',
       meta:[['형식','서비스 광고 (가상 서비스)'],['러닝타임','약 1분'],['제작','2026, 기획·연출·편집 정재환'],['주인공','김현우, 31세, 촬영 현장 스태프'],['기획 보조','ChatGPT, Claude'],['이미지','GPT Image, Nano Banana, Gemini (캐릭터·로봇·공간 기준 이미지)'],['영상','Google Flow (Veo 3.1), Kling (잡기·들기 같은 접촉 동작), Runway'],['소리','ElevenLabs (김현우 1인칭 나레이션), Suno (음악), 후반 효과음'],['편집·합성','After Effects (로봇 합성, UI·자막), Premiere Pro (편집, 색, 믹스)']],
       chapters:null
     }

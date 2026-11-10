@@ -32,7 +32,17 @@
    requestAnimationFrame(()=>dispatchEvent(new Event('resize')));   // 조각 자리 다시 잡기
    const r=hx.getBoundingClientRect();if(Math.abs(r.top)>4)scrollTo({top:scrollY+r.top,behavior:reduce.matches?'instant':'smooth'});
    setTimeout(()=>words().find(w=>!w.classList.contains('is-eaten'))?.focus({preventScroll:true}),400);
-  }else playBtn.focus({preventScroll:true});
+  }else{
+   resetGame();setTimeout(()=>{if(!hx.classList.contains('is-playing'))resetGame()},1700);   // 마지막 조각 직후에 돌아와도(1.5초 뒤 열림) 다시 비운다
+   playBtn.focus({preventScroll:true});
+  }
+ }
+ /* 처음 화면으로 돌아가면 퍼즐을 처음 상태로: 담은 조각, 그릇, 열린 작품 화면, 완료 창 모두 */
+ function resetGame(){
+  const api=window.__collectDebug;if(!api)return;
+  const dirty=document.querySelector('#vh-words .is-eaten,#vh-words .is-in,#vh-bins .is-full,#vh-bins .is-gone,#vh-unlock .is-on');
+  const dlg=document.getElementById('vh-done');if(dlg&&dlg.open)dlg.close();
+  if(dirty)api.resetAll();
  }
  window.__hxPlay=play;
  playBtn.addEventListener('click',()=>play(true));

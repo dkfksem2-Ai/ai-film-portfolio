@@ -31,7 +31,7 @@
 
  /* ---------- 소개 문장: '혼자'를 크게 ---------- */
  const row2=document.querySelector('#about .ab-row2 > span');
- if(row2)row2.innerHTML='오로지 <span class="ab-solo">혼자</span>서 제작.';
+ if(row2)row2.innerHTML='<span class="ab-solo">혼자</span> 만들었습니다.';
 
  // 소개 카드는 V9.22(v922.js)에서 처리
 })();
