@@ -105,7 +105,8 @@
   {const p=pairs[1],r=p.sec.getBoundingClientRect(),raw=ps[1];
    const before=r.top>0;
    const dtD=Math.min(.1,(now-(tDt||now))/1000);tDt=now;
-   tD+=(raw-tD)*(1-Math.exp(-dtD*4.5));if(Math.abs(raw-tD)<.0008)tD=raw;   // 화면 속도와 무관하게 약 0.6초에 걸쳐 따라간다           // 스크롤 칸 단위로 튀지 않게 부드럽게 따라간다
+   const far=journey.getBoundingClientRect().bottom<0||before;   // V10: 화면이 이미 지나갔거나(새로고침·바로가기 복귀) 아직이면 따라가지 않고 바로 맞춘다
+   if(far||Math.abs(raw-tD)>.6)tD=raw;else tD+=(raw-tD)*(1-Math.exp(-dtD*4.5));if(Math.abs(raw-tD)<.0008)tD=raw;   // 화면 속도와 무관하게 약 0.6초에 걸쳐 따라간다           // 스크롤 칸 단위로 튀지 않게 부드럽게 따라간다
    const t=before?0:tD;
    const glow=clamp(t/.22),vig=clamp((t-.06)/.34),zoom=clamp((t-.34)/.5),flash=clamp((t-.76)/.14),reveal=clamp((t-.9)/.1);
    const ez=zoom*zoom*(3-2*zoom),sw=Math.sin(Math.PI*zoom);

@@ -38,6 +38,10 @@
  const DROP=1.6;            // 물방울 장면에 쓰는 스크롤 칸 수
  const DUR=5.2;             // 떨어지고 얼룩으로 굳기까지 걸리는 시간(초)
  let t0=-1,visible=false,gl=null,prog=null,U={};
+ /* V10: 한 번 끝까지 본 뒤에는(또는 skip) 이 탭을 닫기 전까지 완성된 모습 그대로 둔다 */
+ const KEY='ab-done';let done=false;try{done=sessionStorage.getItem(KEY)==='1'}catch(e){}
+ function finish(){if(done)return;done=true;try{sessionStorage.setItem(KEY,'1')}catch(e){}ab.classList.add('is-done');}
+ if(done)ab.classList.add('is-done','is-restored');
 
  const cv=document.createElement('canvas');cv.className='ab-gl';cv.setAttribute('aria-hidden','true');pin.prepend(cv);
  try{gl=cv.getContext('webgl',{premultipliedAlpha:false,antialias:false})}catch(e){gl=null}
@@ -226,7 +230,7 @@ void main(){
  let dpr=1,W=0,H=0;
  function size(){dpr=Math.min(1.5,devicePixelRatio||1);const r=pin.getBoundingClientRect();W=Math.round(r.width*dpr);H=Math.round(r.height*dpr);
   if(prog&&(cv.width!==W||cv.height!==H)){cv.width=W;cv.height=H;gl.viewport(0,0,W,H)}}
- function elapsed(now){if(window.__abFix!=null)return window.__abFix;if(reduce.matches)return DUR+1;return t0<0?-1:(now-t0)/1000}
+ function elapsed(now){if(window.__abFix!=null)return window.__abFix;if(reduce.matches||done)return DUR+1;return t0<0?-1:(now-t0)/1000}
  function draw(now){
   if(!prog)return;
   const pr=pin.getBoundingClientRect(),cr=card.getBoundingClientRect();
@@ -239,13 +243,13 @@ void main(){
   const r=ab.getBoundingClientRect(),span=Math.max(1,ab.offsetHeight-pin.offsetHeight),p=clamp(-r.top/span);
   const u=p*(steps.length+DROP+1);
   visible=r.bottom>0&&r.top<innerHeight;
-  if(reduce.matches){steps.forEach(s=>s.classList.add('is-on'));ab.classList.add('is-formed');return}
+  if(reduce.matches||done){steps.forEach(s=>s.classList.add('is-on'));ab.classList.add('is-formed');return}
   if(getComputedStyle(pin).position!=='sticky'){   // 휴대폰: 고정 없이, 카드가 보이면 떨어진다
    const cr=card.getBoundingClientRect();
    if(cr.top<innerHeight*.7&&t0<0)t0=performance.now();
    if(r.top>innerHeight&&t0>=0)t0=-1;
    const ok=elapsed(performance.now())>DUR*.8;
-   steps.forEach(s=>s.classList.toggle('is-on',ok));ab.classList.toggle('is-formed',ok);return;
+   steps.forEach(s=>s.classList.toggle('is-on',ok));ab.classList.toggle('is-formed',ok);if(ok)finish();return;
   }
   if(u>.12&&t0<0)t0=performance.now();          // 내려오면 방울이 떨어진다
   if(u<.02&&r.top>-4&&t0>=0){t0=-1}             // 위로 다시 올라가면 처음으로
@@ -253,6 +257,7 @@ void main(){
   const ready=elapsed(performance.now())>DUR*.8;
   steps.forEach((s,i)=>s.classList.toggle('is-on',ready&&i<n));
   ab.classList.toggle('is-formed',ready);
+  if(ready&&n>=steps.length)finish();
  }
  let running=false;
  function loop(now){measure();draw(now);if(visible)requestAnimationFrame(loop);else running=false}
@@ -263,4 +268,6 @@ void main(){
  size();kick();
  window.__abDrop=()=>({t:elapsed(performance.now()),gl:!!prog});
  window.__abStart=sec=>{t0=performance.now()-sec*1000};
+ window.__abSkip=()=>{finish();kick()};
+ window.__abDone=()=>done;
 })();

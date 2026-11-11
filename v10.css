@@ -1,0 +1,22 @@
+/* V10 — 맨 아래 바로가기에 '팀 프로젝트' 칸 */
+.ab-nav .n-team b { font-family: "Pretendard Variable", Pretendard, sans-serif; font-weight: 600; }
+.ab-nav .n-team > i { background: #d9cbb4; }
+@media (max-width: 760px) { .ab-nav .n-team { flex-basis: 45%; } }
+
+/* 팀 프로젝트에서 돌아올 때 첫 화면이 비치지 않게 덮어 둔다 */
+html.pf-cover::after { content: ""; position: fixed; inset: 0; z-index: 9999; background: #0b0d10; }
+
+/* 소개 커피 장면 skip: 오른쪽 아래, 바닥글 바로 위 */
+.ab .ab-pin > .ab-skip {
+  position: absolute; width: auto; justify-self: auto; align-self: auto; left: auto; top: auto; z-index: 5; right: clamp(20px, 4vw, 96px); bottom: calc(var(--foot-h, 90px) + 14px);
+  appearance: none; cursor: pointer; border: 1px solid #1e1c1940; background: #f4f1eacc; color: #1e1c19;
+  font: 500 15px/1 "Pretendard Variable", Pretendard, sans-serif; letter-spacing: .02em; padding: 10px 16px; border-radius: 999px;
+  backdrop-filter: blur(6px); transition: background .25s, color .25s, opacity .3s;
+}
+.ab-skip span { display: inline-block; margin-left: 2px; transition: transform .25s; }
+.ab .ab-pin > .ab-skip:hover, .ab .ab-pin > .ab-skip:focus-visible { background: #1e1c19; color: #f4f1ea; }
+.ab-skip:hover span { transform: translateX(3px); }
+.ab .ab-pin > .ab-skip[hidden] { display: none; }
+/* 이미 본 뒤 돌아오면 글자도 바로 제자리에 */
+.ab.is-restored .ab-step { transition: none !important; }
+@media (max-width: 760px) { .ab .ab-pin > .ab-skip { bottom: auto; top: 12px; right: 16px; } }
