@@ -5,7 +5,7 @@
  const curtain=document.createElement('div');curtain.className='pf-curtain';curtain.setAttribute('aria-hidden','true');document.body.append(curtain);
  let busy=false;
  document.addEventListener('click',e=>{
-  const a=e.target.closest('.ab-nav a[href^="#"]');if(!a||busy)return;
+  const a=e.target.closest('.ab-nav a[href^="#"], .qn a[href^="#"], a.hx-jump[href^="#"]');if(!a||busy)return;
   if(e.ctrlKey||e.metaKey||e.shiftKey||e.button!==0)return;
   e.preventDefault();e.stopImmediatePropagation();
   const id=a.getAttribute('href').slice(1),el=id==='top'?null:document.getElementById(id);
